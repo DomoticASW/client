@@ -17,6 +17,24 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/AboutView.vue'),
     },
+    {
+      path: '/admin',
+      children: [
+        {
+          path: 'manage-users',
+          name: 'manage-users',
+          component: () => import('../views/admin/ManageUsersView.vue'),
+        },
+        {
+          path: 'users-permissions',
+          name: 'users-permissions',
+          children: [
+            { path: '', component: () => import('../views/admin/users-permissions/UsersPermissionsView.vue'), },
+            { path: ':id', component: () => import('../views/admin/users-permissions/UserPermissionsView.vue'), },
+          ]
+        },
+      ]
+    },
   ],
 })
 
