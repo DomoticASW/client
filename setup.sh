@@ -1,5 +1,7 @@
 #!/bin/sh
 
 PROJECT_ROOT=$(cd "$(dirname "$0")" && pwd)
+cd "${PROJECT_ROOT}"
 
-cp ${PROJECT_ROOT}/hooks/* .git/hooks
+# Installing hooks
+cp hooks/* .git/hooks
