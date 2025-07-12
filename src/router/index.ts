@@ -64,6 +64,29 @@ const router = createRouter({
         },
       ],
     },
+    {
+      path: '/automations',
+      name: 'automations',
+      children: [
+        {
+          path: '',
+          component: () => import('../views/automations/AutomationsView.vue'),
+        },
+        {
+          path: ':id',
+          children: [
+            {
+              path: '',
+              component: () => import('../views/automations/AutomationView.vue'),
+            },
+            {
+              path: 'edit',
+              component: () => import('../views/automations/EditAutomationView.vue'),
+            },
+          ],
+        },
+      ],
+    },
   ],
 })
 
