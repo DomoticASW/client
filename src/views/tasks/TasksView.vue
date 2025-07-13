@@ -1,65 +1,17 @@
+<script setup lang="ts">
+  const tasks = [
+    "Relaxing lights",
+    "Start Roomba",
+    "Close windows",
+    "Play music (Emma's room)"
+  ]
+</script>
+
 <template>
   <ul class="list rounded-box">
-    <li class="list-row">
+    <li class="list-row" v-for="task in tasks" :key="task">
       <div class="list-col-grow flex items-center">
-        <div>Relaxing Lights</div>
-      </div>
-      <button class="btn btn-circle btn-ghost">
-        <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <g
-            stroke-linejoin="round"
-            stroke-linecap="round"
-            stroke-width="2"
-            fill="none"
-            stroke="currentColor"
-          >
-            <path d="M6 3L20 12 6 21 6 3z"></path>
-          </g>
-        </svg>
-      </button>
-    </li>
-
-    <li class="list-row">
-      <div class="list-col-grow flex items-center">
-        <div>Start Roomba</div>
-      </div>
-      <button class="btn btn-circle btn-ghost">
-        <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <g
-            stroke-linejoin="round"
-            stroke-linecap="round"
-            stroke-width="2"
-            fill="none"
-            stroke="currentColor"
-          >
-            <path d="M6 3L20 12 6 21 6 3z"></path>
-          </g>
-        </svg>
-      </button>
-    </li>
-
-    <li class="list-row">
-      <div class="list-col-grow flex items-center">
-        <div>Close windows</div>
-      </div>
-      <button class="btn btn-circle btn-ghost">
-        <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <g
-            stroke-linejoin="round"
-            stroke-linecap="round"
-            stroke-width="2"
-            fill="none"
-            stroke="currentColor"
-          >
-            <path d="M6 3L20 12 6 21 6 3z"></path>
-          </g>
-        </svg>
-      </button>
-    </li>
-
-    <li class="list-row">
-      <div class="list-col-grow flex items-center">
-        <div>Play music (Emma's room)</div>
+        <div>{{ task }}</div>
       </div>
       <button class="btn btn-circle btn-ghost">
         <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
