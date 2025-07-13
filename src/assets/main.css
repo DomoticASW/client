@@ -1,2 +1,4 @@
+@import './fonts/all.css';
 @import "tailwindcss";
+
 @plugin "daisyui";
