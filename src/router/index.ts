@@ -33,6 +33,13 @@ const router = createRouter({
             { path: ':id', component: () => import('../views/admin/users-permissions/UserPermissionsView.vue'), },
           ]
         },
+        {
+          path: 'manage-devices',
+          children: [
+            { path: '', name: 'manage-devices', component: () => import('../views/admin/manage-devices/ManageDevicesView.vue') },
+            { path: 'add-device', name: 'add-device', component: () => import('../views/admin/manage-devices/AddDeviceView.vue') }
+          ]
+        },
       ]
     },
   ],
