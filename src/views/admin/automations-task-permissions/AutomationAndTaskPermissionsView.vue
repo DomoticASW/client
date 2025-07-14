@@ -106,7 +106,7 @@ function select(option: string) {
                   stroke="currentColor"
                   @click="removeUser(user)"
                 >
-                  <path d="M12 5v14M5 12h14"></path>
+                  <path d="M6 6l12 12M6 18L18 6"></path>
                 </g>
               </svg>
             </button>
