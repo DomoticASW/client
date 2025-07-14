@@ -1,6 +1,11 @@
 <script setup lang="ts">
+import router from '@/router'
 const tasks = ['Turns lights off', 'Close windows', "Play music (Emma's room)"]
 const automations = ['Washing machine done']
+
+function goToPermissions(id: string) {
+  router.push(`./automations-task-permissions/${id}`)
+}
 </script>
 
 <template>
@@ -17,6 +22,7 @@ const automations = ['Washing machine done']
               class="btn btn-circle btn-ghost"
               type="button"
               :aria-label="'Get permissions of: ' + task"
+              @click="goToPermissions(task)"
             >
               <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <g
@@ -47,6 +53,7 @@ const automations = ['Washing machine done']
               class="btn btn-circle btn-ghost"
               type="button"
               :aria-label="'Get permissions of: ' + automation"
+              @click="goToPermissions(automation)"
             >
               <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <g
