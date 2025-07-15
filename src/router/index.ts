@@ -29,11 +29,63 @@ const router = createRouter({
           path: 'users-permissions',
           name: 'users-permissions',
           children: [
-            { path: '', component: () => import('../views/admin/users-permissions/UsersPermissionsView.vue'), },
-            { path: ':id', component: () => import('../views/admin/users-permissions/UserPermissionsView.vue'), },
-          ]
+            {
+              path: '',
+              component: () => import('../views/admin/users-permissions/UsersPermissionsView.vue'),
+            },
+            {
+              path: ':id',
+              component: () => import('../views/admin/users-permissions/UserPermissionsView.vue'),
+            },
+          ],
         },
-      ]
+      ],
+    },
+    {
+      path: '/tasks',
+      name: 'tasks',
+      children: [
+        {
+          path: '',
+          component: () => import('../views/tasks/TasksView.vue'),
+        },
+        {
+          path: ':id',
+          children: [
+            {
+              path: '',
+              component: () => import('../views/tasks/TaskView.vue'),
+            },
+            {
+              path: 'edit',
+              component: () => import('../views/tasks/EditTaskView.vue'),
+            },
+          ],
+        },
+      ],
+    },
+    {
+      path: '/automations',
+      name: 'automations',
+      children: [
+        {
+          path: '',
+          component: () => import('../views/automations/AutomationsView.vue'),
+        },
+        {
+          path: ':id',
+          children: [
+            {
+              path: '',
+              component: () => import('../views/automations/AutomationView.vue'),
+            },
+            {
+              path: 'edit',
+              component: () => import('../views/automations/EditAutomationView.vue'),
+            },
+          ],
+        },
+      ],
     },
   ],
 })
