@@ -110,7 +110,7 @@
 
           <p class="text-sm mt-5 italic text-center">You'll need admin approval after registration</p>
           <div class="flex justify-center">
-            <div class="form-control mt-6">
+            <div class="form-control mb-6 mt-2">
               <button 
                 type="submit" 
                 class="btn btn-primary"

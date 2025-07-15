@@ -58,7 +58,7 @@
           </div>
           
           <div class="flex justify-center">
-            <div class="form-control mt-6">
+            <div class="form-control mb-6 mt-2">
               <button 
                 type="submit" 
                 class="btn btn-primary"
@@ -106,7 +106,7 @@ export default defineComponent({
 
     const rules = {
       email: { required: helpers.withMessage('Email is required', required), email: helpers.withMessage('Email must be valid', email) },
-      password: { required: helpers.withMessage('Password is required', required), minLength: helpers.withMessage('Password must be at least 6 characters', minLength(6)) }
+      password: { required: helpers.withMessage('Password is required', required) }
     };
 
     const v$ = useVuelidate(rules, form);
