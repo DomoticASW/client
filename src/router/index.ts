@@ -40,6 +40,13 @@ const router = createRouter({
           ],
         },
         {
+          path: 'manage-devices',
+          children: [
+            { path: '', name: 'manage-devices', component: () => import('../views/admin/manage-devices/ManageDevicesView.vue') },
+            { path: 'add-device', name: 'add-device', component: () => import('../views/admin/manage-devices/AddDeviceView.vue') }
+          ]
+        },
+        {
           path: 'automations-task-permissions',
           name: 'automations-task-permissions',
           children: [
