@@ -29,11 +29,37 @@ const router = createRouter({
           path: 'users-permissions',
           name: 'users-permissions',
           children: [
-            { path: '', component: () => import('../views/admin/users-permissions/UsersPermissionsView.vue'), },
-            { path: ':id', component: () => import('../views/admin/users-permissions/UserPermissionsView.vue'), },
-          ]
+            {
+              path: '',
+              component: () => import('../views/admin/users-permissions/UsersPermissionsView.vue'),
+            },
+            {
+              path: ':id',
+              component: () => import('../views/admin/users-permissions/UserPermissionsView.vue'),
+            },
+          ],
         },
-      ]
+        {
+          path: 'automations-task-permissions',
+          name: 'automations-task-permissions',
+          children: [
+            {
+              path: '',
+              component: () =>
+                import(
+                  '../views/admin/automations-task-permissions/AutomationsAndTasksPermissionsView.vue'
+                ),
+            },
+            {
+              path: ':id',
+              component: () =>
+                import(
+                  '../views/admin/automations-task-permissions/AutomationAndTaskPermissionsView.vue'
+                ),
+            },
+          ],
+        },
+      ],
     },
   ],
 })
