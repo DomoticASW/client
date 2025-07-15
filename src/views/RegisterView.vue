@@ -7,24 +7,6 @@
         </div>
         
         <form @submit.prevent="handleRegister" class="space-y-4 w-full">
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">Server address</span>
-            </label>
-            <input 
-              v-model="form.serverAddress" 
-              type="text" 
-              placeholder="http://localhost:3000" 
-              class="input input-bordered w-full"
-              :class="{ 'input-error': v$.serverAddress.$error }"
-              @blur="v$.serverAddress.$touch()"
-            />
-            <label class="label" v-if="v$.serverAddress.$error">
-              <span class="label-text-alt text-error">
-                {{ v$.serverAddress.$errors[0].$message }}
-              </span>
-            </label>
-          </div>
 
           <div class="form-control">
             <label class="label">
@@ -136,7 +118,6 @@ import { useVuelidate } from '@vuelidate/core';
 import { required, email, minLength, sameAs, helpers } from '@vuelidate/validators';
 
 type RegisterForm = {
-  serverAddress: string;
   nickname: string;
   email: string;
   password: string;
@@ -147,7 +128,6 @@ export default defineComponent({
   name: 'RegisterView',
   setup() {
     const form = reactive<RegisterForm>({
-      serverAddress: '',
       nickname: '',
       email: '',
       password: '',
@@ -157,7 +137,6 @@ export default defineComponent({
     const password = computed(() => form.password);
 
     const rules = {
-      serverAddress: { required: helpers.withMessage('Server address is required', required) },
       nickname: { required: helpers.withMessage('Nickname is required', required) },
       email: { required: helpers.withMessage('Email is required', required), email: helpers.withMessage('Email must be valid', email) },
       password: { required: helpers.withMessage('Password is required', required), minLength: helpers.withMessage('Password must be at least 6 characters', minLength(6)) },

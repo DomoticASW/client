@@ -1,27 +1,9 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-base-200">
     <div class="card-body">
-      
+      <h1 class="card-title text-3xl font-bold mb-2">Settings</h1>
+
       <form @submit.prevent="handleSave" class="space-y-4 w-full">
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text">Server address</span>
-          </label>
-          <input 
-          v-model="form.serverAddress" 
-          type="text" 
-          placeholder="http://localhost:3000" 
-          class="input input-bordered w-full"
-          :class="{ 'input-error': v$.serverAddress.$error }"
-          @blur="v$.serverAddress.$touch()"
-          />
-          <label class="label" v-if="v$.serverAddress.$error">
-            <span class="label-text-alt text-error">
-              {{ v$.serverAddress.$errors[0].$message }}
-            </span>
-          </label>
-        </div>
-        
         <div class="form-control">
           <label class="label">
             <span class="label-text">Nickname</span>
@@ -122,7 +104,6 @@ import { useVuelidate } from '@vuelidate/core';
 import { required, email, minLength, sameAs, helpers } from '@vuelidate/validators';
 
 type RegisterForm = {
-  serverAddress: string;
   nickname: string;
   email: string;
   password: string;
@@ -133,7 +114,6 @@ export default defineComponent({
   name: 'RegisterView',
   setup() {
     const initialForm = reactive<RegisterForm>({
-      serverAddress: 'http://localhost:3000',
       nickname: 'Your Nickname',
       email: 'your@email.com',
       password: '',
@@ -153,7 +133,6 @@ export default defineComponent({
     }, { deep: true });
     
     const rules = {
-      serverAddress: { required: helpers.withMessage('Server address is required', required) },
       nickname: { required: helpers.withMessage('Nickname is required', required) },
       email: { required: helpers.withMessage('Email is required', required), email: helpers.withMessage('Email must be valid', email) },
       password: { 
