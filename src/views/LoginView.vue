@@ -91,7 +91,7 @@
 <script lang="ts">
 import { defineComponent, reactive, ref } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
-import { required, email, minLength, helpers } from '@vuelidate/validators';
+import { required, email, helpers } from '@vuelidate/validators';
 
 type LoginForm = {
   email: string;
