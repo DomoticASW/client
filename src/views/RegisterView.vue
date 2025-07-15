@@ -2,11 +2,11 @@
   <div class="min-h-screen flex items-center justify-center bg-base-200">
     <div class="card w-full max-w-md bg-base-100 shadow-xl">
       <div class="card-body">
-        <div class="flex justify-center">
+        <div class="flex justify-center min-h-[4rem] mb-4">
           <h1 class="card-title text-3xl font-bold mb-2">Welcome!</h1>
         </div>
         
-        <form @submit.prevent="handleRegister" class="space-y-4 w-full">
+        <form @submit.prevent="handleRegister" class="w-full">
 
           <div class="form-control">
             <label class="label">
@@ -20,11 +20,13 @@
             :class="{ 'input-error': v$.nickname.$error }"
             @blur="v$.nickname.$touch()"
             />
-            <label class="label" v-if="v$.nickname.$error">
-              <span class="label-text-alt text-error">
-                {{ v$.nickname.$errors[0].$message }}
-              </span>
-            </label>
+            <div class="min-h-[1.5rem]">
+              <label class="label py-0" v-if="v$.nickname.$error">
+                <span class="label-text-alt text-error">
+                  {{ v$.nickname.$errors[0].$message }}
+                </span>
+              </label>
+            </div>
           </div>
           
           <div class="form-control">
@@ -39,11 +41,13 @@
             :class="{ 'input-error': v$.email.$error }"
             @blur="v$.email.$touch()"
             />
-            <label class="label" v-if="v$.email.$error">
-              <span class="label-text-alt text-error">
-                {{ v$.email.$errors[0].$message }}
-              </span>
-            </label>
+            <div class="min-h-[1.5rem]">
+              <label class="label py-0" v-if="v$.email.$error">
+                <span class="label-text-alt text-error">
+                  {{ v$.email.$errors[0].$message }}
+                </span>
+              </label>
+            </div>
           </div>
           
           <div class="form-control">
@@ -57,7 +61,7 @@
               placeholder="••••••••" 
               class="input input-bordered w-full"
               :class="{ 'input-error': v$.password.$error }"
-              @input="v$.password.$touch()"
+              @blur="v$.password.$touch()"
               />
               <button 
                 type="button" 
@@ -70,11 +74,13 @@
                 ></i>              
               </button>
             </div>
-            <label class="label" v-if="v$.password.$error">
-              <span class="label-text-alt text-error">
-                {{ v$.password.$errors[0].$message }}
-              </span>
-            </label>
+            <div class="min-h-[1.5rem]">
+              <label class="label py-0" v-if="v$.password.$error">
+                <span class="label-text-alt text-error">
+                  {{ v$.password.$errors[0].$message }}
+                </span>
+              </label>
+            </div>
           </div>
           
           <div class="form-control">
@@ -88,7 +94,7 @@
               placeholder="••••••••" 
               class="input input-bordered w-full"
               :class="{ 'input-error': v$.confirmPassword.$error }"
-              @input="v$.confirmPassword.$touch()"
+              @blur="v$.confirmPassword.$touch()"
               />
               <button 
                   type="button" 
@@ -101,16 +107,18 @@
                 ></i>              
               </button>
             </div>
-            <label class="label" v-if="v$.confirmPassword.$error">
-              <span class="label-text-alt text-error">
-                {{ v$.confirmPassword.$errors[0].$message }}
-              </span>
-            </label>
+            <div class="min-h-[1.5rem]">
+              <label class="label py-0" v-if="v$.confirmPassword.$error">
+                <span class="label-text-alt text-error">
+                  {{ v$.confirmPassword.$errors[0].$message }}
+                </span>
+              </label>
+            </div>
           </div>
 
-          <p class="text-sm mt-5 italic text-center">You'll need admin approval after registration</p>
+          <p class="text-sm italic text-center">You'll need admin approval after registration</p>
           <div class="flex justify-center">
-            <div class="form-control mb-6 mt-2">
+            <div class="form-control m-6">
               <button 
                 type="submit" 
                 class="btn btn-primary"

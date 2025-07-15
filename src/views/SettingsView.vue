@@ -1,9 +1,11 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-base-200">
+  <div class="min-h-screen flex justify-center bg-base-200">
     <div class="card-body">
-      <h1 class="card-title text-3xl font-bold mb-2">Settings</h1>
+      <div class="flex min-h-[4rem]">
+        <h1 class="card-title text-3xl font-bold mb-2">Settings</h1>
+      </div>
 
-      <form @submit.prevent="handleSave" class="space-y-4 w-full">
+      <form @submit.prevent="handleSave" class="w-full">
         <div class="form-control">
           <label class="label">
             <span class="label-text">Nickname</span>
@@ -16,11 +18,13 @@
           :class="{ 'input-error': v$.nickname.$error }"
           @blur="v$.nickname.$touch()"
           />
-          <label class="label" v-if="v$.nickname.$error">
-            <span class="label-text-alt text-error">
-              {{ v$.nickname.$errors[0].$message }}
-            </span>
-          </label>
+          <div class="min-h-[1.5rem]">
+            <label class="label py-0" v-if="v$.nickname.$error">
+              <span class="label-text-alt text-error">
+                {{ v$.nickname.$errors[0].$message }}
+              </span>
+            </label>
+          </div>
         </div>
         
         <div class="form-control">
@@ -36,11 +40,13 @@
           :class="{ 'input-error': v$.email.$error }"
           @blur="v$.email.$touch()"
           />
-          <label class="label" v-if="v$.email.$error">
-            <span class="label-text-alt text-error">
-              {{ v$.email.$errors[0].$message }}
-            </span>
-          </label>
+          <div class="min-h-[1.5rem]">
+            <label class="label py-0" v-if="v$.email.$error">
+              <span class="label-text-alt text-error">
+                {{ v$.email.$errors[0].$message }}
+              </span>
+            </label>
+          </div>
         </div>
         
         <div class="form-control">
@@ -54,7 +60,7 @@
             placeholder="••••••••" 
             class="input input-bordered w-full"
             :class="{ 'input-error': v$.password.$error }"
-            @input="v$.password.$touch()"
+            @blur="v$.password.$touch()"
             />
             <button 
               type="button" 
@@ -67,42 +73,46 @@
               ></i>              
             </button>
           </div>
-          <label class="label" v-if="v$.password.$error">
-            <span class="label-text-alt text-error">
-              {{ v$.password.$errors[0].$message }}
-            </span>
-          </label>
+          <div class="min-h-[1.5rem]">
+            <label class="label py-0" v-if="v$.password.$error">
+              <span class="label-text-alt text-error">
+                {{ v$.password.$errors[0].$message }}
+              </span>
+            </label>
+          </div>
         </div>
         
         <div class="form-control">
-            <label class="label">
-              <span class="label-text">Confirm new password</span>
-            </label>
-            <div class="relative">
-              <input 
-              v-model="form.confirmPassword" 
-              :type="showConfirmPassword ? 'text' : 'password'" 
-              placeholder="••••••••" 
-              class="input input-bordered w-full"
-              :class="{ 'input-error': v$.confirmPassword.$error }"
-              @input="v$.confirmPassword.$touch()"
-              />
-              <button 
-                  type="button" 
-                  class="absolute inset-y-0 right-0 flex items-center justify-center w-10 text-gray-500 hover:text-gray-700"
-                  @click="showConfirmPassword = !showConfirmPassword"
-                >
-                <i 
-                  :class="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'" 
-                  class="fas"
-                ></i>              
-              </button>
-            </div>
-          <label class="label" v-if="v$.confirmPassword.$error">
-            <span class="label-text-alt text-error">
-              {{ v$.confirmPassword.$errors[0].$message }}
-            </span>
+          <label class="label">
+            <span class="label-text">Confirm new password</span>
           </label>
+          <div class="relative">
+            <input 
+            v-model="form.confirmPassword" 
+            :type="showConfirmPassword ? 'text' : 'password'" 
+            placeholder="••••••••" 
+            class="input input-bordered w-full"
+            :class="{ 'input-error': v$.confirmPassword.$error }"
+            @blur="v$.confirmPassword.$touch()"
+            />
+            <button 
+                type="button" 
+                class="absolute inset-y-0 right-0 flex items-center justify-center w-10 text-gray-500 hover:text-gray-700"
+                @click="showConfirmPassword = !showConfirmPassword"
+              >
+              <i 
+                :class="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'" 
+                class="fas"
+              ></i>              
+            </button>
+          </div>
+          <div class="min-h-[1.5rem]">
+            <label class="label py-0" v-if="v$.confirmPassword.$error">
+              <span class="label-text-alt text-error">
+                {{ v$.confirmPassword.$errors[0].$message }}
+              </span>
+            </label>
+          </div>
         </div>
         
         <div class="flex justify-center">
