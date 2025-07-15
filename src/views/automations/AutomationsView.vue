@@ -24,7 +24,7 @@
         <div>{{ automation.name }}</div>
       </div>
       <div class="flex items-center">
-        <input type="checkbox" :checked="automation.checked" class="toggle toggle-sm" :aria-label="'Change ' + automation.name + ' status'"/>
+        <input type="checkbox" :v-model="automation.checked" class="toggle toggle-sm" :aria-label="'Change ' + automation.name + ' status'"/>
       </div>
     </li>
   </ul>
