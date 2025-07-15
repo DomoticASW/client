@@ -47,14 +47,26 @@
           <label class="label">
             <span class="label-text">New password</span>
           </label>
-          <input 
-          v-model="form.password" 
-          type="password" 
-          placeholder="••••••••" 
-          class="input input-bordered w-full"
-          :class="{ 'input-error': v$.password.$error }"
-          @input="v$.password.$touch()"
-          />
+          <div class="relative">
+            <input 
+            v-model="form.password" 
+            :type="showPassword ? 'text' : 'password'" 
+            placeholder="••••••••" 
+            class="input input-bordered w-full"
+            :class="{ 'input-error': v$.password.$error }"
+            @input="v$.password.$touch()"
+            />
+            <button 
+              type="button" 
+              class="absolute inset-y-0 right-0 flex items-center justify-center w-10 text-gray-500 hover:text-gray-700"
+              @click="showPassword = !showPassword"
+            >
+              <i 
+                :class="showPassword ? 'fa-eye-slash' : 'fa-eye'" 
+                class="fas"
+              ></i>              
+            </button>
+          </div>
           <label class="label" v-if="v$.password.$error">
             <span class="label-text-alt text-error">
               {{ v$.password.$errors[0].$message }}
@@ -63,17 +75,29 @@
         </div>
         
         <div class="form-control">
-          <label class="label">
-            <span class="label-text">Confirm New password</span>
-          </label>
-          <input 
-          v-model="form.confirmPassword" 
-          type="password" 
-          placeholder="••••••••" 
-          class="input input-bordered w-full"
-          :class="{ 'input-error': v$.confirmPassword.$error }"
-          @input="v$.confirmPassword.$touch()"
-          />
+            <label class="label">
+              <span class="label-text">Confirm new password</span>
+            </label>
+            <div class="relative">
+              <input 
+              v-model="form.confirmPassword" 
+              :type="showConfirmPassword ? 'text' : 'password'" 
+              placeholder="••••••••" 
+              class="input input-bordered w-full"
+              :class="{ 'input-error': v$.confirmPassword.$error }"
+              @input="v$.confirmPassword.$touch()"
+              />
+              <button 
+                  type="button" 
+                  class="absolute inset-y-0 right-0 flex items-center justify-center w-10 text-gray-500 hover:text-gray-700"
+                  @click="showConfirmPassword = !showConfirmPassword"
+                >
+                <i 
+                  :class="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'" 
+                  class="fas"
+                ></i>              
+              </button>
+            </div>
           <label class="label" v-if="v$.confirmPassword.$error">
             <span class="label-text-alt text-error">
               {{ v$.confirmPassword.$errors[0].$message }}
@@ -123,6 +147,8 @@ export default defineComponent({
     const previousPassword = 'password';
     const form = reactive<RegisterForm>({ ...initialForm });
     const hasChanges = ref(false);
+    const showPassword = ref(false);
+    const showConfirmPassword = ref(false);
     const password = computed(() => form.password);
     const differentFromPrevious = (value: string) => value !== previousPassword;
     
@@ -143,8 +169,8 @@ export default defineComponent({
     };
     
     const v$ = useVuelidate(rules, form);
-    
-    return { form, v$, hasChanges };
+
+    return { form, v$, hasChanges, showPassword, showConfirmPassword };
   },
   methods: {
     handleSave(): void {
