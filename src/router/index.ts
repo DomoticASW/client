@@ -29,11 +29,90 @@ const router = createRouter({
           path: 'users-permissions',
           name: 'users-permissions',
           children: [
-            { path: '', component: () => import('../views/admin/users-permissions/UsersPermissionsView.vue'), },
-            { path: ':id', component: () => import('../views/admin/users-permissions/UserPermissionsView.vue'), },
+            {
+              path: '',
+              component: () => import('../views/admin/users-permissions/UsersPermissionsView.vue'),
+            },
+            {
+              path: ':id',
+              component: () => import('../views/admin/users-permissions/UserPermissionsView.vue'),
+            },
+          ],
+        },
+        {
+          path: 'manage-devices',
+          children: [
+            { path: '', name: 'manage-devices', component: () => import('../views/admin/manage-devices/ManageDevicesView.vue') },
+            { path: 'add-device', name: 'add-device', component: () => import('../views/admin/manage-devices/AddDeviceView.vue') }
           ]
         },
-      ]
+        {
+          path: 'automations-task-permissions',
+          name: 'automations-task-permissions',
+          children: [
+            {
+              path: '',
+              component: () =>
+                import(
+                  '../views/admin/automations-task-permissions/AutomationsAndTasksPermissionsView.vue'
+                ),
+            },
+            {
+              path: ':id',
+              component: () =>
+                import(
+                  '../views/admin/automations-task-permissions/AutomationAndTaskPermissionsView.vue'
+                ),
+            },
+          ]
+        },
+      ],
+    },
+    {
+      path: '/tasks',
+      name: 'tasks',
+      children: [
+        {
+          path: '',
+          component: () => import('../views/tasks/TasksView.vue'),
+        },
+        {
+          path: ':id',
+          children: [
+            {
+              path: '',
+              component: () => import('../views/tasks/TaskView.vue'),
+            },
+            {
+              path: 'edit',
+              component: () => import('../views/tasks/EditTaskView.vue'),
+            },
+          ],
+        },
+      ],
+    },
+    {
+      path: '/automations',
+      name: 'automations',
+      children: [
+        {
+          path: '',
+          component: () => import('../views/automations/AutomationsView.vue'),
+        },
+        {
+          path: ':id',
+          children: [
+            {
+              path: '',
+              component: () => import('../views/automations/AutomationView.vue'),
+            },
+            {
+              path: 'edit',
+              component: () => import('../views/automations/EditAutomationView.vue'),
+            },
+          ],
+        },
+      ],
     },
     {
       path: '/register',
