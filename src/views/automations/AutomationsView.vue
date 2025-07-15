@@ -13,7 +13,7 @@
 
   const automations = [
     Automation("Washing machine done", true),
-    Automation("Turn off lights when high sun brightness", false)
+    Automation("Turn off lights when high sun brightness", false),
   ]
 </script>
 
@@ -24,17 +24,19 @@
         <div>{{ automation.name }}</div>
       </div>
       <div class="flex items-center">
-        <input type="checkbox" :checked="automation.checked" class="checkbox checkbox-sm" :aria-label="'Change ' + automation.name + ' status'"/>
+        <input type="checkbox" :checked="automation.checked" class="toggle toggle-sm" :aria-label="'Change ' + automation.name + ' status'"/>
       </div>
     </li>
   </ul>
 
-  <div class="flex justify-end px-4 pb-4 items-end">
-    <button class="btn btn-circle btn-outline" type="button" aria-label="Create new automation">
-      <svg xmlns="http://www.w3.org/2000/svg" class="size-[1.2em]" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-      </svg>
-    </button>
+  <div class="px-4 pb-4 fixed bottom-0 w-[inherit]">
+    <div class="flex justify-end px-5">
+      <button class="btn btn-circle" type="button" aria-label="Create new automation">
+        <svg xmlns="http://www.w3.org/2000/svg" class="size-[1.2em]" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+        </svg>
+      </button>
+    </div>
   </div>
 </template>
 
