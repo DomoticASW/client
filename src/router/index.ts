@@ -64,6 +64,52 @@ const router = createRouter({
                   '../views/admin/automations-task-permissions/AutomationAndTaskPermissionsView.vue'
                 ),
             },
+          ]
+        },
+      ],
+    },
+    {
+      path: '/tasks',
+      name: 'tasks',
+      children: [
+        {
+          path: '',
+          component: () => import('../views/tasks/TasksView.vue'),
+        },
+        {
+          path: ':id',
+          children: [
+            {
+              path: '',
+              component: () => import('../views/tasks/TaskView.vue'),
+            },
+            {
+              path: 'edit',
+              component: () => import('../views/tasks/EditTaskView.vue'),
+            },
+          ],
+        },
+      ],
+    },
+    {
+      path: '/automations',
+      name: 'automations',
+      children: [
+        {
+          path: '',
+          component: () => import('../views/automations/AutomationsView.vue'),
+        },
+        {
+          path: ':id',
+          children: [
+            {
+              path: '',
+              component: () => import('../views/automations/AutomationView.vue'),
+            },
+            {
+              path: 'edit',
+              component: () => import('../views/automations/EditAutomationView.vue'),
+            },
           ],
         },
       ],
