@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import router from '@/router'
 import { computed, ref } from 'vue'
+import DeviceRowSkeleton from '@/components/admin/manage-devices/DeviceListSkeleton.vue'
 
 const props = defineProps({ id: { type: String, required: true } })
 
@@ -44,6 +45,7 @@ setTimeout(
       { id: '8', name: 'Lamp6' },
       { id: '9', name: 'Lamp7' },
     ]),
+  1500,
 )
 
 const devicesNotInGroup = computed(() => {
@@ -70,11 +72,11 @@ function deleteGroup() {
 
 <template>
   <div class="navbar flex justify-between">
-    <h1 class="text-2xl">{{ group?.name }}</h1>
+    <h1 class="text-2xl" :class="{ 'skeleton h-4 w-1/2': !group }">{{ group?.name }}</h1>
     <button class="btn btn-ghost text-error" @click="deleteGroup">Delete</button>
   </div>
-  <ul class="list">
-    <li v-for="d in group?.devices" v-bind:key="d.id" class="list-row">
+  <ul v-if="group" class="list">
+    <li v-for="d in group.devices" v-bind:key="d.id" class="list-row">
       <span class="fa-solid fa-microchip text-2xl self-center"></span>
       <div>
         {{ d.name }}
@@ -87,11 +89,14 @@ function deleteGroup() {
       ></button>
     </li>
   </ul>
+  <DeviceRowSkeleton v-else />
 
   <div class="divider"></div>
 
-  <h2 class="text-xl">Devices not in group</h2>
-  <ul class="list">
+  <h2 v-if="devices" class="text-xl">Devices not in group</h2>
+  <div v-else class="skeleton h-4 w-1/2"></div>
+
+  <ul v-if="devices" class="list">
     <li v-for="d in devicesNotInGroup" v-bind:key="d.id" class="list-row">
       <span class="fa-solid fa-microchip text-2xl self-center"></span>
       <div>
@@ -102,6 +107,7 @@ function deleteGroup() {
       <button class="btn btn-ghost fa-solid fa-add" @click="addDeviceToGroup(d.id)"></button>
     </li>
   </ul>
+  <DeviceRowSkeleton v-else :nRows="5" />
 </template>
 
 <style></style>
