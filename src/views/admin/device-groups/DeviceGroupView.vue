@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import router from '@/router'
 import { computed, ref } from 'vue'
 
 const props = defineProps({ id: { type: String, required: true } })
@@ -52,56 +53,55 @@ const devicesNotInGroup = computed(() => {
     )
   else return undefined
 })
-// const successAlertId = 'success_alert_id'
-// const successAlert = () => document.getElementById(successAlertId)!
-// function addDevice(id: string) {
-//   devices.value = devices.value.filter((d) => d.id != id)
-//   successAlert().classList.remove('opacity-0')
-//   setTimeout(() => successAlert().classList.add('opacity-0'), 2000)
-// }
+function removeDeviceFromGroup(deviceId: string) {
+  group.value!.devices = group.value!.devices.filter((d) => d.id != deviceId)
+}
+function addDeviceToGroup(deviceId: string) {
+  const device = devices.value!.find((d) => d.id == deviceId)
+  if (device) {
+    group.value!.devices.push(device)
+  }
+}
+function deleteGroup() {
+  // TODO: delete group
+  router.back()
+}
 </script>
 
 <template>
-  <div>
-    <div class="navbar flex justify-between">
-      <h1 class="text-2xl">{{ group?.name }}</h1>
-      <button class="btn btn-ghost text-error">Delete</button>
-    </div>
-    <ul class="list">
-      <li v-for="d in group?.devices" v-bind:key="d.id" class="list-row">
-        <span class="fa-solid fa-microchip text-2xl self-center"></span>
-        <div>
-          {{ d.name }}
-          <br />
-          <span class="text-xs">id: {{ d.id }}</span>
-        </div>
-        <button class="btn btn-ghost fa-solid fa-remove"></button>
-      </li>
-    </ul>
-
-    <div class="divider"></div>
-
-    <h2 class="text-xl">Devices not in group</h2>
-    <ul class="list">
-      <li v-for="d in devicesNotInGroup" v-bind:key="d.id" class="list-row">
-        <span class="fa-solid fa-microchip text-2xl self-center"></span>
-        <div>
-          {{ d.name }}
-          <br />
-          <span class="text-xs">id: {{ d.id }}</span>
-        </div>
-        <button class="btn btn-ghost fa-solid fa-add"></button>
-      </li>
-    </ul>
-    <!-- <div
-      :id="successAlertId"
-      role="alert"
-      class="alert alert-success fixed bottom-1 inset-x-1 opacity-0 transition-all duration-300"
-    >
-      <span class="fa-solid fa-circle-check fa-xl"></span>
-      Device added!
-    </div> -->
+  <div class="navbar flex justify-between">
+    <h1 class="text-2xl">{{ group?.name }}</h1>
+    <button class="btn btn-ghost text-error" @click="deleteGroup">Delete</button>
   </div>
+  <ul class="list">
+    <li v-for="d in group?.devices" v-bind:key="d.id" class="list-row">
+      <span class="fa-solid fa-microchip text-2xl self-center"></span>
+      <div>
+        {{ d.name }}
+        <br />
+        <span class="text-xs">id: {{ d.id }}</span>
+      </div>
+      <button
+        class="btn btn-ghost fa-solid fa-remove"
+        @click="removeDeviceFromGroup(d.id)"
+      ></button>
+    </li>
+  </ul>
+
+  <div class="divider"></div>
+
+  <h2 class="text-xl">Devices not in group</h2>
+  <ul class="list">
+    <li v-for="d in devicesNotInGroup" v-bind:key="d.id" class="list-row">
+      <span class="fa-solid fa-microchip text-2xl self-center"></span>
+      <div>
+        {{ d.name }}
+        <br />
+        <span class="text-xs">id: {{ d.id }}</span>
+      </div>
+      <button class="btn btn-ghost fa-solid fa-add" @click="addDeviceToGroup(d.id)"></button>
+    </li>
+  </ul>
 </template>
 
 <style></style>
