@@ -1,12 +1,14 @@
 <script setup lang="ts">
+import { useUserInfoStore } from '@/stores/user-info'
+import { authorizedRequest } from '@/utils'
+import DeviceListSkeleton from '@/components/admin/manage-devices/DeviceListSkeleton.vue'
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
-
-const groups = ref([
-  { id: '1', name: 'Kitchen' },
-  { id: '2', name: 'Livingroom' },
-  { id: '3', name: 'Bedroom' },
-])
+const userInfo = useUserInfoStore()
+const groups = ref<{ id: string; name: string }[] | undefined>(undefined)
+authorizedRequest('/api/deviceGroups', userInfo.token).then(({ json }) => {
+  groups.value = json as { id: string; name: string }[]
+})
 
 const groupEditing = ref<string | undefined>(undefined)
 const groupEditingName = ref<string | undefined>(undefined)
@@ -14,10 +16,12 @@ const groupEditingName = ref<string | undefined>(undefined)
 const editGroupModalId = 'edit_group_name_modal'
 const editGroupNameModal = () => document.getElementById(editGroupModalId) as HTMLDialogElement
 function startEditingGroup(id: string) {
-  const group = groups.value.find((g) => g.id == id)!
-  groupEditing.value = group.id
-  groupEditingName.value = group.name
-  editGroupNameModal().showModal()
+  const group = groups.value?.find((g) => g.id == id)
+  if (group) {
+    groupEditing.value = group.id
+    groupEditingName.value = group.name
+    editGroupNameModal().showModal()
+  }
 }
 function cancelEditingGroup() {
   groupEditing.value = undefined
@@ -25,8 +29,10 @@ function cancelEditingGroup() {
   editGroupNameModal().close()
 }
 function saveEditingGroup() {
-  groups.value.find((g) => g.id === groupEditing.value!)!.name = groupEditingName.value!
-  cancelEditingGroup()
+  if (groups.value) {
+    groups.value.find((g) => g.id === groupEditing.value!)!.name = groupEditingName.value!
+    cancelEditingGroup()
+  }
 }
 </script>
 
@@ -35,7 +41,7 @@ function saveEditingGroup() {
     <div class="navbar justify-between">
       <h1 class="text-2xl">Device groups</h1>
     </div>
-    <ul class="list">
+    <ul v-if="groups" class="list">
       <RouterLink
         v-for="g in groups"
         v-bind:key="g.id"
@@ -52,6 +58,7 @@ function saveEditingGroup() {
         </li>
       </RouterLink>
     </ul>
+    <DeviceListSkeleton v-else />
 
     <!-- Dialog for changing a group name -->
     <dialog :id="editGroupModalId" class="modal modal-bottom sm:modal-middle">
