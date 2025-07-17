@@ -1,27 +1,19 @@
 <script setup lang="ts">
+import {
+  Operator,
+  Type,
+  type ConstantInstruction,
+  type Enum,
+  type Instruction,
+  type TypeConstraints,
+  type CreateDevicePropertyConstantInstruction,
+  type IfInstruction,
+  type IfElseInstruction,
+  type DeviceActionInstruction,
+  type SendNotificationInstruction,
+} from '@/components/tasks-automations/types'
 import { ref } from 'vue'
-
-enum Operator {
-  GREATER,
-  GREATER_EQ,
-}
-
-interface TypeConstraints {
-  type: Type
-}
-
-interface Enum extends TypeConstraints {
-  values: Set<string>
-}
-
-enum Type {
-  IntType = 'IntType',
-  DoubleType = 'DoubleType',
-  BooleanType = 'BooleanType',
-  ColorType = 'ColorType',
-  StringType = 'StringType',
-  VoidType = 'VoidType',
-}
+import InstructionItem from '@/components/tasks-automations/InstructionItem.vue'
 
 function EmptyConstraint(type: Type): TypeConstraints {
   return {
@@ -58,61 +50,22 @@ const instructions = ref([
     ],
     [
       DeviceActionInstruction('Roomba', 'Stop', EmptyConstraint(Type.VoidType), undefined),
-      SendNotificationInstruction('Emma', 'Message to be sent'),
+      SendNotificationInstruction('Emma', 'The Roomba stopped'),
     ],
   ),
 ])
-
-type Instruction =
-  | ConstantInstruction
-  | IfInstruction
-  | DeviceActionInstruction
-  | SendNotificationInstruction
-
-interface ConstantInstruction {
-  name: string,
-  value: unknown
-}
-
-interface CreateDevicePropertyConstantInstruction extends ConstantInstruction {
-  deviceId: string
-  devicePropertyId: string
-}
-
-interface IfInstruction {
-  left: string
-  right: string
-  operator: Operator
-  then: Instruction[]
-}
-
-interface IfElseInstruction extends IfInstruction {
-  else: Instruction[]
-}
-
-interface DeviceActionInstruction {
-  deviceId: string
-  deviceActionId: string
-  typeConstraints: TypeConstraints
-  input: unknown
-}
-
-interface SendNotificationInstruction {
-  email: string
-  message: string
-}
 
 function CreateDevicePropertyConstantInstruction(
   deviceId: string,
   devicePropertyId: string,
   name: string,
-  value: unknown
+  value: unknown,
 ): CreateDevicePropertyConstantInstruction {
   return {
     deviceId: deviceId,
     devicePropertyId: devicePropertyId,
     name: name,
-    value: value
+    value: value,
   }
 }
 
@@ -170,64 +123,14 @@ function SendNotificationInstruction(email: string, message: string): SendNotifi
     message: message,
   }
 }
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isSendNotificationInstruction(o: any): o is SendNotificationInstruction {
-  return o &&
-    typeof o === 'object' &&
-    'email' in o && typeof o.email === 'string' &&
-    'message' in o && typeof o.message === 'string'
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isDeviceActionInstruction(o: any): o is DeviceActionInstruction {
-  return o &&
-    typeof o === 'object' &&
-    'deviceId' in o && typeof o.deviceId === 'string' &&
-    'deviceActionId' in o && typeof o.deviceActionId === 'string' &&
-    'input' in o
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isConstantInstruction(o: any): o is ConstantInstruction {
-  return o &&
-    typeof o === 'object' &&
-    'name' in o && typeof o.name === 'string' &&
-    'value' in o
-    && !isCreateDevicePropertyConstantInstruction(o) //Just to not have property constant ad constants, not needed with final code
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isCreateDevicePropertyConstantInstruction(o: any): o is CreateDevicePropertyConstantInstruction {
-  return o &&
-    typeof o === 'object' &&
-    'name' in o && typeof o.name === 'string' &&
-    'deviceId' in o && typeof o.deviceId === 'string' &&
-    'devicePropertyId' in o && typeof o.devicePropertyId === 'string'
-    && 'value' in o
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isIfInstruction(o: any): o is IfInstruction {
-  return o &&
-    typeof o === 'object' &&
-    'then' in o && Array.isArray(o.then)
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isIfElseInstruction(o: any): o is IfElseInstruction {
-  return isIfInstruction(o) &&
-    'else' in o && Array.isArray(o.else);
-}
-
 </script>
 
 <template>
-  <div v-for="instruction in instructions.entries()" :key="instruction[0]" class="card card-sm bg-neutral text-neutral-content m-2">
-    <div class="card-body text-sm">
-      
-    </div>
-  </div>
+  <InstructionItem
+    v-for="[key, instruction] in instructions.entries()"
+    :key="key"
+    :instruction="instruction"
+  />
 </template>
 
 <style></style>
