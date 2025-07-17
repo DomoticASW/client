@@ -77,10 +77,10 @@ const router = createRouter({
     },
     {
       path: '/tasks',
-      name: 'tasks',
       children: [
         {
           path: '',
+          name: 'tasks',
           component: () => import('../views/tasks/TasksView.vue'),
         },
         {
@@ -107,10 +107,10 @@ const router = createRouter({
     },
     {
       path: '/automations',
-      name: 'automations',
       children: [
         {
           path: '',
+          name: 'automations',
           component: () => import('../views/automations/AutomationsView.vue'),
         },
         {
