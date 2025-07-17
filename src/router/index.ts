@@ -123,10 +123,12 @@ const router = createRouter({
           children: [
             {
               path: '',
+              name: 'automation',
               component: () => import('../views/automations/AutomationView.vue'),
             },
             {
               path: 'edit',
+              name: 'edit-automation',
               component: () => import('../views/automations/EditAutomationView.vue'),
             },
           ],
