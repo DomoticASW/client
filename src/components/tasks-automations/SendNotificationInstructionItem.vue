@@ -1,6 +1,6 @@
 <template>
   <div :class="indent">
-    <div class="card card-sm bg-neutral text-neutral-content m-2">
+    <div class="card card-sm bg-neutral text-neutral-content my-2">
       <div class="card-body text-sm grid grid-cols-2 px-4">
         <p class="truncate">Send notification to</p>
         <p class="font-bold justify-self-center truncate">{{ instruction.email }}</p>

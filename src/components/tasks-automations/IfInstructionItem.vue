@@ -2,7 +2,7 @@
   <!-- If card -->
 
   <div :class="indent">
-    <div class="card bg-neutral text-neutral-content m-2 flex">
+    <div class="card bg-neutral text-neutral-content my-2">
       <div class="card-body text-sm grid grid-cols-2 px-4">
         <p>If</p>
         <p class="font-bold justify-self-center truncate">
@@ -23,7 +23,7 @@
   <!-- Else block -->
   <template v-if="'else' in instruction">
     <div :class="indent">
-      <div class="card bg-neutral text-neutral-content m-2 text-xs">
+      <div class="card bg-neutral text-neutral-content my-2 text-xs">
         <div class="card-body p-2">
           Else
         </div>
@@ -39,7 +39,7 @@
 
   <!-- Endif card -->
   <div :class="indent">
-    <div class="card bg-base-300 text-base-content m-2 text-xs">
+    <div class="card bg-base-300 text-base-content my-2 text-xs">
       <div class="card-body p-2">
         Endif
       </div>

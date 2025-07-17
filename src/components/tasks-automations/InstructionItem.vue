@@ -1,6 +1,30 @@
 <template>
-  <component
-    :is="getComponentForInstruction(instruction)"
+  <IfInstructionItem
+    v-if="isIfInstruction(instruction)"
+    :instruction="instruction"
+    :depth="depth ?? 0"
+    :indent="indentClass"
+  />
+  <ConstantInstructionItem
+    v-else-if="isConstantInstruction(instruction)"
+    :instruction="instruction"
+    :depth="depth ?? 0"
+    :indent="indentClass"
+  />
+  <CreateDevicePropertyConstantInstructionItem
+    v-else-if="isCreateDevicePropertyConstantInstruction(instruction)"
+    :instruction="instruction"
+    :depth="depth ?? 0"
+    :indent="indentClass"
+  />
+  <DeviceActionInstructionItem
+    v-else-if="isDeviceActionInstruction(instruction)"
+    :instruction="instruction"
+    :depth="depth ?? 0"
+    :indent="indentClass"
+  />
+  <SendNotificationInstructionItem
+    v-else-if="isSendNotificationInstruction(instruction)"
     :instruction="instruction"
     :depth="depth ?? 0"
     :indent="indentClass"
@@ -34,15 +58,6 @@ const depthLevel = props.depth ?? 0
 const marginByDepth = ['ml-0', 'ml-4', 'ml-8', 'ml-12', 'ml-16', 'ml-20', 'ml-24']
 
 const indentClass = marginByDepth[depthLevel]
-
-function getComponentForInstruction(instruction: Instruction) {
-  if (isCreateDevicePropertyConstantInstruction(instruction))
-    return CreateDevicePropertyConstantInstructionItem
-  if (isDeviceActionInstruction(instruction)) return DeviceActionInstructionItem
-  if (isIfInstruction(instruction)) return IfInstructionItem
-  if (isConstantInstruction(instruction)) return ConstantInstructionItem
-  if (isSendNotificationInstruction(instruction)) return SendNotificationInstructionItem
-}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isSendNotificationInstruction(o: any): o is SendNotificationInstruction {
