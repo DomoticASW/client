@@ -84,14 +84,21 @@ const router = createRouter({
           component: () => import('../views/tasks/TasksView.vue'),
         },
         {
+          path: 'add-task',
+          name: 'add-task',
+          component: () => import('../views/tasks/EditTaskView.vue'),
+        },
+        {
           path: ':id',
           children: [
             {
               path: '',
+              name: "task",
               component: () => import('../views/tasks/TaskView.vue'),
             },
             {
               path: 'edit',
+              name: "edit-task",
               component: () => import('../views/tasks/EditTaskView.vue'),
             },
           ],
@@ -105,6 +112,11 @@ const router = createRouter({
         {
           path: '',
           component: () => import('../views/automations/AutomationsView.vue'),
+        },
+        {
+          path: 'add-automation',
+          name: 'add-automation',
+          component: () => import('../views/automations/EditAutomationView.vue'),
         },
         {
           path: ':id',
