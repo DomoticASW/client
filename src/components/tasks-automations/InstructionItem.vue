@@ -2,32 +2,37 @@
   <IfInstructionItem
     v-if="isIfInstruction(instruction)"
     :instruction="instruction"
-    :depth="depth ?? 0"
+    :depth="depthLevel"
     :indent="indentClass"
+    :colors="colors"
   />
   <ConstantInstructionItem
     v-else-if="isConstantInstruction(instruction)"
     :instruction="instruction"
-    :depth="depth ?? 0"
+    :depth="depthLevel"
     :indent="indentClass"
+    :colors="colors"
   />
   <CreateDevicePropertyConstantInstructionItem
     v-else-if="isCreateDevicePropertyConstantInstruction(instruction)"
     :instruction="instruction"
-    :depth="depth ?? 0"
+    :depth="depthLevel"
     :indent="indentClass"
+    :colors="colors"
   />
   <DeviceActionInstructionItem
     v-else-if="isDeviceActionInstruction(instruction)"
     :instruction="instruction"
-    :depth="depth ?? 0"
+    :depth="depthLevel"
     :indent="indentClass"
+    :colors="colors"
   />
   <SendNotificationInstructionItem
     v-else-if="isSendNotificationInstruction(instruction)"
     :instruction="instruction"
-    :depth="depth ?? 0"
+    :depth="depthLevel"
     :indent="indentClass"
+    :colors="colors"
   />
 </template>
 
@@ -55,6 +60,7 @@ const props = defineProps<{
 }>()
 
 const depthLevel = props.depth ?? 0
+const colors = depthLevel % 2 == 0 ? 'bg-neutral text-neutral-content' : 'bg-neutral text-neutral-content'
 const marginByDepth = ['ml-0', 'ml-4', 'ml-8', 'ml-12', 'ml-16', 'ml-20', 'ml-24']
 
 const indentClass = marginByDepth[depthLevel]

@@ -1,6 +1,6 @@
 <template>
 <div :class="indent">
-  <div class="card card-sm bg-neutral text-neutral-content my-2">
+  <div :class="['card card-sm my-2', colors]">
     <div class="card-body text-sm grid grid-cols-2 px-4">
       <p class="truncate">{{ instruction.deviceId }}</p>
       <p class="font-bold justify-self-center truncate">{{ instruction.name }}</p>
@@ -19,6 +19,7 @@ import type { CreateDevicePropertyConstantInstruction } from './types.js'
 defineProps<{
   instruction: CreateDevicePropertyConstantInstruction,
   indent: string,
-  depth: number
+  depth: number,
+  colors: string
 }>()
 </script>
