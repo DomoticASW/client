@@ -16,9 +16,10 @@
         <p class="font-bold text-center truncate">{{ instruction.name }}</p>
         <p class="text-xs truncate">{{ instruction.devicePropertyId }}</p>
         <p class="text-center truncate">{{ instruction.value }}</p>
-        <template v-if="moveInstruction !== undefined">
+        <template v-if="removeInstruction !== undefined">
           <button
             class="btn btn-square fa-solid fa-xmark row-start-1 col-start-3 row-span-2 place-self-center"
+            @click="removeInstruction(instruction)"
           ></button>
         </template>
       </div>
@@ -35,5 +36,6 @@ defineProps<{
   depth: number
   colors: string
   moveInstruction?: (instr: Instruction, dir: 'up' | 'down') => void
+  removeInstruction?: (instr: Instruction) => void
 }>()
 </script>

@@ -19,9 +19,10 @@
           <p class="truncate col-span-2">{{ instruction.left }}</p>
           <p class="truncate">{{ operatorSymbol }}</p>
           <p class="truncate col-span-2">{{ instruction.right }}</p>
-          <template v-if="moveInstruction !== undefined">
+          <template v-if="removeInstruction !== undefined">
             <button
               class="btn btn-square fa-solid fa-xmark ml-4 row-start-1 col-start-6 place-self-center"
+              @click="removeInstruction(instruction)"
             ></button>
           </template>
         </div>
@@ -36,6 +37,7 @@
     :instruction="ins"
     :depth="(depth ?? 0) + 1"
     :moveInstruction="moveInstruction"
+    :removeInstruction="removeInstruction"
   />
 
   <!-- Else block -->
@@ -51,6 +53,7 @@
       :instruction="ins"
       :depth="(depth ?? 0) + 1"
       :moveInstruction="moveInstruction"
+      :removeInstruction="removeInstruction"
     />
   </template>
 
@@ -72,6 +75,7 @@ const props = defineProps<{
   depth: number
   colors: string
   moveInstruction?: (instr: Instruction, dir: 'up' | 'down') => void
+  removeInstruction?: (instr: Instruction) => void
 }>()
 
 const operatorSymbol = props.instruction.operator === Operator.GREATER ? '>' : '>='

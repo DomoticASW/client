@@ -4,12 +4,37 @@ import InstructionItem from './InstructionItem.vue'
 
 const props = defineProps<{ instructions: Instruction[] }>()
 
-function moveInstruction(instr: Instruction, dir: 'up' | 'down') {
+function removeInstruction(target: Instruction) {
+  function recursiveRemove(instructions: Instruction[]): boolean {
+    const idx = instructions.indexOf(target)
+
+    if (idx !== -1) {
+      instructions.splice(idx, 1)
+      return true
+    } else {
+      for (let i = 0; i < instructions.length; i++) {
+        const instruction = instructions[i]
+        if (isIfInstruction(instruction)) {
+          if (!recursiveRemove(instruction.then)) {
+            if (isIfElseInstruction(instruction)) return recursiveRemove(instruction.else)
+          } else {
+            return true
+          }
+        }
+      }
+      return false
+    }
+  }
+
+  recursiveRemove(props.instructions)
+}
+
+function moveInstruction(target: Instruction, dir: 'up' | 'down') {
   function recursiveMove(
     instructions: Instruction[],
     branch: 'root' | 'then' | 'else',
   ): Instruction | undefined {
-    const idx = instructions.indexOf(instr)
+    const idx = instructions.indexOf(target)
 
     // === CASE 1: Instruction found in current array ===
     if (idx !== -1) {
@@ -119,5 +144,6 @@ function moveInstruction(instr: Instruction, dir: 'up' | 'down') {
     :instruction="instruction"
     :depth="0"
     :moveInstruction="moveInstruction"
+    :removeInstruction="removeInstruction"
   />
 </template>

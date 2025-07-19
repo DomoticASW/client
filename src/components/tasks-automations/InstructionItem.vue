@@ -6,6 +6,7 @@
     :indent="indentClass"
     :colors="colors"
     :moveInstruction="moveInstruction"
+    :removeInstruction="removeInstruction"
   />
   <ConstantInstructionItem
     v-else-if="isConstantInstruction(instruction)"
@@ -14,6 +15,7 @@
     :indent="indentClass"
     :colors="colors"
     :moveInstruction="moveInstruction"
+    :removeInstruction="removeInstruction"
   />
   <CreateDevicePropertyConstantInstructionItem
     v-else-if="isCreateDevicePropertyConstantInstruction(instruction)"
@@ -22,6 +24,7 @@
     :indent="indentClass"
     :colors="colors"
     :moveInstruction="moveInstruction"
+    :removeInstruction="removeInstruction"
   />
   <DeviceActionInstructionItem
     v-else-if="isDeviceActionInstruction(instruction)"
@@ -30,6 +33,7 @@
     :indent="indentClass"
     :colors="colors"
     :moveInstruction="moveInstruction"
+    :removeInstruction="removeInstruction"
   />
   <SendNotificationInstructionItem
     v-else-if="isSendNotificationInstruction(instruction)"
@@ -38,6 +42,7 @@
     :indent="indentClass"
     :colors="colors"
     :moveInstruction="moveInstruction"
+    :removeInstruction="removeInstruction"
   />
 </template>
 
@@ -63,6 +68,7 @@ const props = defineProps<{
   instruction: Instruction
   depth?: number // Depth for indentation
   moveInstruction?: (instr: Instruction, dir: 'up' | 'down') => void
+  removeInstruction?: (instr: Instruction) => void
 }>()
 
 const depthLevel = props.depth ?? 0
