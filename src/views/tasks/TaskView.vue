@@ -1,6 +1,6 @@
 <script setup lang="ts">
-  import InstructionItem from '@/components/tasks-automations/InstructionItem.vue'
-  import { instructions } from '@/components/tasks-automations/example';
+import InstructionItem from '@/components/tasks-automations/InstructionItem.vue'
+import { instructions } from '@/components/tasks-automations/example'
 </script>
 
 <template>

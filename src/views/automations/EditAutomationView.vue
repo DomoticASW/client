@@ -16,11 +16,7 @@ import Trigger from '@/components/tasks-automations/TriggerComponent.vue'
   </div>
   <hr class="m-4" />
   <h1 class="text-xl">Trigger</h1>
-  <div class="grid grid-cols-2 p-4 justify-items-center" v-if="$route.params.id === undefined">
-    <button class="btn btn-neutral w-50" type="button">Device Event</button>
-    <button class="btn btn-neutral w-50" type="button">Period</button>
-  </div>
-  <Trigger v-if="$route.params.id !== undefined" :edit="true" />
+  <Trigger :edit="true" />
   <hr class="m-4" />
   <h1 class="text-xl">Actions</h1>
   <!-- instructions need to be taken from the server when loading the page, if adding a new automation it is not needed (v-if already doing it) -->

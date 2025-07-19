@@ -5,10 +5,7 @@ import { RouterView } from 'vue-router'
 <template>
   <div class="flex justify-center bg-base-100">
     <div class="p-4 min-h-screen w-full max-w-xl">
-        <RouterView />
+      <RouterView />
     </div>
   </div>
 </template>
-
-<style>
-</style>

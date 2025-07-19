@@ -27,7 +27,7 @@ export type Instruction =
   | SendNotificationInstruction
 
 export interface ConstantInstruction {
-  name: string,
+  name: string
   value: unknown
 }
 

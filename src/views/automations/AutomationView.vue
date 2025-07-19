@@ -6,7 +6,7 @@ import Trigger from '@/components/tasks-automations/TriggerComponent.vue'
 
 <template>
   <h1 class="text-xl">Trigger</h1>
-  <Trigger :edit="false"/>
+  <Trigger :edit="false" />
   <hr class="m-4" />
   <h1 class="text-xl">Actions</h1>
   <InstructionItem
