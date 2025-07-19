@@ -23,7 +23,7 @@
     </RouterLink>
   </ul>
 
-  <AddButton name="add-task"></AddButton>
+  <AddButton name="add-task">ss</AddButton>
 </template>
 
 <style></style>

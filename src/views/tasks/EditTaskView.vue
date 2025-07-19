@@ -4,11 +4,12 @@
 </script>
 
 <template>
-  <fieldset class="fieldset mx-6">
-    <legend class="fieldset-legend text-base">Task name</legend>
-    <input type="text" placeholder="Task name" class="input w-full" :value="$route.params.id"/> <!-- TODO: put name and not id (finding the task from the server) -->
-  </fieldset>
+  <div class="mx-6">
+    <!-- TODO: put name and not id (finding the task from the server) -->
+    <input type="text" placeholder="Task name" class="input w-full" :value="$route.params.id != undefined ? $route.params.id : ''"/>
+  </div>
   <hr class="m-4" />
-  <InstructionReorder :instructions="instructions"/>
+  <!-- instructions need to be taken from the server when loading the page, if adding a new task it is not needed (v-if already doing it) -->
+  <InstructionReorder :instructions="instructions" v-if="$route.params.id != undefined"/>
   <div class="pb-4"></div>
 </template>
