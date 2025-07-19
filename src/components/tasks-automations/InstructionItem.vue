@@ -1,8 +1,4 @@
 <template>
-  <div v-if="moveInstruction != undefined" class="flex space-x-1">
-    <button class="btn btn-xs btn-outline" @click="moveInstruction(instruction, 'up')">⬆️</button>
-    <button class="btn btn-xs btn-outline" @click="moveInstruction(instruction, 'down')">⬇️</button>
-  </div>
   <IfInstructionItem
     v-if="isIfInstruction(instruction)"
     :instruction="instruction"
@@ -17,6 +13,7 @@
     :depth="depthLevel"
     :indent="indentClass"
     :colors="colors"
+    :moveInstruction="moveInstruction"
   />
   <CreateDevicePropertyConstantInstructionItem
     v-else-if="isCreateDevicePropertyConstantInstruction(instruction)"
@@ -24,6 +21,7 @@
     :depth="depthLevel"
     :indent="indentClass"
     :colors="colors"
+    :moveInstruction="moveInstruction"
   />
   <DeviceActionInstructionItem
     v-else-if="isDeviceActionInstruction(instruction)"
@@ -31,6 +29,7 @@
     :depth="depthLevel"
     :indent="indentClass"
     :colors="colors"
+    :moveInstruction="moveInstruction"
   />
   <SendNotificationInstructionItem
     v-else-if="isSendNotificationInstruction(instruction)"
@@ -38,6 +37,7 @@
     :depth="depthLevel"
     :indent="indentClass"
     :colors="colors"
+    :moveInstruction="moveInstruction"
   />
 </template>
 
