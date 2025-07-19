@@ -2,3 +2,9 @@
 @import "tailwindcss";
 
 @plugin "daisyui";
+
+/*
+{
+  themes: nord or lofi --default, business --prefersdark;
+}
+*/

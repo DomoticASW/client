@@ -5,8 +5,8 @@
     <div :class="['card card-sm my-2', colors]">
       <div class="card-body text-base grid grid-cols-4 px-4">
         <template v-if="moveInstruction != undefined">
-          <button class="btn btn-xs btn-shadow fa-solid fa-angle-up w-10 col-end-1" @click="moveInstruction(instruction, 'up')"></button>
-          <button class="btn btn-xs btn-shadow fa-solid fa-angle-down w-10 row-start-2" @click="moveInstruction(instruction, 'down')"></button>
+          <button class="btn btn-xs btn-square fa-solid fa-angle-up col-end-1" @click="moveInstruction(instruction, 'up')"></button>
+          <button class="btn btn-xs btn-square fa-solid fa-angle-down row-start-2" @click="moveInstruction(instruction, 'down')"></button>
         </template>
         <p>If</p>
         <div class="font-bold grid grid-cols-5 col-span-3">

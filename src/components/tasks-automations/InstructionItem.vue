@@ -66,7 +66,7 @@ const props = defineProps<{
 }>()
 
 const depthLevel = props.depth ?? 0
-const colors = depthLevel % 2 == 0 ? 'bg-neutral text-neutral-content' : 'bg-neutral text-neutral-content'
+const colors = depthLevel % 2 == 0 ? 'bg-secondary/70 text-secondary-content' : 'bg-secondary/70 text-secondary-content'
 const marginByDepth = ['ml-0', 'ml-4', 'ml-8', 'ml-12', 'ml-16', 'ml-20', 'ml-24']
 
 const indentClass = marginByDepth[depthLevel]
