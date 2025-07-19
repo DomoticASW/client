@@ -47,6 +47,13 @@ const router = createRouter({
           ]
         },
         {
+          path: 'device-groups',
+          children: [
+            { path: '', name: 'device-groups', component: () => import('../views/admin/device-groups/DeviceGroupsView.vue') },
+            { path: ':id', name: 'device-group', component: () => import('../views/admin/device-groups/DeviceGroupView.vue') },
+          ]
+        },
+        {
           path: 'automations-task-permissions',
           name: 'automations-task-permissions',
           children: [
