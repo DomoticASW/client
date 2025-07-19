@@ -6,38 +6,40 @@
           <h1 class="card-title text-3xl font-bold">Welcome back!</h1>
         </div>
 
-        <form @submit.prevent="handleLogin" class="w-full">
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">Email</span>
-            </label>
+      <form @submit.prevent="handleLogin" class="w-full">
+
+        <div class="form-control">
+          <span class="label-text">Email</span><br>
+          <label class="input validator w-full">
+            <i class="fa-regular fa-envelope opacity-50"></i>
             <input 
               v-model="form.email" 
               type="email" 
               placeholder="your@email.com" 
-              class="input input-bordered w-full"
+              name="email"
               :class="{ 'input-error': v$.email.$error }"
               @blur="v$.email.$touch()"
             />
+          </label>
             <div class="min-h-[1.5rem]">
-              <label class="label py-0" v-if="v$.email.$error">
-                <span class="label-text-alt text-error">
-                  {{ v$.email.$errors[0].$message }}
-                </span>
-              </label>
-            </div>
-          </div>
-          
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">Password</span>
+            <label class="label py-0" v-if="v$.email.$error">
+              <span class="label-text-alt text-error">
+                {{ v$.email.$errors[0].$message }}
+              </span>
             </label>
-            <div class="relative">
+          </div>
+        </div>
+          
+        <div class="form-control">
+          <span class="label-text">Password</span>
+          <div class="relative">
+            <label class="input validator w-full">
+              <i class="fa-solid fa-key opacity-50"></i>
               <input 
-                v-model="form.password"
+                v-model="form.password" 
                 :type="showPassword ? 'text' : 'password'" 
-                placeholder="••••••••" 
-                class="input input-bordered w-full"
+                placeholder="••••••••"
+                name="password"
                 :class="{ 'input-error': v$.password.$error }"
                 @blur="v$.password.$touch()"
               />
@@ -51,15 +53,16 @@
                   class="fas"
                 ></i>              
               </button>
-            </div>
-            <div class="min-h-[1.5rem]">
-              <label class="label py-0" v-if="v$.password.$error">
-                <span class="label-text-alt text-error">
-                  {{ v$.password.$errors[0].$message }}
-                </span>
-              </label>
-            </div>
+            </label>
           </div>
+          <div class="min-h-[1.5rem]">
+            <label class="label py-0" v-if="v$.password.$error">
+              <span class="label-text-alt text-error">
+                {{ v$.password.$errors[0].$message }}
+              </span>
+            </label>
+          </div>
+        </div>
           
           <div class="flex justify-center">
             <div class="form-control mb-6">
@@ -79,7 +82,7 @@
         
         <div class="text-center">
           <p class="text-sm">Don't have an account?</p>
-          <router-link to="/register" class="link link-primary text-sm">
+          <router-link to="/signin" class="link link-primary text-sm">
             Sign up
           </router-link>
         </div>
