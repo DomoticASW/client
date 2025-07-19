@@ -18,6 +18,7 @@
     :key="'then-' + i"
     :instruction="ins"
     :depth="(depth ?? 0) + 1"
+    :moveInstruction="moveInstruction"
   />
 
   <!-- Else block -->
@@ -34,6 +35,7 @@
       :key="'else-' + i"
       :instruction="ins"
       :depth="(depth ?? 0) + 1"
+      :moveInstruction="moveInstruction"
     />
   </template>
 
@@ -48,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-import { Operator, type IfElseInstruction, type IfInstruction } from './types.js'
+import { Operator, type IfElseInstruction, type IfInstruction, type Instruction } from './types.js'
 import InstructionItem from './InstructionItem.vue'
 
 const props = defineProps<{
@@ -56,6 +58,7 @@ const props = defineProps<{
   indent: string,
   depth: number,
   colors: string
+  moveInstruction?: (instr: Instruction, dir: 'up' | 'down') => void
 }>()
 
 const operatorSymbol = props.instruction.operator === Operator.GREATER ? '>' : '>='
