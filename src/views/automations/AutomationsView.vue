@@ -2,25 +2,25 @@
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import AddButton from '@/components/AddButton.vue'
+import { authorizedRequest } from '@/utils'
+import { useUserInfoStore } from '@/stores/user-info'
 
-interface Automation {
-  id: string
-  name: string
-  checked: boolean
+const userInfo = useUserInfoStore()
+
+const automations = ref<{ id: string; name: string; enabled: boolean }[] | undefined>(undefined)
+
+authorizedRequest('/api/automations', userInfo.token).then(({ json }) => {
+  automations.value = json as { id: string; name: string; enabled: boolean }[]
+})
+
+function toggleAutomation(automation: { id: string; name: string; enabled: boolean }) {
+  authorizedRequest('/api/automations/' + automation.id, userInfo.token, {
+    method: 'POST',
+    body: JSON.stringify({
+      enable: automation.enabled,
+    }),
+  })
 }
-
-function Automation(id: string, name: string, checked: boolean): Automation {
-  return {
-    id,
-    name,
-    checked,
-  }
-}
-
-const automations = ref([
-  Automation('1', 'Washing machine done', true),
-  Automation('2', 'Turn off lights when high sun brightness', false),
-])
 </script>
 
 <template>
@@ -37,9 +37,11 @@ const automations = ref([
         <div class="flex items-center">
           <input
             type="checkbox"
-            v-model="automation.checked"
+            v-model="automation.enabled"
             class="toggle toggle-sm"
             :aria-label="'Change ' + automation.name + ' status'"
+            @click.stop
+            @change="toggleAutomation(automation)"
           />
         </div>
       </li>

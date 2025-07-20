@@ -2,17 +2,23 @@
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import AddButton from '@/components/AddButton.vue'
+import { authorizedRequest } from '@/utils'
+import { useUserInfoStore } from '@/stores/user-info'
 
-const tasks = ref([
-  { id: '1', name: 'Relaxing lights' },
-  { id: '2', name: 'Start Roomba' },
-  { id: '3', name: 'Close windows' },
-  { id: '4', name: "Play music (Emma's room)" },
-])
+const userInfo = useUserInfoStore()
+
+const tasks = ref<{id: string, name: string}[] | undefined>(undefined)
+
+authorizedRequest('/api/tasks', userInfo.token).then(({json}) => {
+  tasks.value = json as {id: string, name: string}[]
+  //console.log(json)
+})
+.catch(e => console.log(e))
+
 </script>
 
 <template>
-  <ul class="list rounded-box">
+  <ul class="list rounded-box" v-if="tasks">
     <RouterLink
       v-for="task in tasks"
       :key="task.id"
