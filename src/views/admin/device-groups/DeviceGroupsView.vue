@@ -1,14 +1,19 @@
 <script setup lang="ts">
-import { useUserInfoStore } from '@/stores/user-info'
-import { authorizedRequest } from '@/utils'
-import DeviceListSkeleton from '@/components/admin/manage-devices/DeviceListSkeleton.vue'
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useUserInfoStore } from '@/stores/user-info'
+import { useLoadingOverlayStore } from '@/stores/loading-overlay'
+import { authorizedRequest, type ServerError } from '@/utils'
+import DeviceListSkeleton from '@/components/admin/manage-devices/DeviceListSkeleton.vue'
 const userInfo = useUserInfoStore()
+const loadingOverlay = useLoadingOverlayStore()
 const groups = ref<{ id: string; name: string }[] | undefined>(undefined)
-authorizedRequest('/api/deviceGroups', userInfo.token).then(({ json }) => {
-  groups.value = json as { id: string; name: string }[]
-})
+authorizedRequest('/api/deviceGroups', userInfo.token)
+  .then(({ json }) => {
+    groups.value = json as { id: string; name: string }[]
+  })
+  // TODO: present error to the user
+  .catch((e) => console.log(e))
 
 const groupEditing = ref<string | undefined>(undefined)
 const groupEditingName = ref<string | undefined>(undefined)
@@ -28,10 +33,27 @@ function cancelEditingGroup() {
   groupEditingName.value = undefined
   editGroupNameModal().close()
 }
-function saveEditingGroup() {
-  if (groups.value) {
-    groups.value.find((g) => g.id === groupEditing.value!)!.name = groupEditingName.value!
-    cancelEditingGroup()
+async function saveEditingGroup() {
+  const id = groupEditing.value
+  const newName = groupEditingName.value
+  if (groups.value && id && newName != undefined) {
+    try {
+      loadingOverlay.startLoading()
+      await authorizedRequest(`/api/deviceGroups/${id}`, userInfo.token, {
+        method: 'POST',
+        body: JSON.stringify({ name: newName }),
+      })
+      const group = groups.value.find((g) => g.id === id)
+      if (group) {
+        group.name = newName
+      }
+    } catch (e) {
+      // TODO: present error to the user
+      console.log((e as ServerError).message)
+    } finally {
+      cancelEditingGroup()
+      loadingOverlay.stopLoading()
+    }
   }
 }
 </script>
