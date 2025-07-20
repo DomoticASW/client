@@ -31,10 +31,12 @@ const router = createRouter({
           children: [
             {
               path: '',
+              name: 'users-permissions',
               component: () => import('../views/admin/users-permissions/UsersPermissionsView.vue'),
             },
             {
               path: ':id',
+              name: 'user-permission-id',
               component: () => import('../views/admin/users-permissions/UserPermissionsView.vue'),
             },
           ],
@@ -42,16 +44,32 @@ const router = createRouter({
         {
           path: 'manage-devices',
           children: [
-            { path: '', name: 'manage-devices', component: () => import('../views/admin/manage-devices/ManageDevicesView.vue') },
-            { path: 'add-device', name: 'add-device', component: () => import('../views/admin/manage-devices/AddDeviceView.vue') }
-          ]
+            {
+              path: '',
+              name: 'manage-devices',
+              component: () => import('../views/admin/manage-devices/ManageDevicesView.vue'),
+            },
+            {
+              path: 'add-device',
+              name: 'add-device',
+              component: () => import('../views/admin/manage-devices/AddDeviceView.vue'),
+            },
+          ],
         },
         {
           path: 'device-groups',
           children: [
-            { path: '', name: 'device-groups', component: () => import('../views/admin/device-groups/DeviceGroupsView.vue') },
-            { path: ':id', name: 'device-group', component: () => import('../views/admin/device-groups/DeviceGroupView.vue') },
-          ]
+            {
+              path: '',
+              name: 'device-groups',
+              component: () => import('../views/admin/device-groups/DeviceGroupsView.vue'),
+            },
+            {
+              path: ':id',
+              name: 'device-group',
+              component: () => import('../views/admin/device-groups/DeviceGroupView.vue'),
+            },
+          ],
         },
         {
           path: 'automations-task-permissions',
@@ -71,7 +89,7 @@ const router = createRouter({
                   '../views/admin/automations-task-permissions/AutomationAndTaskPermissionsView.vue'
                 ),
             },
-          ]
+          ],
         },
       ],
     },
@@ -135,7 +153,7 @@ const router = createRouter({
       path: '/settings',
       name: 'settings',
       component: () => import('../views/SettingsView.vue'),
-    }
+    },
   ],
 })
 
