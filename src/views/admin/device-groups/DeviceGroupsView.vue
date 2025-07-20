@@ -5,13 +5,12 @@ import { useUserInfoStore } from '@/stores/user-info'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import { authorizedRequest, type ServerError } from '@/utils'
 import DeviceListSkeleton from '@/components/admin/manage-devices/DeviceListSkeleton.vue'
+import type { DeviceGroup } from '@/model/devices-management/DeviceGroup'
 const userInfo = useUserInfoStore()
 const loadingOverlay = useLoadingOverlayStore()
-const groups = ref<{ id: string; name: string }[] | undefined>(undefined)
+const groups = ref<DeviceGroup[] | undefined>(undefined)
 authorizedRequest('/api/deviceGroups', userInfo.token)
-  .then(({ json }) => {
-    groups.value = json as { id: string; name: string }[]
-  })
+  .then(({ json }) => (groups.value = json as DeviceGroup[]))
   // TODO: present error to the user
   .catch((e) => console.log(e))
 

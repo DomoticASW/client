@@ -2,18 +2,10 @@
 import router from '@/router'
 import { computed, ref } from 'vue'
 import DeviceRowSkeleton from '@/components/admin/manage-devices/DeviceListSkeleton.vue'
+import type { DeviceGroup } from '@/model/devices-management/DeviceGroup'
+import type { Device } from '@/model/devices-management/Device'
 
 const props = defineProps({ id: { type: String, required: true } })
-
-interface Device {
-  id: string
-  name: string
-}
-interface DeviceGroup {
-  id: string
-  name: string
-  devices: Device[]
-}
 
 const group = ref<DeviceGroup | undefined>(undefined)
 // TODO: call the sever
