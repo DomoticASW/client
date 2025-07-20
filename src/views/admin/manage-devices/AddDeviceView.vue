@@ -1,29 +1,47 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import DeviceListSkeleton from '@/components/admin/manage-devices/DeviceListSkeleton.vue'
+import type { Device } from '@/model/devices-management/Device'
+import type { DiscoveredDevice } from '@/model/devices-management/DiscoveredDevice'
+import { useLoadingOverlayStore } from '@/stores/loading-overlay'
+import { useUserInfoStore } from '@/stores/user-info'
+import { authorizedRequest } from '@/utils'
+import { onMounted, ref } from 'vue'
+const userInfo = useUserInfoStore()
+const loadingOverlay = useLoadingOverlayStore()
+const devices = ref<DiscoveredDevice[] | undefined>()
 
-const devices = ref([
-  { id: '1', name: 'Roomba' },
-  { id: '2', name: 'Roomba' },
-  { id: '3', name: 'Roomba' },
-  { id: '4', name: 'Roomba' },
-  { id: '5', name: 'Roomba' },
-  { id: '6', name: 'Thermometer' },
-  { id: '7', name: 'Lamp' },
-  { id: '7', name: 'Thermometer' },
-  { id: '8', name: 'Lamp' },
-  { id: '9', name: 'Thermometer' },
-  { id: '10', name: 'Lamp' },
-  { id: '11', name: 'Thermometer' },
-  { id: '12', name: 'Thermometer' },
-  { id: '13', name: 'Lamp' },
-])
 const successAlertId = 'success_alert_id'
 const successAlert = () => document.getElementById(successAlertId)!
-function addDevice(id: string) {
-  devices.value = devices.value.filter((d) => d.id != id)
-  successAlert().classList.remove('opacity-0')
-  setTimeout(() => successAlert().classList.add('opacity-0'), 2000)
+async function addDevice(id: string) {
+  const deviceToAdd = devices.value!.find((d) => d.id == id)!
+  const host = deviceToAdd.address.host
+  const port = deviceToAdd.address.port
+  try {
+    loadingOverlay.startLoading()
+    await authorizedRequest('/api/devices', userInfo.token, {
+      method: 'POST',
+      body: JSON.stringify({ deviceAddress: { host, port } }),
+    })
+    devices.value = devices.value!.filter((d) => d.id != id)
+    successAlert().classList.remove('opacity-0')
+    setTimeout(() => successAlert().classList.add('opacity-0'), 2000)
+  } catch (e) {
+    // TODO: present error to the user
+    console.log(e)
+  } finally {
+    loadingOverlay.stopLoading()
+  }
 }
+
+onMounted(async () => {
+  try {
+    const { json } = await authorizedRequest('/api/discovered-devices', userInfo.token)
+    devices.value = json as Device[]
+  } catch (e) {
+    // TODO: present error to the user
+    console.log(e)
+  }
+})
 </script>
 
 <template>
@@ -31,7 +49,7 @@ function addDevice(id: string) {
     <div class="navbar">
       <h1 class="text-2xl">Add device</h1>
     </div>
-    <ul class="list">
+    <ul v-if="devices" class="list">
       <li v-for="d in devices" v-bind:key="d.id" class="list-row">
         <span class="fa-solid fa-microchip text-2xl self-center"></span>
         <div>
@@ -42,6 +60,7 @@ function addDevice(id: string) {
         <button class="btn btn-ghost fa-solid fa-plus" v-on:click="addDevice(d.id)"></button>
       </li>
     </ul>
+    <DeviceListSkeleton v-else />
     <div
       :id="successAlertId"
       role="alert"
