@@ -39,8 +39,28 @@ function cancelEditingDevice() {
   deviceEditingName.value = undefined
   editDeviceNameModal().close()
 }
-function saveEditingDevice() {
-  devices.value!.find((d) => d.id === deviceEditing.value!)!.name = deviceEditingName.value!
+async function saveEditingDevice() {
+  const id = deviceEditing.value
+  const newName = deviceEditingName.value
+  if (devices.value && id && newName != undefined) {
+    try {
+      loadingOverlay.startLoading()
+      await authorizedRequest(`/api/devices/${id}`, userInfo.token, {
+        method: 'POST',
+        body: JSON.stringify({ name: newName }),
+      })
+      const device = devices.value.find((g) => g.id === id)
+      if (device) {
+        device.name = newName
+      }
+    } catch (e) {
+      // TODO: present error to the user
+      console.log(e)
+    } finally {
+      cancelEditingDevice()
+      loadingOverlay.stopLoading()
+    }
+  }
   cancelEditingDevice()
 }
 
