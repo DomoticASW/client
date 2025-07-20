@@ -31,31 +31,49 @@ const devicesNotInGroup = computed(() => {
     )
   else return undefined
 })
-function removeDeviceFromGroup(deviceId: string) {
-  authorizedRequest(`/api/deviceGroups/${props.id}/device/${deviceId}`, userInfo.token, {
-    method: 'DELETE',
-  })
+async function removeDeviceFromGroup(deviceId: string) {
+  try {
+    loadingOverlay.startLoading()
+    await authorizedRequest(`/api/deviceGroups/${props.id}/device/${deviceId}`, userInfo.token, {
+      method: 'DELETE',
+    })
+    group.value!.devices = group.value!.devices.filter((d) => d.id != deviceId)
+  } catch (e) {
     // TODO: present error to the user
-    .catch((e) => console.log(e))
-  // TODO: loading
-  group.value!.devices = group.value!.devices.filter((d) => d.id != deviceId)
-}
-function addDeviceToGroup(deviceId: string) {
-  authorizedRequest(`/api/deviceGroups/${props.id}/device`, userInfo.token, {
-    method: 'POST',
-    body: JSON.stringify({ deviceId }),
-  })
-    // TODO: present error to the user
-    .catch((e) => console.log(e))
-  // TODO: loading
-  const device = devices.value!.find((d) => d.id == deviceId)
-  if (device) {
-    group.value!.devices.push(device)
+    console.log(e)
+  } finally {
+    loadingOverlay.stopLoading()
   }
 }
-function deleteGroup() {
-  // TODO: delete group
-  router.back()
+async function addDeviceToGroup(deviceId: string) {
+  try {
+    loadingOverlay.startLoading()
+    await authorizedRequest(`/api/deviceGroups/${props.id}/device`, userInfo.token, {
+      method: 'POST',
+      body: JSON.stringify({ deviceId }),
+    })
+    const device = devices.value!.find((d) => d.id == deviceId)
+    if (device) {
+      group.value!.devices.push(device)
+    }
+  } catch (e) {
+    // TODO: present error to the user
+    console.log(e)
+  } finally {
+    loadingOverlay.stopLoading()
+  }
+}
+async function deleteGroup() {
+  try {
+    loadingOverlay.startLoading()
+    await authorizedRequest(`/api/deviceGroups/${props.id}`, userInfo.token, { method: 'DELETE' })
+    router.back()
+  } catch (e) {
+    // TODO: present error to the user
+    console.log(e)
+  } finally {
+    loadingOverlay.stopLoading()
+  }
 }
 </script>
 
