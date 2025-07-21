@@ -13,7 +13,7 @@ app.use(createPinia())
 app.use(router)
 
 // During development it's possible to set a VITE_USER_INFO object to skip login:
-// VITE_USER_INFO='{"email": "email.com", "nickname": "sos", "token": "sus"}' npm run dev
+// VITE_USER_INFO='{"email": "a@email.com", "nickname": "Foo", "token": "blablabla", "role": "Admin" }' npm run dev
 const userInfoStr = import.meta.env.VITE_USER_INFO
 if (import.meta.env.DEV && userInfoStr) {
   try {
