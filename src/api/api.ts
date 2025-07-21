@@ -6,11 +6,8 @@ export interface Request {
   config?: RequestInit
 }
 
-// TODO: update doc
-
 /**
- * Sets the Authorization header to token if it is not already set.
- * Sets the Content-Type header to "application/json" if it is not already set.
+ * Does the same as `request` plus setting the Authorization header to token if it is not already set.
  */
 export async function authorizedRequest<T>(req: Request, token: string, deserializer: Deserializer<T>): Promise<{ response: Response, body: T | undefined }> {
   const headers = new Headers(req.config?.headers) // Ensuring that the type of init.headers is Headers
@@ -21,7 +18,12 @@ export async function authorizedRequest<T>(req: Request, token: string, deserial
 }
 
 /**
+ * Sends a request to the specified req.url.
  * Sets the Content-Type header to "application/json" if it is not already set.
+ * Deserializes the response body if present using the given deserializer.
+ *
+ * @throws a ServerError if the response status code is not successfull (2xx)
+ * @throws A DeserializeError if the deserialization phase fails
  */
 export async function request<T>(req: Request, deserializer: Deserializer<T>): Promise<{ response: Response, body: T | undefined }> {
   const headers = new Headers(req.config?.headers) // Ensuring that the type of init.headers is Headers

@@ -1,6 +1,15 @@
-// TODO: add doc
-export type Deserializer<T> = (json: object) => T
+/**
+ * A function which deserializes anything into a T
+ */
+export type Deserializer<T> = (json: unknown) => T
 
+/**
+ * Creates a deserializer.
+ * @param checkDeserializable checks if the input is actually deserializable into the expected output type
+ * @param deserialize deserializes the input into the output type
+ * @param deserializationError an optional function that produces the `cause` field of a DeserializeError
+ * @throws DeserializeError if `checkDeserializable` fails
+ */
 export function Deserializer<From, To>(
   checkDeserializable: (obj: unknown) => obj is From,
   deserialize: (obj: From) => To,
