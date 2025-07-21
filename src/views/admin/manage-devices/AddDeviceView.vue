@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import DeviceListSkeleton from '@/components/admin/manage-devices/DeviceListSkeleton.vue'
-import type { Device } from '@/model/devices-management/Device'
 import type { DiscoveredDevice } from '@/model/devices-management/DiscoveredDevice'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import { useUserInfoStore } from '@/stores/user-info'
-import { authorizedRequest } from '@/utils'
+import { authorizedRequest, deserializeBody } from '@/api/api'
 import { onMounted, ref } from 'vue'
+import { arrayDeserializer } from '@/api/Deserializer'
+import { discoveredDeviceDeserializer } from '@/api/devices-management/GetDiscoveredDeviceDTO'
 const userInfo = useUserInfoStore()
 const loadingOverlay = useLoadingOverlayStore()
 const devices = ref<DiscoveredDevice[] | undefined>()
@@ -35,8 +36,8 @@ async function addDevice(id: string) {
 
 onMounted(async () => {
   try {
-    const { json } = await authorizedRequest('/api/discovered-devices', userInfo.token)
-    devices.value = json as Device[]
+    const res = await authorizedRequest('/api/discovered-devices', userInfo.token)
+    devices.value = await deserializeBody(res, arrayDeserializer(discoveredDeviceDeserializer))
   } catch (e) {
     // TODO: present error to the user
     console.log(e)

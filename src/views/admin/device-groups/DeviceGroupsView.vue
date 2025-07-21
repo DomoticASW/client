@@ -1,18 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useUserInfoStore } from '@/stores/user-info'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
-import { authorizedRequest, type ServerError } from '@/utils'
+import { authorizedRequest, deserializeBody } from '@/api/api'
 import DeviceListSkeleton from '@/components/admin/manage-devices/DeviceListSkeleton.vue'
 import type { DeviceGroup } from '@/model/devices-management/DeviceGroup'
+import { arrayDeserializer } from '@/api/Deserializer'
+import type { ServerError } from '@/api/ServerError'
+import { deviceGroupDeserializer } from '@/api/devices-management/GetDeviceGroupDTO'
 const userInfo = useUserInfoStore()
 const loadingOverlay = useLoadingOverlayStore()
 const groups = ref<DeviceGroup[] | undefined>(undefined)
-authorizedRequest('/api/deviceGroups', userInfo.token)
-  .then(({ json }) => (groups.value = json as DeviceGroup[]))
-  // TODO: present error to the user
-  .catch((e) => console.log(e))
 
 const groupEditing = ref<string | undefined>(undefined)
 const groupEditingName = ref<string | undefined>(undefined)
@@ -55,6 +54,16 @@ async function saveEditingGroup() {
     }
   }
 }
+
+onMounted(async () => {
+  try {
+    const res = await authorizedRequest('/api/deviceGroups', userInfo.token)
+    groups.value = await deserializeBody(res, arrayDeserializer(deviceGroupDeserializer))
+  } catch (e) {
+    // TODO: present error to the user
+    console.log(e)
+  }
+})
 </script>
 
 <template>

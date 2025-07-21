@@ -1,28 +1,22 @@
 <script setup lang="ts">
 import router from '@/router'
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import DeviceRowSkeleton from '@/components/admin/manage-devices/DeviceListSkeleton.vue'
 import type { DeviceGroup } from '@/model/devices-management/DeviceGroup'
 import type { Device } from '@/model/devices-management/Device'
-import { authorizedRequest } from '@/utils'
+import { authorizedRequest, deserializeBody } from '@/api/api'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import { useUserInfoStore } from '@/stores/user-info'
+import { arrayDeserializer } from '@/api/Deserializer'
+import { deviceDeserializer } from '@/api/devices-management/GetDeviceDTO'
+import { deviceGroupDeserializer } from '@/api/devices-management/GetDeviceGroupDTO'
 
 const props = defineProps({ id: { type: String, required: true } })
 const userInfo = useUserInfoStore()
 const loadingOverlay = useLoadingOverlayStore()
 
 const group = ref<DeviceGroup | undefined>(undefined)
-authorizedRequest(`/api/deviceGroups/${props.id}`, userInfo.token)
-  .then(({ json }) => (group.value = json as DeviceGroup))
-  // TODO: present error to the user
-  .catch((e) => console.log(e))
-
 const devices = ref<Device[] | undefined>(undefined)
-authorizedRequest(`/api/devices`, userInfo.token)
-  .then(({ json }) => (devices.value = json as Device[]))
-  // TODO: present error to the user
-  .catch((e) => console.log(e))
 
 const devicesNotInGroup = computed(() => {
   if (group.value && devices.value)
@@ -75,6 +69,25 @@ async function deleteGroup() {
     loadingOverlay.stopLoading()
   }
 }
+
+onMounted(async () => {
+  try {
+    const res = await authorizedRequest(`/api/deviceGroups/${props.id}`, userInfo.token)
+    group.value = await deserializeBody(res, deviceGroupDeserializer)
+  } catch (e) {
+    // TODO: present error to the user
+    console.log(e)
+  }
+})
+onMounted(async () => {
+  try {
+    const res = await authorizedRequest(`/api/devices`, userInfo.token)
+    devices.value = await deserializeBody(res, arrayDeserializer(deviceDeserializer))
+  } catch (e) {
+    // TODO: present error to the user
+    console.log(e)
+  }
+})
 </script>
 
 <template>

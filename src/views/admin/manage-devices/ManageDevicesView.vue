@@ -3,9 +3,11 @@ import DeviceListSkeleton from '@/components/admin/manage-devices/DeviceListSkel
 import type { Device } from '@/model/devices-management/Device'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import { useUserInfoStore } from '@/stores/user-info'
-import { authorizedRequest } from '@/utils'
+import { authorizedRequest, deserializeBody } from '@/api/api'
 import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
+import { arrayDeserializer } from '@/api/Deserializer'
+import { deviceDeserializer } from '@/api/devices-management/GetDeviceDTO'
 const userInfo = useUserInfoStore()
 const loadingOverlay = useLoadingOverlayStore()
 const devices = ref<Device[] | undefined>()
@@ -66,8 +68,8 @@ async function saveEditingDevice() {
 
 onMounted(async () => {
   try {
-    const { json } = await authorizedRequest('/api/devices', userInfo.token)
-    devices.value = json as Device[]
+    const res = await authorizedRequest('/api/devices', userInfo.token)
+    devices.value = await deserializeBody(res, arrayDeserializer(deviceDeserializer))
   } catch (e) {
     // TODO: present error to the user
     console.log(e)
