@@ -24,6 +24,15 @@ export function Deserializer<From, To>(
   }
 }
 
+export function arrayDeserializer<T>(itemDeserializer: Deserializer<T>): Deserializer<T[]> {
+  return (obj) => {
+    if (!Array.isArray(obj)) {
+      throw DeserializeError(`Expecting an array but ${typeof obj} was found`)
+    }
+    return obj.map(item => itemDeserializer(item))
+  }
+}
+
 export interface DeserializeError {
   message: string
   cause?: string
