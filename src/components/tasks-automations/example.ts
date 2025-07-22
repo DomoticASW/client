@@ -1,53 +1,33 @@
 import { ref } from 'vue'
 import {
-  Operator,
-  Type,
-  type ConstantInstruction,
-  type Enum,
   type Instruction,
-  type TypeConstraints,
   type CreateDevicePropertyConstantInstruction,
   type IfInstruction,
   type IfElseInstruction,
   type DeviceActionInstruction,
   type SendNotificationInstruction,
-} from '@/components/tasks-automations/types'
-
-function EmptyConstraint(type: Type): TypeConstraints {
-  return {
-    type: type,
-  }
-}
-
-function EnumConstraint(values: Set<string>): Enum {
-  return {
-    type: Type.StringType,
-    values: values,
-  }
-}
+  ConditionOperatorType,
+  InstructionType,
+  type CreateConstantInstruction,
+} from '@/model/scripts/Instruction'
 
 // To remove when getting instructions from server, will only be necessary the isXInstruction to deserialize the instructions, but has to do better checks
 export const instructions = ref([
-  CreateDevicePropertyConstantInstruction('Roomba', 'Battery', 'Battery', 70),
+  CreateDevicePropertyConstantInstruction('Roomba', 'Battery', 'Battery'),
   CreateConstantInstruction('Critical battery level', 25),
   IfElseInstruction(
     'Battery',
     'Critical battery level',
-    Operator.GREATER,
+    ConditionOperatorType.NumberGOperator,
     [
-      DeviceActionInstruction('Roomba', 'Start', EmptyConstraint(Type.VoidType), undefined),
+      DeviceActionInstruction('Roomba', 'Start', undefined),
       CreateConstantInstruction('High battery level', 75),
-      IfInstruction('Battery', 'High battery level', Operator.GREATER_EQ, [
-        DeviceActionInstruction(
-          'Roomba',
-          'Set mode',
-          EnumConstraint(new Set(['Performance', 'Silence', 'Deep cleaning'])),
-          'Performance',
-        ),
+      IfInstruction('Battery', 'High battery level', ConditionOperatorType.NumberGEOperator, [
+        DeviceActionInstruction('Roomba', 'Set mode', 'Performance'),
       ]),
     ],
     [
-      DeviceActionInstruction('Roomba', 'Stop', EmptyConstraint(Type.VoidType), undefined),
+      DeviceActionInstruction('Roomba', 'Stop', undefined),
       SendNotificationInstruction('Emma', 'The Roomba stopped'),
     ],
   ),
@@ -57,68 +37,88 @@ function CreateDevicePropertyConstantInstruction(
   deviceId: string,
   devicePropertyId: string,
   name: string,
-  value: unknown,
-): CreateDevicePropertyConstantInstruction {
+): Instruction {
   return {
-    deviceId: deviceId,
-    devicePropertyId: devicePropertyId,
-    name: name,
-    value: value,
+    type: InstructionType.CreateDevicePropertyConstantInstruction,
+    instruction: {
+      deviceId: deviceId,
+      devicePropertyId: devicePropertyId,
+      name: name,
+    } as CreateDevicePropertyConstantInstruction,
   }
 }
 
-function CreateConstantInstruction(name: string, value: unknown): ConstantInstruction {
-  return { name: name, value: value }
+function CreateConstantInstruction(name: string, value: unknown): Instruction {
+  return {
+    type: InstructionType.CreateConstantInstruction,
+    instruction: { name: name, value: value } as CreateConstantInstruction,
+  }
 }
 
 function IfInstruction(
   left: string,
   right: string,
-  operator: Operator,
+  operator: ConditionOperatorType,
   then: Instruction[],
-): IfInstruction {
+): Instruction {
   return {
-    left: left,
-    right: right,
-    operator: operator,
-    then: then,
+    type: InstructionType.IfInstruction,
+    instruction: {
+      condition: {
+        leftConstantName: left,
+        rightConstantName: right,
+        negate: false,
+        conditionOperatorType: operator,
+      },
+      thenInstructions: then,
+    } as IfInstruction,
   }
 }
 
 function IfElseInstruction(
   left: string,
   right: string,
-  operator: Operator,
+  operator: ConditionOperatorType,
   then: Instruction[],
   elseInstructions: Instruction[],
-): IfElseInstruction {
+): Instruction {
   return {
-    left: left,
-    right: right,
-    operator: operator,
-    then: then,
-    else: elseInstructions,
+    type: InstructionType.IfElseInstruction,
+    instruction: {
+      condition: {
+        leftConstantName: left,
+        rightConstantName: right,
+        negate: false,
+        conditionOperatorType: operator,
+      },
+      thenInstructions: then,
+      elseInstructions: elseInstructions,
+    } as IfElseInstruction,
   }
 }
 
 function DeviceActionInstruction(
   deviceId: string,
   deviceActionId: string,
-  typeConstraints: TypeConstraints,
   input: unknown,
-): DeviceActionInstruction {
+): Instruction {
   return {
-    deviceId: deviceId,
-    deviceActionId: deviceActionId,
-    typeConstraints: typeConstraints,
-    input: input,
+    type: InstructionType.DeviceActionInstruction,
+    instruction: {
+      deviceId: deviceId,
+      deviceActionId: deviceActionId,
+      input: input,
+    } as DeviceActionInstruction,
   }
 }
 
-function SendNotificationInstruction(email: string, message: string): SendNotificationInstruction {
+function SendNotificationInstruction(email: string, message: string): Instruction {
   return {
-    email: email,
-    message: message,
+    type: InstructionType.SendNotificationInstruction,
+    instruction: {
+      email: email,
+      message: message,
+    } as SendNotificationInstruction,
   }
 }
 

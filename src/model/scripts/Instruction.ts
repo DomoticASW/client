@@ -1,4 +1,4 @@
-import type { Type } from "../Type"
+import type { Type } from '../Type'
 
 export enum InstructionType {
   SendNotificationInstruction = 'SendNotificationInstruction',
@@ -8,7 +8,7 @@ export enum InstructionType {
   CreateConstantInstruction = 'CreateConstantInstruction',
   CreateDevicePropertyConstantInstruction = 'CreateDevicePropertyConstantInstruction',
   IfInstruction = 'IfInstruction',
-  IfElseInstruction = 'IfElseInstruction'
+  IfElseInstruction = 'IfElseInstruction',
 }
 
 export interface Condition {
@@ -31,16 +31,18 @@ export enum ConditionOperatorType {
 
 export interface Instruction {
   type: InstructionType
-  instruction:
-    | SendNotificationInstruction
-    | WaitInstruction
-    | StartTaskInstruction
-    | DeviceActionInstruction
-    | CreateConstantInstruction
-    | CreateDevicePropertyConstantInstruction
-    | IfInstruction
-    | IfElseInstruction
+  instruction: RealInstruction
 }
+
+export type RealInstruction =
+  | SendNotificationInstruction
+  | WaitInstruction
+  | StartTaskInstruction
+  | DeviceActionInstruction
+  | CreateConstantInstruction
+  | CreateDevicePropertyConstantInstruction
+  | IfInstruction
+  | IfElseInstruction
 
 export interface SendNotificationInstruction {
   email: string

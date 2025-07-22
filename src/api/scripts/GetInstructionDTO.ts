@@ -5,6 +5,7 @@ import type {
   IfElseInstruction,
   IfInstruction,
   Instruction,
+  RealInstruction,
   SendNotificationInstruction,
   StartTaskInstruction,
   WaitInstruction,
@@ -272,15 +273,7 @@ function deserializeInstruction(
     | GetCreateDevicePropertyConstantInstructionDTO
     | GetIfInstructionDTO
     | GetIfElseInstructionDTO,
-):
-  | SendNotificationInstruction
-  | WaitInstruction
-  | StartTaskInstruction
-  | DeviceActionInstruction
-  | CreateConstantInstruction
-  | CreateDevicePropertyConstantInstruction
-  | IfInstruction
-  | IfElseInstruction {
+): RealInstruction {
   if (isGetSendNotificationInstructionDTO(instruction)) {
     return sendNotificationInstructionDeserializer(instruction)
   }
@@ -313,7 +306,7 @@ const instructionDeserializer = Deserializer<GetInstructionDTO, Instruction>(
       type: instructionTypeDeserializer(dto.type),
       instruction: deserializeInstruction(dto.instruction),
     }
-  }
+  },
 )
 
 export const instructionsDeserializer = arrayDeserializer(instructionDeserializer)

@@ -1,6 +1,9 @@
 <template>
   <IfInstructionItem
-    v-if="isIfInstruction(instruction)"
+    v-if="
+      instruction.type === InstructionType.IfInstruction ||
+      instruction.type === InstructionType.IfElseInstruction
+    "
     :instruction="instruction"
     :depth="depthLevel"
     :indent="indentClass"
@@ -9,7 +12,7 @@
     :removeInstruction="removeInstruction"
   />
   <ConstantInstructionItem
-    v-else-if="isConstantInstruction(instruction)"
+    v-else-if="instruction.type === InstructionType.CreateConstantInstruction"
     :instruction="instruction"
     :depth="depthLevel"
     :indent="indentClass"
@@ -18,7 +21,7 @@
     :removeInstruction="removeInstruction"
   />
   <CreateDevicePropertyConstantInstructionItem
-    v-else-if="isCreateDevicePropertyConstantInstruction(instruction)"
+    v-else-if="instruction.type === InstructionType.CreateDevicePropertyConstantInstruction"
     :instruction="instruction"
     :depth="depthLevel"
     :indent="indentClass"
@@ -27,7 +30,7 @@
     :removeInstruction="removeInstruction"
   />
   <DeviceActionInstructionItem
-    v-else-if="isDeviceActionInstruction(instruction)"
+    v-else-if="instruction.type === InstructionType.DeviceActionInstruction"
     :instruction="instruction"
     :depth="depthLevel"
     :indent="indentClass"
@@ -36,7 +39,7 @@
     :removeInstruction="removeInstruction"
   />
   <SendNotificationInstructionItem
-    v-else-if="isSendNotificationInstruction(instruction)"
+    v-else-if="instruction.type === InstructionType.SendNotificationInstruction"
     :instruction="instruction"
     :depth="depthLevel"
     :indent="indentClass"
@@ -47,15 +50,6 @@
 </template>
 
 <script setup lang="ts">
-import {
-  type Instruction,
-  isConstantInstruction,
-  isCreateDevicePropertyConstantInstruction,
-  isDeviceActionInstruction,
-  isIfInstruction,
-  isSendNotificationInstruction,
-} from './types.js'
-
 import IfInstructionItem from '@/components/tasks-automations/IfInstructionItem.vue'
 
 import ConstantInstructionItem from '@/components/tasks-automations/ConstantInstructionItem.vue'
@@ -63,6 +57,10 @@ import CreateDevicePropertyConstantInstructionItem from '@/components/tasks-auto
 
 import DeviceActionInstructionItem from '@/components/tasks-automations/DeviceActionInstructionItem.vue'
 import SendNotificationInstructionItem from '@/components/tasks-automations/SendNotificationInstructionItem.vue'
+import {
+  InstructionType,
+  type Instruction,
+} from '@/model/scripts/Instruction'
 
 const props = defineProps<{
   instruction: Instruction
