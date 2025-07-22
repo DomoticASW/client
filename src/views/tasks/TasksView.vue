@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import { ref } from 'vue'
+<script async setup lang="ts">
+import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import AddButton from '@/components/AddButton.vue'
 import { authorizedRequest } from '@/utils'
@@ -9,11 +9,12 @@ const userInfo = useUserInfoStore()
 
 const tasks = ref<{id: string, name: string}[] | undefined>(undefined)
 
-authorizedRequest('/api/tasks', userInfo.token).then(({json}) => {
-  tasks.value = json as {id: string, name: string}[]
-  //console.log(json)
+onMounted(async () => {
+  const json = await authorizedRequest('/api/tasks', userInfo.token)
+
+  tasks.value = json.json as {id: string, name: string}[]
 })
-.catch(e => console.log(e))
+//console.log(json)
 
 </script>
 
@@ -37,7 +38,7 @@ authorizedRequest('/api/tasks', userInfo.token).then(({json}) => {
     </RouterLink>
   </ul>
 
-  <AddButton name="add-task">ss</AddButton>
+  <AddButton name="add-task"/>
 </template>
 
 <style></style>

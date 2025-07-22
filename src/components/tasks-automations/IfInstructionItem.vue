@@ -35,7 +35,7 @@
     v-for="(ins, i) in instruction.then"
     :key="'then-' + i"
     :instruction="ins"
-    :depth="(depth ?? 0) + 1"
+    :depth="depth + 1"
     :moveInstruction="moveInstruction"
     :removeInstruction="removeInstruction"
   />
@@ -51,7 +51,7 @@
       v-for="(ins, i) in instruction.else"
       :key="'else-' + i"
       :instruction="ins"
-      :depth="(depth ?? 0) + 1"
+      :depth="depth + 1"
       :moveInstruction="moveInstruction"
       :removeInstruction="removeInstruction"
     />

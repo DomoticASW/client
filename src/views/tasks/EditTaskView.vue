@@ -14,7 +14,7 @@ import { instructions } from '@/components/tasks-automations/example'
     />
   </div>
   <hr class="m-4" />
-  <!-- instructions need to be taken from the server when loading the page, if adding a new task it is not needed (v-if already doing it) -->
+  <!-- instructions need to be taken from the server when loading the page, if adding a new task it is not needed (v-if not needed) -->
   <InstructionReorder :instructions="instructions" v-if="$route.params.id != undefined" />
   <div class="pb-4"></div>
 </template>
