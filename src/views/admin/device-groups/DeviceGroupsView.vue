@@ -9,10 +9,44 @@ import type { DeviceGroup } from '@/model/devices-management/DeviceGroup'
 import { arrayDeserializer } from '@/api/Deserializer'
 import type { ServerError } from '@/api/ServerError'
 import { deviceGroupDeserializer } from '@/api/devices-management/GetDeviceGroupDTO'
+import { idDeserializer } from '@/api/devices-management/GetIdDTO'
 const userInfo = useUserInfoStore()
 const loadingOverlay = useLoadingOverlayStore()
 const groups = ref<DeviceGroup[] | undefined>(undefined)
 
+/* Group creation */
+const groupCreatingName = ref<string | undefined>(undefined)
+const createGroupModalId = 'create_group_modal'
+const createGroupModal = () => document.getElementById(createGroupModalId) as HTMLDialogElement
+function cancelCreatingGroup() {
+  groupCreatingName.value = undefined
+  createGroupModal().close()
+}
+async function saveCreatingGroup() {
+  const name = groupCreatingName.value
+  if (name) {
+    try {
+      loadingOverlay.startLoading()
+      const createRes = await authorizedRequest(`/api/deviceGroups`, userInfo.token, {
+        method: 'POST',
+        body: JSON.stringify({ name }),
+      })
+      const groupId = await deserializeBody(createRes, idDeserializer)
+
+      const getRes = await authorizedRequest(`/api/deviceGroups/${groupId}`, userInfo.token)
+      const group = await deserializeBody(getRes, deviceGroupDeserializer)
+      groups.value?.push(group)
+    } catch (e) {
+      // TODO: present error to the user
+      console.log((e as ServerError).message)
+    } finally {
+      cancelCreatingGroup()
+      loadingOverlay.stopLoading()
+    }
+  }
+}
+
+/* Group editing */
 const groupEditing = ref<string | undefined>(undefined)
 const groupEditingName = ref<string | undefined>(undefined)
 
@@ -70,6 +104,20 @@ onMounted(async () => {
   <div>
     <div class="navbar justify-between">
       <h1 class="text-2xl">Device groups</h1>
+      <button class="btn btn-ghost fa-solid fa-plus fa-lg" @click="createGroupModal().showModal()"></button>
+      <!-- Dialog for creating a new group -->
+      <dialog :id="createGroupModalId" class="modal modal-bottom sm:modal-middle">
+        <div class="modal-box">
+          <h3 class="text-lg font-bold">Create a new group</h3>
+          <input type="text" placeholder="Group name" class="input" v-model="groupCreatingName" />
+          <div class="modal-action">
+            <button class="btn btn-primary" v-on:click="saveCreatingGroup()">Save</button>
+            <button class="btn btn-primary btn-soft" v-on:click="cancelCreatingGroup()">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </dialog>
     </div>
     <ul v-if="groups" class="list">
       <RouterLink
