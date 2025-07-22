@@ -42,44 +42,44 @@ export interface Instruction {
     | IfElseInstruction
 }
 
-interface SendNotificationInstruction {
+export interface SendNotificationInstruction {
   email: string
   message: string
 }
 
-interface WaitInstruction {
+export interface WaitInstruction {
   seconds: number
 }
 
-interface StartTaskInstruction {
+export interface StartTaskInstruction {
   taskId: string
 }
 
-interface DeviceActionInstruction {
+export interface DeviceActionInstruction {
   deviceId: string
   deviceActionId: string
   input: unknown
 }
 
-interface ConstantInstruction {
+export interface ConstantInstruction {
   name: string
   type: Type
 }
 
-interface CreateConstantInstruction extends ConstantInstruction {
+export interface CreateConstantInstruction extends ConstantInstruction {
   value: unknown
 }
 
-interface CreateDevicePropertyConstantInstruction extends ConstantInstruction {
+export interface CreateDevicePropertyConstantInstruction extends ConstantInstruction {
   deviceId: string
   devicePropertyId: string
 }
 
-interface IfInstruction {
+export interface IfInstruction {
   thenInstructions: Instruction[]
   condition: Condition
 }
 
-interface IfElseInstruction extends IfInstruction {
+export interface IfElseInstruction extends IfInstruction {
   elseInstructions: Instruction[]
 }

@@ -10,7 +10,7 @@ export enum GetTypeDTO {
     VoidType = "VoidType"
 }
 
-export function isGetInstructionTypeDTO(o: unknown): o is GetTypeDTO {
+export function isGetTypeDTO(o: unknown): o is GetTypeDTO {
   return (
     o !== undefined &&
     typeof o == 'string' &&
@@ -18,6 +18,6 @@ export function isGetInstructionTypeDTO(o: unknown): o is GetTypeDTO {
   )
 }
 
-export const deviceAddressDeserializer = Deserializer<GetTypeDTO, Type>(isGetInstructionTypeDTO, (dto) => {
+export const typeDeserializer = Deserializer<GetTypeDTO, Type>(isGetTypeDTO, (dto) => {
   return Object.values(Type).find(el => el === dto.valueOf())!
 })

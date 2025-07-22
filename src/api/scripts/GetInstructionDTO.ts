@@ -1,6 +1,22 @@
-import type { GetTypeDTO } from '../GetTypeDTO'
-import { isGetConditionDTO, type GetConditionDTO } from './GetConditionDTO'
-import type { GetInstructionTypeDTO } from './GetInstructionTypeDTO'
+import type {
+  CreateConstantInstruction,
+  CreateDevicePropertyConstantInstruction,
+  DeviceActionInstruction,
+  IfElseInstruction,
+  IfInstruction,
+  Instruction,
+  SendNotificationInstruction,
+  StartTaskInstruction,
+  WaitInstruction,
+} from '@/model/scripts/Instruction'
+import { arrayDeserializer, DeserializeError, Deserializer } from '../Deserializer'
+import { isGetTypeDTO, typeDeserializer, type GetTypeDTO } from '../GetTypeDTO'
+import { conditionDeserializer, isGetConditionDTO, type GetConditionDTO } from './GetConditionDTO'
+import {
+  instructionTypeDeserializer,
+  isGetInstructionTypeDTO,
+  type GetInstructionTypeDTO,
+} from './GetInstructionTypeDTO'
 
 export interface GetInstructionDTO {
   type: GetInstructionTypeDTO
@@ -58,60 +74,244 @@ interface GetIfElseInstructionDTO extends GetIfInstructionDTO {
 }
 
 function isGetSendNotificationInstructionDTO(o: unknown): o is GetSendNotificationInstructionDTO {
-  return o != undefined &&
+  return (
+    o != undefined &&
     typeof o === 'object' &&
-    'email' in o && typeof o.email === 'string' &&
-    'message' in o && typeof o.message === 'string'
+    'email' in o &&
+    typeof o.email === 'string' &&
+    'message' in o &&
+    typeof o.message === 'string'
+  )
 }
 
 function isGetWaitInstructionDTO(o: unknown): o is GetWaitInstructionDTO {
-  return o != undefined &&
-    typeof o === 'object' &&
-    'seconds' in o && typeof o.seconds === 'number'
+  return o != undefined && typeof o === 'object' && 'seconds' in o && typeof o.seconds === 'number'
 }
 
 function isGetStartTaskInstructionDTO(o: unknown): o is GetStartTaskInstructionDTO {
-  return o != undefined &&
-    typeof o === 'object' &&
-    'taskId' in o && typeof o.taskId === 'string'
+  return o != undefined && typeof o === 'object' && 'taskId' in o && typeof o.taskId === 'string'
 }
 
 function isGetDeviceActionInstructionDTO(o: unknown): o is GetDeviceActionInstructionDTO {
-  return o != undefined &&
+  return (
+    o != undefined &&
     typeof o === 'object' &&
-    'deviceId' in o && typeof o.deviceId === 'string' &&
-    'deviceActionId' in o && typeof o.deviceActionId === 'string' &&
+    'deviceId' in o &&
+    typeof o.deviceId === 'string' &&
+    'deviceActionId' in o &&
+    typeof o.deviceActionId === 'string' &&
     'input' in o
+  )
 }
 
 function isGetCreateConstantInstructionDTO(o: unknown): o is GetCreateConstantInstructionDTO {
-  return o != undefined &&
+  return (
+    o != undefined &&
     typeof o === 'object' &&
-    'name' in o && typeof o.name === 'string' &&
-    'type' in o && typeof o.type === 'string' &&
+    'name' in o &&
+    typeof o.name === 'string' &&
+    'type' in o &&
+    isGetTypeDTO(o.type) &&
     'value' in o
+  )
 }
 
-function isGetCreateDevicePropertyConstantInstructionDTO(o: unknown): o is GetCreateDevicePropertyConstantInstructionDTO {
-  return o != undefined &&
+function isGetCreateDevicePropertyConstantInstructionDTO(
+  o: unknown,
+): o is GetCreateDevicePropertyConstantInstructionDTO {
+  return (
+    o != undefined &&
     typeof o === 'object' &&
-    'name' in o && typeof o.name === 'string' &&
-    'type' in o && typeof o.type === 'string' &&
-    'deviceId' in o && typeof o.deviceId === 'string' &&
-    'devicePropertyId' in o && typeof o.devicePropertyId === 'string'
+    'name' in o &&
+    typeof o.name === 'string' &&
+    'type' in o &&
+    isGetTypeDTO(o.type) &&
+    'deviceId' in o &&
+    typeof o.deviceId === 'string' &&
+    'devicePropertyId' in o &&
+    typeof o.devicePropertyId === 'string'
+  )
 }
 
-function isIfInstructionDTO(o: unknown): o is GetIfInstructionDTO {
-  return o != undefined &&
+function isGetIfInstructionDTO(o: unknown): o is GetIfInstructionDTO {
+  return (
+    !isGetIfElseInstructionDTO(o) &&
+    o != undefined &&
     typeof o === 'object' &&
-    'thenInstructions' in o && Array.isArray(o.thenInstructions) &&
-    'condition' in o && isGetConditionDTO(o.condition)
+    'thenInstructions' in o &&
+    Array.isArray(o.thenInstructions) &&
+    'condition' in o &&
+    isGetConditionDTO(o.condition)
+  )
 }
-
 
 function isGetIfElseInstructionDTO(o: unknown): o is GetIfElseInstructionDTO {
-  return isIfInstructionDTO(o) &&
-    'elseInstructions' in o && Array.isArray(o.elseInstructions)
+  return (
+    o != undefined &&
+    typeof o === 'object' &&
+    'thenInstructions' in o &&
+    Array.isArray(o.thenInstructions) &&
+    'elseInstructions' in o &&
+    Array.isArray(o.elseInstructions)
+  )
 }
 
+export function isGetInstructionDTO(o: unknown): o is GetInstructionDTO {
+  return (
+    o != undefined &&
+    typeof o === 'object' &&
+    'type' in o &&
+    isGetInstructionTypeDTO(o.type) &&
+    'instruction' in o &&
+    (isGetSendNotificationInstructionDTO(o.instruction) ||
+      isGetWaitInstructionDTO(o.instruction) ||
+      isGetStartTaskInstructionDTO(o.instruction) ||
+      isGetDeviceActionInstructionDTO(o.instruction) ||
+      isGetIfInstructionDTO(o.instruction) ||
+      isGetIfElseInstructionDTO(o.instruction) ||
+      isGetCreateConstantInstructionDTO(o.instruction) ||
+      isGetCreateDevicePropertyConstantInstructionDTO(o.instruction))
+  )
+}
 
+export const sendNotificationInstructionDeserializer = Deserializer<
+  GetSendNotificationInstructionDTO,
+  SendNotificationInstruction
+>(isGetSendNotificationInstructionDTO, (dto) => {
+  return {
+    email: dto.email,
+    message: dto.message,
+  }
+})
+
+export const waitInstructionDeserializer = Deserializer<GetWaitInstructionDTO, WaitInstruction>(
+  isGetWaitInstructionDTO,
+  (dto) => {
+    return {
+      seconds: dto.seconds,
+    }
+  },
+)
+
+export const startTaskDeserializer = Deserializer<GetStartTaskInstructionDTO, StartTaskInstruction>(
+  isGetStartTaskInstructionDTO,
+  (dto) => {
+    return {
+      taskId: dto.taskId,
+    }
+  },
+)
+
+export const deviceActionInstructionDeserializer = Deserializer<
+  GetDeviceActionInstructionDTO,
+  DeviceActionInstruction
+>(isGetDeviceActionInstructionDTO, (dto) => {
+  return {
+    deviceId: dto.deviceId,
+    deviceActionId: dto.deviceActionId,
+    input: dto.input,
+  }
+})
+
+export const createConstantInstructionDeserializer = Deserializer<
+  GetCreateConstantInstructionDTO,
+  CreateConstantInstruction
+>(isGetCreateConstantInstructionDTO, (dto) => {
+  return {
+    name: dto.name,
+    type: typeDeserializer(dto.type),
+    value: dto.value,
+  }
+})
+
+export const createDevicePropertyConstantInstructionDeserializer = Deserializer<
+  GetCreateDevicePropertyConstantInstructionDTO,
+  CreateDevicePropertyConstantInstruction
+>(isGetCreateDevicePropertyConstantInstructionDTO, (dto) => {
+  return {
+    name: dto.name,
+    type: typeDeserializer(dto.type),
+    deviceId: dto.deviceId,
+    devicePropertyId: dto.devicePropertyId,
+  }
+})
+
+export const ifInstructionDeserializer = Deserializer<GetIfInstructionDTO, IfInstruction>(
+  isGetIfInstructionDTO,
+  (dto) => {
+    return {
+      condition: conditionDeserializer(dto.condition),
+      thenInstructions: instructionsDeserializer(dto.thenInstructions),
+    }
+  },
+)
+
+export const ifElseInstructionDeserializer = Deserializer<
+  GetIfElseInstructionDTO,
+  IfElseInstruction
+>(isGetIfElseInstructionDTO, (dto) => {
+  return {
+    condition: conditionDeserializer(dto.condition),
+    thenInstructions: instructionsDeserializer(dto.thenInstructions),
+    elseInstructions: instructionsDeserializer(dto.elseInstructions),
+  }
+})
+
+function deserializeInstruction(
+  instruction:
+    | GetSendNotificationInstructionDTO
+    | GetWaitInstructionDTO
+    | GetStartTaskInstructionDTO
+    | GetDeviceActionInstructionDTO
+    | GetCreateConstantInstructionDTO
+    | GetCreateDevicePropertyConstantInstructionDTO
+    | GetIfInstructionDTO
+    | GetIfElseInstructionDTO,
+):
+  | SendNotificationInstruction
+  | WaitInstruction
+  | StartTaskInstruction
+  | DeviceActionInstruction
+  | CreateConstantInstruction
+  | CreateDevicePropertyConstantInstruction
+  | IfInstruction
+  | IfElseInstruction {
+  if (isGetSendNotificationInstructionDTO(instruction)) {
+    return sendNotificationInstructionDeserializer(instruction)
+  }
+  if (isGetWaitInstructionDTO(instruction)) {
+    return waitInstructionDeserializer(instruction)
+  }
+  if (isGetStartTaskInstructionDTO(instruction)) {
+    return startTaskDeserializer(instruction)
+  }
+  if (isGetCreateConstantInstructionDTO(instruction)) {
+    return createConstantInstructionDeserializer(instruction)
+  }
+  if (isGetCreateDevicePropertyConstantInstructionDTO(instruction)) {
+    return createDevicePropertyConstantInstructionDeserializer(instruction)
+  }
+  if (isGetDeviceActionInstructionDTO(instruction)) {
+    return deviceActionInstructionDeserializer(instruction)
+  }
+  if (isGetIfInstructionDTO(instruction)) {
+    return ifInstructionDeserializer(instruction)
+  }
+  if (isGetIfElseInstructionDTO(instruction)) {
+    return ifElseInstructionDeserializer(instruction)
+  }
+
+  throw DeserializeError('Error while deserializing some instruction')
+}
+
+const instructionDeserializer = Deserializer<GetInstructionDTO, Instruction>(
+  isGetInstructionDTO,
+  (dto) => {
+    return {
+      type: instructionTypeDeserializer(dto.type),
+      instruction: deserializeInstruction(dto.instruction),
+    }
+  },
+)
+
+export const instructionsDeserializer = arrayDeserializer(instructionDeserializer)
