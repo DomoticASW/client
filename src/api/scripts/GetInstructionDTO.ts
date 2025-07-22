@@ -140,6 +140,7 @@ function isGetIfInstructionDTO(o: unknown): o is GetIfInstructionDTO {
     typeof o === 'object' &&
     'thenInstructions' in o &&
     Array.isArray(o.thenInstructions) &&
+    o.thenInstructions.every((instruction) => isGetInstructionDTO(instruction)) &&
     'condition' in o &&
     isGetConditionDTO(o.condition)
   )
@@ -151,8 +152,12 @@ function isGetIfElseInstructionDTO(o: unknown): o is GetIfElseInstructionDTO {
     typeof o === 'object' &&
     'thenInstructions' in o &&
     Array.isArray(o.thenInstructions) &&
+    o.thenInstructions.every((instruction) => isGetInstructionDTO(instruction)) &&
     'elseInstructions' in o &&
-    Array.isArray(o.elseInstructions)
+    Array.isArray(o.elseInstructions) &&
+    o.elseInstructions.every((instruction) => isGetInstructionDTO(instruction)) &&
+    'condition' in o &&
+    isGetConditionDTO(o.condition)
   )
 }
 
