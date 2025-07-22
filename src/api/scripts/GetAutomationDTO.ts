@@ -1,5 +1,5 @@
-import type { Automation, Trigger } from '@/model/scripts/Script'
-import { Deserializer } from '../Deserializer'
+import type { Automation, DeviceEventTrigger, PeriodTrigger } from '@/model/scripts/Script'
+import { arrayDeserializer, Deserializer } from '../Deserializer'
 import type { GetTaskDTO } from './GetTaskDTO'
 import { instructionsDeserializer, isGetInstructionDTO } from './GetInstructionDTO'
 
@@ -42,7 +42,7 @@ function isGetDeviceEventTriggerDTO(o: unknown): o is GetDeviceEventTriggerDTO {
   )
 }
 
-const periodTriggerDeserializer = Deserializer<GetPeriodTriggerDTO, Trigger>(
+const periodTriggerDeserializer = Deserializer<GetPeriodTriggerDTO, PeriodTrigger>(
   isGetPeriodTriggerDTO,
   (dto) => {
     return {
@@ -52,7 +52,7 @@ const periodTriggerDeserializer = Deserializer<GetPeriodTriggerDTO, Trigger>(
   },
 )
 
-const deviceEventTriggerDeserializer = Deserializer<GetDeviceEventTriggerDTO, Trigger>(
+const deviceEventTriggerDeserializer = Deserializer<GetDeviceEventTriggerDTO, DeviceEventTrigger>(
   isGetDeviceEventTriggerDTO,
   (dto) => {
     return {
@@ -94,3 +94,5 @@ export const automationDeserializer = Deserializer<GetAutomationDTO, Automation>
     }
   },
 )
+
+export const automationsDeserializer = arrayDeserializer(automationDeserializer)

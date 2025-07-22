@@ -313,7 +313,7 @@ const instructionDeserializer = Deserializer<GetInstructionDTO, Instruction>(
       type: instructionTypeDeserializer(dto.type),
       instruction: deserializeInstruction(dto.instruction),
     }
-  },
+  }
 )
 
 export const instructionsDeserializer = arrayDeserializer(instructionDeserializer)

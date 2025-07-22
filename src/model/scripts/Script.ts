@@ -11,7 +11,7 @@ export interface Automation extends Task{
   trigger: Trigger
 }
 
-export type Trigger = PeriodTrigger | DeviceEventTrigger
+type Trigger = PeriodTrigger | DeviceEventTrigger
 
 export interface PeriodTrigger {
   start: Date

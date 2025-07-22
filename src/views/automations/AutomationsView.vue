@@ -1,16 +1,19 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import AddButton from '@/components/AddButton.vue'
-import { authorizedRequest } from '@/utils'
 import { useUserInfoStore } from '@/stores/user-info'
+import { automationsDeserializer } from '@/api/scripts/GetAutomationDTO'
+import { authorizedRequest, deserializeBody } from '@/api/api'
 
 const userInfo = useUserInfoStore()
 
 const automations = ref<{ id: string; name: string; enabled: boolean }[] | undefined>(undefined)
 
-authorizedRequest('/api/automations', userInfo.token).then(({ json }) => {
-  automations.value = json as { id: string; name: string; enabled: boolean }[]
+onMounted(async () => {
+  const res = await authorizedRequest('/api/automations', userInfo.token)
+
+  automations.value = await deserializeBody(res, automationsDeserializer)
 })
 
 function toggleAutomation(automation: { id: string; name: string; enabled: boolean }) {

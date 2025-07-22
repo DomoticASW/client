@@ -56,7 +56,7 @@ export const conditionDeserializer = Deserializer<GetConditionDTO, Condition>(
       leftConstantName: dto.leftConstantName,
       rightConstantName: dto.rightConstantName,
       negate: dto.negate,
-      conditionOperatorType: conditionOperatorTypeDeserializer(dto),
+      conditionOperatorType: conditionOperatorTypeDeserializer(dto.conditionOperatorType),
     }
   },
 )

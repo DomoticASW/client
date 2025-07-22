@@ -1,5 +1,5 @@
 import type { Task } from '@/model/scripts/Script.js'
-import { Deserializer } from '../Deserializer.js'
+import { arrayDeserializer, Deserializer } from '../Deserializer.js'
 import {
   instructionsDeserializer,
   isGetInstructionDTO,
@@ -33,3 +33,5 @@ export const taskDeserializer = Deserializer<GetTaskDTO, Task>(isGetTaskDTO, (dt
     instructions: instructionsDeserializer(dto.instructions),
   }
 })
+
+export const tasksDeserializer = arrayDeserializer(taskDeserializer)
