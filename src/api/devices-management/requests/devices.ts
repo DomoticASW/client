@@ -1,6 +1,6 @@
 import { authorizedRequest, deserializeBody } from "@/api/api"
-import { deviceDeserializer } from "../dtos/GetDeviceDTO"
-import { discoveredDeviceDeserializer } from "../dtos/GetDiscoveredDeviceDTO"
+import { deviceDeserializer } from "../dtos/DeviceDTO"
+import { discoveredDeviceDeserializer } from "../dtos/DiscoveredDeviceDTO"
 import { arrayDeserializer } from "@/api/Deserializer"
 import type { Device, DeviceAddress, DeviceId } from "@/model/devices-management/Device"
 import type { DiscoveredDevice } from "@/model/devices-management/DiscoveredDevice"

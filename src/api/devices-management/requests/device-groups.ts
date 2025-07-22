@@ -1,8 +1,8 @@
 import { authorizedRequest, deserializeBody } from "@/api/api"
 import { arrayDeserializer } from "@/api/Deserializer"
 import { DeviceGroupId, type DeviceGroup } from "@/model/devices-management/DeviceGroup"
-import { deviceGroupDeserializer } from "../dtos/GetDeviceGroupDTO"
-import { idDeserializer } from "../../GetIdDTO"
+import { deviceGroupDeserializer } from "../dtos/DeviceGroupDTO"
+import { idDeserializer } from "../../IdDTO"
 import type { DeviceId } from "@/model/devices-management/Device"
 
 export async function createDeviceGroup(name: string, token: string): Promise<DeviceGroupId> {

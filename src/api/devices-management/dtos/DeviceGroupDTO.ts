@@ -1,27 +1,27 @@
 import { DeviceGroupId, type DeviceGroup } from "@/model/devices-management/DeviceGroup"
 import { Deserializer } from "../../Deserializer"
-import { deviceDeserializer, isGetDeviceDTO, type GetDeviceDTO } from "./GetDeviceDTO"
+import { deviceDeserializer, isDeviceDTO, type DeviceDTO } from "./DeviceDTO"
 
-export interface GetDeviceGroupDTO {
+export interface DeviceGroupDTO {
   id: string
   name: string
-  devices: GetDeviceDTO[]
+  devices: DeviceDTO[]
 }
 
-export function isGetDeviceGroupDTO(o: unknown): o is GetDeviceGroupDTO {
+export function isDeviceGroupDTO(o: unknown): o is DeviceGroupDTO {
   return o != undefined && typeof o === "object" &&
     "id" in o && typeof o.id === "string" &&
     "name" in o && typeof o.name === "string" &&
-    "devices" in o && Array.isArray(o.devices) && o.devices.every(isGetDeviceDTO)
+    "devices" in o && Array.isArray(o.devices) && o.devices.every(isDeviceDTO)
 }
 
 export const deviceGroupDeserializer =
-  Deserializer<GetDeviceGroupDTO, DeviceGroup>(
-    isGetDeviceGroupDTO,
+  Deserializer<DeviceGroupDTO, DeviceGroup>(
+    isDeviceGroupDTO,
     (dto) => ({
       id: DeviceGroupId(dto.id),
       name: dto.name,
       devices: dto.devices.map(deviceDeserializer)
     }),
-    (obj) => `Unable to parse ${obj} into a DeviceGroup since it was not a GetDeviceGroupDTO`
+    (obj) => `Unable to parse ${obj} into a DeviceGroup since it was not a DeviceGroupDTO`
   )

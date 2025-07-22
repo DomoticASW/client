@@ -1,28 +1,28 @@
 import { DeviceId, type Device } from "@/model/devices-management/Device"
 import { Deserializer } from "../../Deserializer"
-import { deviceAddressDeserializer, isGetDeviceAddressDTO, type GetDeviceAddressDTO } from "./GetDeviceAddressDTO"
+import { deviceAddressDeserializer, isDeviceAddressDTO, type DeviceAddressDTO } from "./DeviceAddressDTO"
 
-export interface GetDeviceDTO {
+export interface DeviceDTO {
   id: string
   name: string
-  address: GetDeviceAddressDTO
+  address: DeviceAddressDTO
 }
 
-export function isGetDeviceDTO(o: unknown): o is GetDeviceDTO {
+export function isDeviceDTO(o: unknown): o is DeviceDTO {
   return o != undefined && typeof o == "object" &&
     "id" in o && typeof o.id == "string" &&
     "name" in o && typeof o.name == "string" &&
-    "address" in o && isGetDeviceAddressDTO(o.address)
+    "address" in o && isDeviceAddressDTO(o.address)
 }
 
 
 export const deviceDeserializer =
-  Deserializer<GetDeviceDTO, Device>(
-    isGetDeviceDTO,
+  Deserializer<DeviceDTO, Device>(
+    isDeviceDTO,
     (dto) => ({
       id: DeviceId(dto.id),
       name: dto.name,
       address: deviceAddressDeserializer(dto.address)
     }),
-    (obj) => `Unable to deserialize ${obj} into a Device since it was not a GetDeviceDTO`
+    (obj) => `Unable to deserialize ${obj} into a Device since it was not a DeviceDTO`
   )
