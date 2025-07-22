@@ -3,13 +3,11 @@ import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useUserInfoStore } from '@/stores/user-info'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
-import { authorizedRequest, deserializeBody } from '@/api/api'
 import DeviceListSkeleton from '@/components/admin/manage-devices/DeviceListSkeleton.vue'
 import type { DeviceGroup } from '@/model/devices-management/DeviceGroup'
-import { arrayDeserializer } from '@/api/Deserializer'
 import type { ServerError } from '@/api/ServerError'
-import { deviceGroupDeserializer } from '@/api/devices-management/GetDeviceGroupDTO'
-import { idDeserializer } from '@/api/devices-management/GetIdDTO'
+import * as api from '@/api/devices-management/requests/device-groups'
+
 const userInfo = useUserInfoStore()
 const loadingOverlay = useLoadingOverlayStore()
 const groups = ref<DeviceGroup[] | undefined>(undefined)
@@ -27,14 +25,8 @@ async function saveCreatingGroup() {
   if (name) {
     try {
       loadingOverlay.startLoading()
-      const createRes = await authorizedRequest(`/api/deviceGroups`, userInfo.token, {
-        method: 'POST',
-        body: JSON.stringify({ name }),
-      })
-      const groupId = await deserializeBody(createRes, idDeserializer)
-
-      const getRes = await authorizedRequest(`/api/deviceGroups/${groupId}`, userInfo.token)
-      const group = await deserializeBody(getRes, deviceGroupDeserializer)
+      const id = await api.createDeviceGroup(name, userInfo.token)
+      const group = await api.findDeviceGroup(id, userInfo.token)
       groups.value?.push(group)
     } catch (e) {
       // TODO: present error to the user
@@ -71,10 +63,7 @@ async function saveEditingGroup() {
   if (groups.value && id && newName != undefined) {
     try {
       loadingOverlay.startLoading()
-      await authorizedRequest(`/api/deviceGroups/${id}`, userInfo.token, {
-        method: 'POST',
-        body: JSON.stringify({ name: newName }),
-      })
+      await api.renameDeviceGroup(id, newName, userInfo.token)
       const group = groups.value.find((g) => g.id === id)
       if (group) {
         group.name = newName
@@ -91,8 +80,7 @@ async function saveEditingGroup() {
 
 onMounted(async () => {
   try {
-    const res = await authorizedRequest('/api/deviceGroups', userInfo.token)
-    groups.value = await deserializeBody(res, arrayDeserializer(deviceGroupDeserializer))
+    groups.value = await api.getAllDeviceGroups(userInfo.token)
   } catch (e) {
     // TODO: present error to the user
     console.log(e)
@@ -104,7 +92,10 @@ onMounted(async () => {
   <div>
     <div class="navbar justify-between">
       <h1 class="text-2xl">Device groups</h1>
-      <button class="btn btn-ghost fa-solid fa-plus fa-lg" @click="createGroupModal().showModal()"></button>
+      <button
+        class="btn btn-ghost fa-solid fa-plus fa-lg"
+        @click="createGroupModal().showModal()"
+      ></button>
       <!-- Dialog for creating a new group -->
       <dialog :id="createGroupModalId" class="modal modal-bottom sm:modal-middle">
         <div class="modal-box">

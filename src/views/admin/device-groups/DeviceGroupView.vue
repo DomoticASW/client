@@ -4,12 +4,10 @@ import { computed, onMounted, ref } from 'vue'
 import DeviceRowSkeleton from '@/components/admin/manage-devices/DeviceListSkeleton.vue'
 import type { DeviceGroup } from '@/model/devices-management/DeviceGroup'
 import type { Device } from '@/model/devices-management/Device'
-import { authorizedRequest, deserializeBody } from '@/api/api'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import { useUserInfoStore } from '@/stores/user-info'
-import { arrayDeserializer } from '@/api/Deserializer'
-import { deviceDeserializer } from '@/api/devices-management/GetDeviceDTO'
-import { deviceGroupDeserializer } from '@/api/devices-management/GetDeviceGroupDTO'
+import * as api from '@/api/devices-management/requests/device-groups'
+import * as devicesApi from '@/api/devices-management/requests/devices'
 
 const props = defineProps({ id: { type: String, required: true } })
 const userInfo = useUserInfoStore()
@@ -28,9 +26,7 @@ const devicesNotInGroup = computed(() => {
 async function removeDeviceFromGroup(deviceId: string) {
   try {
     loadingOverlay.startLoading()
-    await authorizedRequest(`/api/deviceGroups/${props.id}/device/${deviceId}`, userInfo.token, {
-      method: 'DELETE',
-    })
+    await api.removeDeviceFromDeviceGroup(props.id, deviceId, userInfo.token)
     group.value!.devices = group.value!.devices.filter((d) => d.id != deviceId)
   } catch (e) {
     // TODO: present error to the user
@@ -42,10 +38,7 @@ async function removeDeviceFromGroup(deviceId: string) {
 async function addDeviceToGroup(deviceId: string) {
   try {
     loadingOverlay.startLoading()
-    await authorizedRequest(`/api/deviceGroups/${props.id}/device`, userInfo.token, {
-      method: 'POST',
-      body: JSON.stringify({ deviceId }),
-    })
+    await api.addDeviceToDeviceGroup(props.id, deviceId, userInfo.token)
     const device = devices.value!.find((d) => d.id == deviceId)
     if (device) {
       group.value!.devices.push(device)
@@ -60,7 +53,7 @@ async function addDeviceToGroup(deviceId: string) {
 async function deleteGroup() {
   try {
     loadingOverlay.startLoading()
-    await authorizedRequest(`/api/deviceGroups/${props.id}`, userInfo.token, { method: 'DELETE' })
+    await api.deleteDeviceGroup(props.id, userInfo.token)
     router.back()
   } catch (e) {
     // TODO: present error to the user
@@ -72,8 +65,7 @@ async function deleteGroup() {
 
 onMounted(async () => {
   try {
-    const res = await authorizedRequest(`/api/deviceGroups/${props.id}`, userInfo.token)
-    group.value = await deserializeBody(res, deviceGroupDeserializer)
+    group.value = await api.findDeviceGroup(props.id, userInfo.token)
   } catch (e) {
     // TODO: present error to the user
     console.log(e)
@@ -81,8 +73,7 @@ onMounted(async () => {
 })
 onMounted(async () => {
   try {
-    const res = await authorizedRequest(`/api/devices`, userInfo.token)
-    devices.value = await deserializeBody(res, arrayDeserializer(deviceDeserializer))
+    devices.value = await devicesApi.getAllDevices(userInfo.token)
   } catch (e) {
     // TODO: present error to the user
     console.log(e)

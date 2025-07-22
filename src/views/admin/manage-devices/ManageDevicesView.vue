@@ -3,11 +3,10 @@ import DeviceListSkeleton from '@/components/admin/manage-devices/DeviceListSkel
 import type { Device } from '@/model/devices-management/Device'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import { useUserInfoStore } from '@/stores/user-info'
-import { authorizedRequest, deserializeBody } from '@/api/api'
 import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
-import { arrayDeserializer } from '@/api/Deserializer'
-import { deviceDeserializer } from '@/api/devices-management/GetDeviceDTO'
+import * as api from '@/api/devices-management/requests/devices'
+
 const userInfo = useUserInfoStore()
 const loadingOverlay = useLoadingOverlayStore()
 const devices = ref<Device[] | undefined>()
@@ -15,7 +14,7 @@ const devices = ref<Device[] | undefined>()
 async function removeDevice(id: string) {
   try {
     loadingOverlay.startLoading()
-    await authorizedRequest(`/api/devices/${id}`, userInfo.token, { method: 'DELETE' })
+    await api.deleteDevice(id, userInfo.token)
     devices.value = devices.value?.filter((d) => d.id != id)
   } catch (e) {
     // TODO: present error to the user
@@ -47,10 +46,7 @@ async function saveEditingDevice() {
   if (devices.value && id && newName != undefined) {
     try {
       loadingOverlay.startLoading()
-      await authorizedRequest(`/api/devices/${id}`, userInfo.token, {
-        method: 'POST',
-        body: JSON.stringify({ name: newName }),
-      })
+      await api.renameDevice(id, newName, userInfo.token)
       const device = devices.value.find((g) => g.id === id)
       if (device) {
         device.name = newName
@@ -68,8 +64,7 @@ async function saveEditingDevice() {
 
 onMounted(async () => {
   try {
-    const res = await authorizedRequest('/api/devices', userInfo.token)
-    devices.value = await deserializeBody(res, arrayDeserializer(deviceDeserializer))
+    devices.value = await api.getAllDevices(userInfo.token)
   } catch (e) {
     // TODO: present error to the user
     console.log(e)

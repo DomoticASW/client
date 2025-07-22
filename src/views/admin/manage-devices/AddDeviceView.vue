@@ -3,10 +3,9 @@ import DeviceListSkeleton from '@/components/admin/manage-devices/DeviceListSkel
 import type { DiscoveredDevice } from '@/model/devices-management/DiscoveredDevice'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import { useUserInfoStore } from '@/stores/user-info'
-import { authorizedRequest, deserializeBody } from '@/api/api'
 import { onMounted, ref } from 'vue'
-import { arrayDeserializer } from '@/api/Deserializer'
-import { discoveredDeviceDeserializer } from '@/api/devices-management/GetDiscoveredDeviceDTO'
+import * as api from '@/api/devices-management/requests/devices'
+
 const userInfo = useUserInfoStore()
 const loadingOverlay = useLoadingOverlayStore()
 const devices = ref<DiscoveredDevice[] | undefined>()
@@ -19,10 +18,7 @@ async function addDevice(id: string) {
   const port = deviceToAdd.address.port
   try {
     loadingOverlay.startLoading()
-    await authorizedRequest('/api/devices', userInfo.token, {
-      method: 'POST',
-      body: JSON.stringify({ deviceAddress: { host, port } }),
-    })
+    await api.registerDevice(host, port, userInfo.token)
     devices.value = devices.value!.filter((d) => d.id != id)
     successAlert().classList.remove('opacity-0')
     setTimeout(() => successAlert().classList.add('opacity-0'), 2000)
@@ -36,8 +32,7 @@ async function addDevice(id: string) {
 
 onMounted(async () => {
   try {
-    const res = await authorizedRequest('/api/discovered-devices', userInfo.token)
-    devices.value = await deserializeBody(res, arrayDeserializer(discoveredDeviceDeserializer))
+    devices.value = await api.getAllDiscoveredDevices(userInfo.token)
   } catch (e) {
     // TODO: present error to the user
     console.log(e)
