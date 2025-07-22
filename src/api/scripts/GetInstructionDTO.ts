@@ -1,4 +1,5 @@
 import type { GetTypeDTO } from '../GetTypeDTO'
+import type { GetConditionDTO } from './GetConditionDTO'
 import type { GetInstructionTypeDTO } from './GetInstructionTypeDTO'
 
 export interface GetInstructionDTO {
@@ -8,8 +9,8 @@ export interface GetInstructionDTO {
     | GetWaitInstructionDTO
     | GetStartTaskInstructionDTO
     | GetDeviceActionInstructionDTO
-    | GetCreateConstantInstructionSchema
-    | GetCreateDevicePropertyConstantInstructionSchema
+    | GetCreateConstantInstructionDTO
+    | GetCreateDevicePropertyConstantInstructionDTO
     | GetIfInstructionDTO
     | GetIfElseInstructionDTO
 }
@@ -38,11 +39,11 @@ interface GetConstantInstructionDTO {
   type: GetTypeDTO
 }
 
-interface GetCreateConstantInstructionSchema extends GetConstantInstructionDTO {
+interface GetCreateConstantInstructionDTO extends GetConstantInstructionDTO {
   value: unknown
 }
 
-interface GetCreateDevicePropertyConstantInstructionSchema extends GetConstantInstructionDTO {
+interface GetCreateDevicePropertyConstantInstructionDTO extends GetConstantInstructionDTO {
   deviceId: string
   devicePropertyId: string
 }
@@ -54,24 +55,6 @@ interface GetIfInstructionDTO {
 
 interface GetIfElseInstructionDTO extends GetIfInstructionDTO {
   elseInstructions: GetInstructionDTO[]
-}
-
-interface GetConditionDTO {
-  leftConstantName: string
-  rightConstantName: string
-  negate: boolean
-  conditionOperatorType: GetConditionOperatorTypeDTO
-}
-
-enum GetConditionOperatorTypeDTO {
-  NumberEOperator = 'NumberEOperator',
-  NumberGEOperator = 'NumberGEOperator',
-  NumberLEOperator = 'NumberLEOperator',
-  NumberLOperator = 'NumberLOperator',
-  NumberGOperator = 'NumberGOperator',
-  StringEOperator = 'StringEOperator',
-  ColorEOperator = 'ColorEOperator',
-  BooleanEOperator = 'BooleanEOperator',
 }
 
 

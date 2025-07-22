@@ -14,12 +14,12 @@ export enum GetInstructionTypeDTO {
 
 export function isGetInstructionTypeDTO(o: unknown): o is GetInstructionTypeDTO {
   return (
-    o !== undefined &&
+    o != undefined &&
     typeof o == 'string' &&
-    Object.values(GetInstructionTypeDTO).some(el => el === o)
+    Object.values(GetInstructionTypeDTO).some(el => el.valueOf() === o)
   )
 }
 
-export const deviceAddressDeserializer = Deserializer<GetInstructionTypeDTO, InstructionType>(isGetInstructionTypeDTO, (dto) => {
+export const instructionTypeDeserializer = Deserializer<GetInstructionTypeDTO, InstructionType>(isGetInstructionTypeDTO, (dto) => {
   return Object.values(InstructionType).find(el => el === dto.valueOf())!
 })
