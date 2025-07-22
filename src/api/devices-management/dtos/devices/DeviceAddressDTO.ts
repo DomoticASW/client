@@ -1,5 +1,5 @@
 import type { DeviceAddress } from "@/model/devices-management/Device";
-import { Deserializer } from "../../Deserializer";
+import { Deserializer } from "../../../Deserializer";
 
 export interface DeviceAddressDTO {
   host: string;

@@ -1,4 +1,4 @@
-import { Deserializer } from "../../Deserializer"
+import { Deserializer } from "../../../Deserializer"
 import { deviceAddressDeserializer, isDeviceAddressDTO, type DeviceAddressDTO } from "./DeviceAddressDTO"
 import { DiscoveredDeviceId, type DiscoveredDevice } from "@/model/devices-management/DiscoveredDevice"
 

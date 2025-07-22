@@ -1,11 +1,11 @@
 import { authorizedRequest, deserializeBody } from "@/api/api"
-import { deviceDeserializer } from "../dtos/DeviceDTO"
-import { discoveredDeviceDeserializer } from "../dtos/DiscoveredDeviceDTO"
+import { deviceDeserializer } from "../dtos/devices/DeviceDTO"
+import { discoveredDeviceDeserializer } from "../dtos/devices/DiscoveredDeviceDTO"
 import { arrayDeserializer } from "@/api/Deserializer"
 import type { Device, DeviceAddress, DeviceId } from "@/model/devices-management/Device"
 import type { DiscoveredDevice } from "@/model/devices-management/DiscoveredDevice"
-import type { RenameDeviceDTO } from "../dtos/RenameDeviceDTO"
-import type { RegisterDeviceDTO } from "../dtos/RegisterDeviceDTO"
+import type { RenameDeviceDTO } from "../dtos/devices/RenameDeviceDTO"
+import type { RegisterDeviceDTO } from "../dtos/devices/RegisterDeviceDTO"
 
 export async function renameDevice(id: DeviceId, newName: string, token: string): Promise<void> {
   const body: RenameDeviceDTO = { name: newName }
