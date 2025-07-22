@@ -5,3 +5,20 @@ export interface Task {
   name: string
   instructions: Instruction[]
 }
+
+export interface Automation extends Task{
+  enabled: boolean
+  trigger: Trigger
+}
+
+export type Trigger = PeriodTrigger | DeviceEventTrigger
+
+export interface PeriodTrigger {
+  start: Date
+  periodSeconds: number
+}
+
+export interface DeviceEventTrigger {
+  deviceId: string,
+  eventName: string
+}

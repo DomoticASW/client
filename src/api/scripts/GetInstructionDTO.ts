@@ -9,7 +9,7 @@ import type {
   StartTaskInstruction,
   WaitInstruction,
 } from '@/model/scripts/Instruction'
-import { arrayDeserializer, DeserializeError, Deserializer } from '../Deserializer'
+import { arrayDeserializer, Deserializer } from '../Deserializer'
 import { isGetTypeDTO, typeDeserializer, type GetTypeDTO } from '../GetTypeDTO'
 import { conditionDeserializer, isGetConditionDTO, type GetConditionDTO } from './GetConditionDTO'
 import {
@@ -302,11 +302,8 @@ function deserializeInstruction(
   if (isGetIfInstructionDTO(instruction)) {
     return ifInstructionDeserializer(instruction)
   }
-  if (isGetIfElseInstructionDTO(instruction)) {
-    return ifElseInstructionDeserializer(instruction)
-  }
 
-  throw DeserializeError('Error while deserializing some instruction')
+  return ifElseInstructionDeserializer(instruction)
 }
 
 const instructionDeserializer = Deserializer<GetInstructionDTO, Instruction>(
