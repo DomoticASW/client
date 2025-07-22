@@ -15,11 +15,13 @@ export function isGetDeviceGroupDTO(o: unknown): o is GetDeviceGroupDTO {
     "devices" in o && Array.isArray(o.devices) && o.devices.every(isGetDeviceDTO)
 }
 
-export const deviceGroupDeserializer = Deserializer<GetDeviceGroupDTO, DeviceGroup>(
-  isGetDeviceGroupDTO,
-  (dto) => ({
-    id: dto.id,
-    name: dto.name,
-    devices: dto.devices.map(deviceDeserializer)
-  })
-)
+export const deviceGroupDeserializer =
+  Deserializer<GetDeviceGroupDTO, DeviceGroup>(
+    isGetDeviceGroupDTO,
+    (dto) => ({
+      id: dto.id,
+      name: dto.name,
+      devices: dto.devices.map(deviceDeserializer)
+    }),
+    (obj) => `Unable to parse ${obj} into a DeviceGroup since it was not a GetDeviceGroupDTO`
+  )

@@ -15,10 +15,13 @@ export function isGetDiscoveredDeviceDTO(o: unknown): o is GetDiscoveredDeviceDT
     "address" in o && isGetDeviceAddressDTO(o.address)
 }
 
-export const discoveredDeviceDeserializer = Deserializer<GetDiscoveredDeviceDTO, DiscoveredDevice>(isGetDiscoveredDeviceDTO, (dto) => {
-  return {
-    id: dto.id,
-    name: dto.name,
-    address: deviceAddressDeserializer(dto.address)
-  }
-})
+export const discoveredDeviceDeserializer =
+  Deserializer<GetDiscoveredDeviceDTO, DiscoveredDevice>(
+    isGetDiscoveredDeviceDTO,
+    (dto) => ({
+      id: dto.id,
+      name: dto.name,
+      address: deviceAddressDeserializer(dto.address)
+    }),
+    (obj) => `Unable to deserialize ${obj} into a DiscoveredDevice since it was not a GetDiscoveredDeviceDTO`
+  )

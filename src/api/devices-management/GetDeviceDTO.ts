@@ -16,10 +16,13 @@ export function isGetDeviceDTO(o: unknown): o is GetDeviceDTO {
 }
 
 
-export const deviceDeserializer = Deserializer<GetDeviceDTO, Device>(isGetDeviceDTO, (dto) => {
-  return {
-    id: dto.id,
-    name: dto.name,
-    address: deviceAddressDeserializer(dto.address)
-  }
-})
+export const deviceDeserializer =
+  Deserializer<GetDeviceDTO, Device>(
+    isGetDeviceDTO,
+    (dto) => ({
+      id: dto.id,
+      name: dto.name,
+      address: deviceAddressDeserializer(dto.address)
+    }),
+    (obj) => `Unable to deserialize ${obj} into a Device since it was not a GetDeviceDTO`
+  )

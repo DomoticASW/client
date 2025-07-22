@@ -12,9 +12,12 @@ export function isGetDeviceAddressDTO(o: unknown): o is GetDeviceAddressDTO {
     "port" in o && typeof o.port == "number"
 }
 
-export const deviceAddressDeserializer = Deserializer<GetDeviceAddressDTO, DeviceAddress>(isGetDeviceAddressDTO, (dto) => {
-  return {
-    host: dto.host,
-    port: dto.port
-  }
-})
+export const deviceAddressDeserializer =
+  Deserializer<GetDeviceAddressDTO, DeviceAddress>(
+    isGetDeviceAddressDTO,
+    (dto) => ({
+      host: dto.host,
+      port: dto.port
+    }),
+    (obj) => `Unable to deserialize ${obj} into a DeviceAddress since it was not a GetDeviceAddressDTO`
+  )
