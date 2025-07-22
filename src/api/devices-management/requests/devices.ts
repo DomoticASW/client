@@ -4,11 +4,14 @@ import { discoveredDeviceDeserializer } from "../dtos/DiscoveredDeviceDTO"
 import { arrayDeserializer } from "@/api/Deserializer"
 import type { Device, DeviceAddress, DeviceId } from "@/model/devices-management/Device"
 import type { DiscoveredDevice } from "@/model/devices-management/DiscoveredDevice"
+import type { RenameDeviceDTO } from "../dtos/RenameDeviceDTO"
+import type { RegisterDeviceDTO } from "../dtos/RegisterDeviceDTO"
 
 export async function renameDevice(id: DeviceId, newName: string, token: string): Promise<void> {
+  const body: RenameDeviceDTO = { name: newName }
   await authorizedRequest(`/api/devices/${id}`, token, {
     method: 'POST',
-    body: JSON.stringify({ name: newName }),
+    body: JSON.stringify(body),
   })
 }
 
@@ -17,9 +20,10 @@ export async function deleteDevice(id: DeviceId, token: string): Promise<void> {
 }
 
 export async function registerDevice(deviceAddress: DeviceAddress, token: string): Promise<void> {
+  const body: RegisterDeviceDTO = { deviceAddress }
   await authorizedRequest('/api/devices', token, {
     method: 'POST',
-    body: JSON.stringify({ deviceAddress: { host: deviceAddress.host, port: deviceAddress.port } }),
+    body: JSON.stringify(body),
   })
 }
 
