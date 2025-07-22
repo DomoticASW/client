@@ -18,7 +18,7 @@ async function addDevice(id: string) {
   const port = deviceToAdd.address.port
   try {
     loadingOverlay.startLoading()
-    await api.registerDevice(host, port, userInfo.token)
+    await api.registerDevice({ host, port }, userInfo.token)
     devices.value = devices.value!.filter((d) => d.id != id)
     successAlert().classList.remove('opacity-0')
     setTimeout(() => successAlert().classList.add('opacity-0'), 2000)

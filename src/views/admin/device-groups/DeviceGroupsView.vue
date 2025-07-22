@@ -4,7 +4,7 @@ import { RouterLink } from 'vue-router'
 import { useUserInfoStore } from '@/stores/user-info'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import DeviceListSkeleton from '@/components/admin/manage-devices/DeviceListSkeleton.vue'
-import type { DeviceGroup } from '@/model/devices-management/DeviceGroup'
+import type { DeviceGroup, DeviceGroupId } from '@/model/devices-management/DeviceGroup'
 import type { ServerError } from '@/api/ServerError'
 import * as api from '@/api/devices-management/requests/device-groups'
 
@@ -39,7 +39,7 @@ async function saveCreatingGroup() {
 }
 
 /* Group editing */
-const groupEditing = ref<string | undefined>(undefined)
+const groupEditing = ref<DeviceGroupId | undefined>(undefined)
 const groupEditingName = ref<string | undefined>(undefined)
 
 const editGroupModalId = 'edit_group_name_modal'

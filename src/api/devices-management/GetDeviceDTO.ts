@@ -1,4 +1,4 @@
-import type { Device } from "@/model/devices-management/Device"
+import { DeviceId, type Device } from "@/model/devices-management/Device"
 import { Deserializer } from "../Deserializer"
 import { deviceAddressDeserializer, isGetDeviceAddressDTO, type GetDeviceAddressDTO } from "./GetDeviceAddressDTO"
 
@@ -20,7 +20,7 @@ export const deviceDeserializer =
   Deserializer<GetDeviceDTO, Device>(
     isGetDeviceDTO,
     (dto) => ({
-      id: dto.id,
+      id: DeviceId(dto.id),
       name: dto.name,
       address: deviceAddressDeserializer(dto.address)
     }),

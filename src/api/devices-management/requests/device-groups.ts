@@ -1,42 +1,44 @@
 import { authorizedRequest, deserializeBody } from "@/api/api"
 import { arrayDeserializer } from "@/api/Deserializer"
-import type { DeviceGroup } from "@/model/devices-management/DeviceGroup"
+import { DeviceGroupId, type DeviceGroup } from "@/model/devices-management/DeviceGroup"
 import { deviceGroupDeserializer } from "../GetDeviceGroupDTO"
 import { idDeserializer } from "../GetIdDTO"
+import type { DeviceId } from "@/model/devices-management/Device"
 
-export async function createDeviceGroup(name: string, token: string): Promise<string> {
+export async function createDeviceGroup(name: string, token: string): Promise<DeviceGroupId> {
   const res = await authorizedRequest(`/api/deviceGroups`, token, {
     method: 'POST',
     body: JSON.stringify({ name }),
   })
-  return await deserializeBody(res, idDeserializer)
+  const idDTO = await deserializeBody(res, idDeserializer)
+  return DeviceGroupId(idDTO)
 }
 
-export async function renameDeviceGroup(id: string, newName: string, token: string): Promise<void> {
+export async function renameDeviceGroup(id: DeviceGroupId, newName: string, token: string): Promise<void> {
   await authorizedRequest(`/api/deviceGroups/${id}`, token, {
     method: 'POST',
     body: JSON.stringify({ name: newName }),
   })
 }
 
-export async function deleteDeviceGroup(id: string, token: string): Promise<void> {
+export async function deleteDeviceGroup(id: DeviceGroupId, token: string): Promise<void> {
   await authorizedRequest(`/api/deviceGroups/${id}`, token, { method: 'DELETE' })
 }
 
-export async function addDeviceToDeviceGroup(groupId: string, deviceId: string, token: string): Promise<void> {
+export async function addDeviceToDeviceGroup(groupId: DeviceGroupId, deviceId: DeviceId, token: string): Promise<void> {
   await authorizedRequest(`/api/deviceGroups/${groupId}/device`, token, {
     method: 'POST',
     body: JSON.stringify({ deviceId }),
   })
 }
 
-export async function removeDeviceFromDeviceGroup(groupId: string, deviceId: string, token: string): Promise<void> {
+export async function removeDeviceFromDeviceGroup(groupId: DeviceGroupId, deviceId: DeviceId, token: string): Promise<void> {
   await authorizedRequest(`/api/deviceGroups/${groupId}/device/${deviceId}`, token, {
     method: 'DELETE',
   })
 }
 
-export async function findDeviceGroup(id: string, token: string): Promise<DeviceGroup> {
+export async function findDeviceGroup(id: DeviceGroupId, token: string): Promise<DeviceGroup> {
   const res = await authorizedRequest(`/api/deviceGroups/${id}`, token)
   return await deserializeBody(res, deviceGroupDeserializer)
 }

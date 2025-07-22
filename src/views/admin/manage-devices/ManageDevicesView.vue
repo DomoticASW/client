@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import DeviceListSkeleton from '@/components/admin/manage-devices/DeviceListSkeleton.vue'
-import type { Device } from '@/model/devices-management/Device'
+import type { Device, DeviceId } from '@/model/devices-management/Device'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import { useUserInfoStore } from '@/stores/user-info'
 import { onMounted, ref } from 'vue'
@@ -11,7 +11,7 @@ const userInfo = useUserInfoStore()
 const loadingOverlay = useLoadingOverlayStore()
 const devices = ref<Device[] | undefined>()
 
-async function removeDevice(id: string) {
+async function removeDevice(id: DeviceId) {
   try {
     loadingOverlay.startLoading()
     await api.deleteDevice(id, userInfo.token)
@@ -24,12 +24,12 @@ async function removeDevice(id: string) {
   }
 }
 
-const deviceEditing = ref<string | undefined>(undefined)
+const deviceEditing = ref<DeviceId | undefined>(undefined)
 const deviceEditingName = ref<string | undefined>(undefined)
 
 const editDeviceModalId = 'edit_device_name_modal'
 const editDeviceNameModal = () => document.getElementById(editDeviceModalId) as HTMLDialogElement
-function startEditingDevice(id: string) {
+function startEditingDevice(id: DeviceId) {
   const device = devices.value!.find((d) => d.id == id)!
   deviceEditing.value = device.id
   deviceEditingName.value = device.name

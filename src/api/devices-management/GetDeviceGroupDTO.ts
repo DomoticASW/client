@@ -1,4 +1,4 @@
-import type { DeviceGroup } from "@/model/devices-management/DeviceGroup"
+import { DeviceGroupId, type DeviceGroup } from "@/model/devices-management/DeviceGroup"
 import { Deserializer } from "../Deserializer"
 import { deviceDeserializer, isGetDeviceDTO, type GetDeviceDTO } from "./GetDeviceDTO"
 
@@ -19,7 +19,7 @@ export const deviceGroupDeserializer =
   Deserializer<GetDeviceGroupDTO, DeviceGroup>(
     isGetDeviceGroupDTO,
     (dto) => ({
-      id: dto.id,
+      id: DeviceGroupId(dto.id),
       name: dto.name,
       devices: dto.devices.map(deviceDeserializer)
     }),

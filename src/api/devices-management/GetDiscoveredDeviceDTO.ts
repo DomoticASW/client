@@ -1,6 +1,6 @@
 import { Deserializer } from "../Deserializer"
 import { deviceAddressDeserializer, isGetDeviceAddressDTO, type GetDeviceAddressDTO } from "./GetDeviceAddressDTO"
-import type { DiscoveredDevice } from "@/model/devices-management/DiscoveredDevice"
+import { DiscoveredDeviceId, type DiscoveredDevice } from "@/model/devices-management/DiscoveredDevice"
 
 export interface GetDiscoveredDeviceDTO {
   id: string
@@ -19,7 +19,7 @@ export const discoveredDeviceDeserializer =
   Deserializer<GetDiscoveredDeviceDTO, DiscoveredDevice>(
     isGetDiscoveredDeviceDTO,
     (dto) => ({
-      id: dto.id,
+      id: DiscoveredDeviceId(dto.id),
       name: dto.name,
       address: deviceAddressDeserializer(dto.address)
     }),

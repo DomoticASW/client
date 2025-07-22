@@ -2,14 +2,15 @@
 import router from '@/router'
 import { computed, onMounted, ref } from 'vue'
 import DeviceRowSkeleton from '@/components/admin/manage-devices/DeviceListSkeleton.vue'
-import type { DeviceGroup } from '@/model/devices-management/DeviceGroup'
-import type { Device } from '@/model/devices-management/Device'
+import { DeviceGroupId, type DeviceGroup } from '@/model/devices-management/DeviceGroup'
+import type { Device, DeviceId } from '@/model/devices-management/Device'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import { useUserInfoStore } from '@/stores/user-info'
 import * as api from '@/api/devices-management/requests/device-groups'
 import * as devicesApi from '@/api/devices-management/requests/devices'
 
 const props = defineProps({ id: { type: String, required: true } })
+const groupId = DeviceGroupId(props.id)
 const userInfo = useUserInfoStore()
 const loadingOverlay = useLoadingOverlayStore()
 
@@ -23,10 +24,10 @@ const devicesNotInGroup = computed(() => {
     )
   else return undefined
 })
-async function removeDeviceFromGroup(deviceId: string) {
+async function removeDeviceFromGroup(deviceId: DeviceId) {
   try {
     loadingOverlay.startLoading()
-    await api.removeDeviceFromDeviceGroup(props.id, deviceId, userInfo.token)
+    await api.removeDeviceFromDeviceGroup(groupId, deviceId, userInfo.token)
     group.value!.devices = group.value!.devices.filter((d) => d.id != deviceId)
   } catch (e) {
     // TODO: present error to the user
@@ -35,10 +36,10 @@ async function removeDeviceFromGroup(deviceId: string) {
     loadingOverlay.stopLoading()
   }
 }
-async function addDeviceToGroup(deviceId: string) {
+async function addDeviceToGroup(deviceId: DeviceId) {
   try {
     loadingOverlay.startLoading()
-    await api.addDeviceToDeviceGroup(props.id, deviceId, userInfo.token)
+    await api.addDeviceToDeviceGroup(groupId, deviceId, userInfo.token)
     const device = devices.value!.find((d) => d.id == deviceId)
     if (device) {
       group.value!.devices.push(device)
@@ -53,7 +54,7 @@ async function addDeviceToGroup(deviceId: string) {
 async function deleteGroup() {
   try {
     loadingOverlay.startLoading()
-    await api.deleteDeviceGroup(props.id, userInfo.token)
+    await api.deleteDeviceGroup(groupId, userInfo.token)
     router.back()
   } catch (e) {
     // TODO: present error to the user
@@ -65,7 +66,7 @@ async function deleteGroup() {
 
 onMounted(async () => {
   try {
-    group.value = await api.findDeviceGroup(props.id, userInfo.token)
+    group.value = await api.findDeviceGroup(groupId, userInfo.token)
   } catch (e) {
     // TODO: present error to the user
     console.log(e)
