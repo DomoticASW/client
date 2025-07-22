@@ -1,4 +1,4 @@
-import { Deserializer } from "../Deserializer";
+import { Deserializer } from "./Deserializer";
 
 export interface GetIdDTO {
   id: string

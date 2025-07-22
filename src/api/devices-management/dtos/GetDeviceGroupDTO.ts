@@ -1,5 +1,5 @@
 import { DeviceGroupId, type DeviceGroup } from "@/model/devices-management/DeviceGroup"
-import { Deserializer } from "../Deserializer"
+import { Deserializer } from "../../Deserializer"
 import { deviceDeserializer, isGetDeviceDTO, type GetDeviceDTO } from "./GetDeviceDTO"
 
 export interface GetDeviceGroupDTO {

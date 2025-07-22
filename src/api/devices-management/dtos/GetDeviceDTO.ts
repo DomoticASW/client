@@ -1,5 +1,5 @@
 import { DeviceId, type Device } from "@/model/devices-management/Device"
-import { Deserializer } from "../Deserializer"
+import { Deserializer } from "../../Deserializer"
 import { deviceAddressDeserializer, isGetDeviceAddressDTO, type GetDeviceAddressDTO } from "./GetDeviceAddressDTO"
 
 export interface GetDeviceDTO {
