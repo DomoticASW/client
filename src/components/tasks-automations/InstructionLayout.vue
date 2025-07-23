@@ -23,7 +23,13 @@
         <slot></slot>
         <template v-if="removeInstruction !== undefined">
           <button
-            class="btn btn-square fa-solid fa-xmark row-start-1 col-start-3 row-span-2 place-self-center"
+            class="btn btn-square fa-solid fa-xmark row-start-1 place-self-center row-span-2"
+            :class="
+              instruction.type === InstructionType.IfInstruction ||
+              instruction.type === InstructionType.IfElseInstruction
+                ? 'ml-4 col-start-6'
+                : 'col-start-3'
+            "
             @click="removeInstruction(props.instruction)"
           ></button>
         </template>
