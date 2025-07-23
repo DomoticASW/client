@@ -1,34 +1,19 @@
 <template>
   <!-- If card -->
-
-  <div :class="indent">
-    <div :class="['card card-sm my-2', colors]">
-      <div class="card-body text-base grid grid-cols-4 px-4">
-        <template v-if="moveInstruction !== undefined">
-          <button
-            class="btn btn-xs btn-square fa-solid fa-angle-up col-end-1"
-            @click="moveInstruction(props.instruction, 'up')"
-          ></button>
-          <button
-            class="btn btn-xs btn-square fa-solid fa-angle-down row-start-2"
-            @click="moveInstruction(props.instruction, 'down')"
-          ></button>
-        </template>
-        <p>If</p>
-        <div class="font-bold grid grid-cols-5 col-span-3 row-span-2">
-          <p class="truncate col-span-2">{{ instruction.condition.leftConstantName }}</p>
-          <p class="truncate">{{ operatorSymbol }}</p>
-          <p class="truncate col-span-2">{{ instruction.condition.rightConstantName }}</p>
-          <template v-if="removeInstruction !== undefined">
-            <button
-              class="btn btn-square fa-solid fa-xmark ml-4 row-start-1 col-start-6 place-self-center"
-              @click="removeInstruction(props.instruction)"
-            ></button>
-          </template>
-        </div>
-      </div>
+  <InstructionLayout
+    :colors="colors"
+    :indent="indent"
+    :move-instruction="moveInstruction"
+    :remove-instruction="removeInstruction"
+    :instruction="props.instruction"
+  >
+    <p>If</p>
+    <div class="font-bold grid grid-cols-5 col-span-3 row-span-2">
+      <p class="truncate col-span-2">{{ instruction.condition.leftConstantName }}</p>
+      <p class="truncate">{{ operatorSymbol }}</p>
+      <p class="truncate col-span-2">{{ instruction.condition.rightConstantName }}</p>
     </div>
-  </div>
+  </InstructionLayout>
 
   <!-- Then instructions -->
   <InstructionItem
@@ -66,8 +51,14 @@
 </template>
 
 <script setup lang="ts">
-import { type IfInstruction, type IfElseInstruction, ConditionOperatorType, type Instruction } from '@/model/scripts/Instruction';
+import {
+  type IfInstruction,
+  type IfElseInstruction,
+  ConditionOperatorType,
+  type Instruction,
+} from '@/model/scripts/Instruction'
 import InstructionItem from './InstructionItem.vue'
+import InstructionLayout from './InstructionLayout.vue'
 
 const props = defineProps<{
   instruction: Instruction
@@ -82,20 +73,20 @@ const instruction = props.instruction.instruction as IfInstruction | IfElseInstr
 const operatorSymbol = getOperator()
 
 function getOperator() {
-  switch(instruction.condition.conditionOperatorType) {
+  switch (instruction.condition.conditionOperatorType) {
     case ConditionOperatorType.BooleanEOperator:
     case ConditionOperatorType.ColorEOperator:
     case ConditionOperatorType.StringEOperator:
     case ConditionOperatorType.NumberEOperator:
-      return "=="
+      return '=='
     case ConditionOperatorType.NumberGEOperator:
-      return ">="
+      return '>='
     case ConditionOperatorType.NumberGOperator:
-      return ">"
+      return '>'
     case ConditionOperatorType.NumberLEOperator:
-      return "<="
+      return '<='
     case ConditionOperatorType.NumberLOperator:
-      return "<"
+      return '<'
   }
 }
 </script>
