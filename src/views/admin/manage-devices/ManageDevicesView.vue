@@ -63,12 +63,7 @@ async function saveEditingDevice() {
 }
 
 onMounted(async () => {
-  try {
-    devices.value = await api.getAllDevices(userInfo.token)
-  } catch (e) {
-    // TODO: present error to the user
-    console.log(e)
-  }
+  devices.value = await api.getAllDevices(userInfo.token)
 })
 </script>
 

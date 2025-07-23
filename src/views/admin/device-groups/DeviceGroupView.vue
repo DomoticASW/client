@@ -65,20 +65,10 @@ async function deleteGroup() {
 }
 
 onMounted(async () => {
-  try {
-    group.value = await api.findDeviceGroup(groupId, userInfo.token)
-  } catch (e) {
-    // TODO: present error to the user
-    console.log(e)
-  }
+  group.value = await api.findDeviceGroup(groupId, userInfo.token)
 })
 onMounted(async () => {
-  try {
-    devices.value = await devicesApi.getAllDevices(userInfo.token)
-  } catch (e) {
-    // TODO: present error to the user
-    console.log(e)
-  }
+  devices.value = await devicesApi.getAllDevices(userInfo.token)
 })
 </script>
 

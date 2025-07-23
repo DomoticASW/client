@@ -68,9 +68,6 @@ async function saveEditingGroup() {
       if (group) {
         group.name = newName
       }
-    } catch (e) {
-      // TODO: present error to the user
-      console.log((e as ServerError).message)
     } finally {
       cancelEditingGroup()
       loadingOverlay.stopLoading()
@@ -79,12 +76,7 @@ async function saveEditingGroup() {
 }
 
 onMounted(async () => {
-  try {
-    groups.value = await api.getAllDeviceGroups(userInfo.token)
-  } catch (e) {
-    // TODO: present error to the user
-    console.log(e)
-  }
+  groups.value = await api.getAllDeviceGroups(userInfo.token)
 })
 </script>
 

@@ -31,12 +31,7 @@ async function addDevice(id: string) {
 }
 
 onMounted(async () => {
-  try {
-    devices.value = await api.getAllDiscoveredDevices(userInfo.token)
-  } catch (e) {
-    // TODO: present error to the user
-    console.log(e)
-  }
+  devices.value = await api.getAllDiscoveredDevices(userInfo.token)
 })
 </script>
 
