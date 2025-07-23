@@ -8,12 +8,14 @@ import type { Instruction } from '@/model/scripts/Instruction'
 import { useUserInfoStore } from '@/stores/user-info'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { type Trigger as AutomationTrigger } from '@/model/scripts/Script'
 
 const route = useRoute()
 const userInfo = useUserInfoStore()
 
 const instructions = ref<Instruction[]>([])
 const automationName = ref<string>('')
+const trigger = ref<AutomationTrigger | undefined>()
 
 onMounted(async () => {
   if (route.params.id != undefined) {
@@ -21,6 +23,7 @@ onMounted(async () => {
     const automation = await deserializeBody(res, automationDeserializer)
     instructions.value = automation.instructions
     automationName.value = automation.name
+    trigger.value = automation.trigger
   }
 })
 </script>
@@ -31,7 +34,7 @@ onMounted(async () => {
   </div>
   <hr class="m-4" />
   <h1 class="text-xl">Trigger</h1>
-  <Trigger :edit="true" />
+  <Trigger :trigger="trigger" :edit="true" />
   <hr class="m-4" />
   <h1 class="text-xl">Actions</h1>
   <InstructionReorder :instructions="instructions" />

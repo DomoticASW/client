@@ -1,25 +1,34 @@
 <script setup lang="ts">
-import { formatDate, formatDuration, trigger } from '@/components/tasks-automations/example'
-import { ref } from 'vue'
-import { useRoute } from 'vue-router'
-defineProps({
-  edit: Boolean,
-})
+import { formatDuration, formatDate, type Trigger } from '@/model/scripts/Script'
+import { ref, watch } from 'vue'
 
-const triggerIsPresent = ref(useRoute().params.id !== undefined)
+const props = defineProps<{
+  trigger?: Trigger
+  edit: boolean
+}>()
+
+const trigger = ref<Trigger | undefined>(props.trigger)
+
+watch(
+  () => props.trigger,
+  (val) => {
+    trigger.value = val
+  },
+  { immediate: true },
+)
 
 function removeTrigger() {
-  triggerIsPresent.value = false
+  trigger.value = undefined
 }
 </script>
 
 <template>
-  <div class="grid grid-cols-2 p-4 justify-items-center" v-if="!triggerIsPresent">
+  <div class="grid grid-cols-2 p-4 justify-items-center" v-if="trigger === undefined">
     <button class="btn btn-neutral w-50" type="button">Device Event</button>
     <button class="btn btn-neutral w-50" type="button">Period</button>
   </div>
-  <div class="card card-sm bg-secondary/70 text-secondary-content my-2" v-if="triggerIsPresent">
-    <div class="card-body text-base grid grid-cols-2 px-4">
+  <div class="card card-sm bg-secondary/70 text-secondary-content my-2" v-else>
+    <div class="card-body text-base grid grid-cols-2 px-4" v-if="'start' in trigger">
       <p>Start</p>
       <p class="font-bold justify-self-center truncate">{{ formatDate(trigger.start) }}</p>
 
