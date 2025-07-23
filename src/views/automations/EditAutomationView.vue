@@ -1,7 +1,25 @@
-<template>
-  <div>
-    <h1>Edit automation</h1>
-  </div>
-</template>
+<script setup lang="ts">
+import InstructionReorder from '@/components/tasks-automations/InstructionReorder.vue'
+import { instructions } from '@/components/tasks-automations/example'
+import Trigger from '@/components/tasks-automations/TriggerComponent.vue'
+</script>
 
-<style></style>
+<template>
+  <div class="mx-6">
+    <!-- TODO: put name and not id (finding the automation from the server) -->
+    <input
+      type="text"
+      placeholder="Automation name"
+      class="input w-full"
+      :value="$route.params.id !== undefined ? $route.params.id : ''"
+    />
+  </div>
+  <hr class="m-4" />
+  <h1 class="text-xl">Trigger</h1>
+  <Trigger :edit="true" />
+  <hr class="m-4" />
+  <h1 class="text-xl">Actions</h1>
+  <!-- instructions need to be taken from the server when loading the page, if adding a new automation it is not needed (v-if already doing it) -->
+  <InstructionReorder :instructions="instructions" v-if="$route.params.id !== undefined" />
+  <div class="pb-4"></div>
+</template>

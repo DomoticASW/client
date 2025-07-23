@@ -1,7 +1,15 @@
-<template>
-  <div>
-    <h1>Task</h1>
-  </div>
-</template>
+<script setup lang="ts">
+import InstructionItem from '@/components/tasks-automations/InstructionItem.vue'
+import { instructions } from '@/components/tasks-automations/example'
+import AddButton from '@/components/AddButton.vue';
+</script>
 
-<style></style>
+<template>
+  <InstructionItem
+    v-for="[index, instruction] in instructions.entries()"
+    :key="index"
+    :instruction="instruction"
+  />
+  <div class="pb-4"></div>
+  <AddButton name="add-task"/>
+</template>
