@@ -28,6 +28,7 @@
 <script setup lang="ts">
 import type { DeviceActionInstruction, Instruction } from '@/model/scripts/Instruction'
 import InstructionLayout from './InstructionLayout.vue'
+import { ref, watch } from 'vue';
 
 const props = defineProps<{
   instruction: Instruction
@@ -38,5 +39,14 @@ const props = defineProps<{
   removeInstruction?: (instr: Instruction) => void
 }>()
 
-const instruction = props.instruction.instruction as DeviceActionInstruction
+const instruction = ref(props.instruction.instruction as DeviceActionInstruction)
+
+watch(
+  () => props.instruction,
+  (val) => {
+    instruction.value = val.instruction as DeviceActionInstruction
+  },
+  { immediate: true },
+)
+
 </script>

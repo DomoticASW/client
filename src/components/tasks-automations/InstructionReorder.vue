@@ -37,7 +37,6 @@ function removeInstruction(target: Instruction) {
         const type = instructions[i].type
         if (isIfInstruction(instruction, type)) {
           if (!recursiveRemove(instruction.thenInstructions)) {
-            console.log(type)
             if (isIfElseInstruction(instruction, type)) {
               return recursiveRemove(instruction.elseInstructions)
             }

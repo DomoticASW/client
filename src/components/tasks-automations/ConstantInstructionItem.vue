@@ -15,6 +15,7 @@
 <script setup lang="ts">
 import type { CreateConstantInstruction, Instruction } from '@/model/scripts/Instruction'
 import InstructionLayout from './InstructionLayout.vue'
+import { ref, watch } from 'vue';
 
 const props = defineProps<{
   instruction: Instruction
@@ -25,5 +26,14 @@ const props = defineProps<{
   removeInstruction?: (instr: Instruction) => void
 }>()
 
-const instruction = props.instruction.instruction as CreateConstantInstruction
+const instruction = ref<CreateConstantInstruction>(props.instruction.instruction as CreateConstantInstruction)
+
+watch(
+  () => props.instruction,
+  (val) => {
+    instruction.value = val.instruction as CreateConstantInstruction
+  },
+  { immediate: true },
+)
+
 </script>

@@ -24,6 +24,7 @@
 <script setup lang="ts">
 import type { Instruction, SendNotificationInstruction } from '@/model/scripts/Instruction'
 import InstructionLayout from './InstructionLayout.vue'
+import { ref, watch } from 'vue'
 
 const props = defineProps<{
   instruction: Instruction
@@ -34,5 +35,13 @@ const props = defineProps<{
   removeInstruction?: (instr: Instruction) => void
 }>()
 
-const instruction = props.instruction.instruction as SendNotificationInstruction
+const instruction = ref(props.instruction.instruction as SendNotificationInstruction)
+
+watch(
+  () => props.instruction,
+  (val) => {
+    instruction.value = val.instruction as SendNotificationInstruction
+  },
+  { immediate: true },
+)
 </script>

@@ -59,6 +59,7 @@ import {
 } from '@/model/scripts/Instruction'
 import InstructionItem from './InstructionItem.vue'
 import InstructionLayout from './InstructionLayout.vue'
+import { ref, watch } from 'vue';
 
 const props = defineProps<{
   instruction: Instruction
@@ -69,11 +70,20 @@ const props = defineProps<{
   removeInstruction?: (instr: Instruction) => void
 }>()
 
-const instruction = props.instruction.instruction as IfInstruction | IfElseInstruction
+const instruction = ref(props.instruction.instruction as IfInstruction | IfElseInstruction)
+
+watch(
+  () => props.instruction,
+  (val) => {
+    instruction.value = val.instruction as IfInstruction | IfElseInstruction
+  },
+  { immediate: true },
+)
+
 const operatorSymbol = getOperator()
 
 function getOperator() {
-  switch (instruction.condition.conditionOperatorType) {
+  switch (instruction.value.condition.conditionOperatorType) {
     case ConditionOperatorType.BooleanEOperator:
     case ConditionOperatorType.ColorEOperator:
     case ConditionOperatorType.StringEOperator:

@@ -19,6 +19,7 @@ import type {
   Instruction,
 } from '@/model/scripts/Instruction'
 import InstructionLayout from './InstructionLayout.vue'
+import { ref, watch } from 'vue';
 
 const props = defineProps<{
   instruction: Instruction
@@ -29,5 +30,14 @@ const props = defineProps<{
   removeInstruction?: (instr: Instruction) => void
 }>()
 
-const instruction = props.instruction.instruction as CreateDevicePropertyConstantInstruction
+const instruction = ref(props.instruction.instruction as CreateDevicePropertyConstantInstruction)
+
+watch(
+  () => props.instruction,
+  (val) => {
+    instruction.value = val.instruction as CreateDevicePropertyConstantInstruction
+  },
+  { immediate: true },
+)
+
 </script>
