@@ -36,6 +36,14 @@ const errorMessage = computed(() => {
     return ''
   }
 })
+const errorCause = computed(() => {
+  const error = state.errorShown
+  if (error && 'cause' in error) {
+    return error.cause as string
+  } else {
+    return undefined
+  }
+})
 
 async function okPressed() {
   dialog.value!.close()
@@ -59,6 +67,7 @@ onMounted(() => {
     <div class="modal-box">
       <h3 class="text-lg font-bold">{{ errorTitle }}</h3>
       <p>{{ errorMessage }}</p>
+      <p v-if="errorCause" class="text-sm opacity-60">{{ errorCause }}</p>
       <div class="modal-action">
         <button class="btn btn-primary btn-soft" @click="okPressed">Ok</button>
       </div>
