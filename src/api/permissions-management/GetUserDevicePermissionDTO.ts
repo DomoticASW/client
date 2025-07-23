@@ -17,7 +17,7 @@ export function isGetUserDevicePermissionDTO(o: unknown): o is GetUseDevicePermi
   )
 }
 
-export const UserDevicePermissionDeserializer = Deserializer<
+export const userDevicePermissionDeserializer = Deserializer<
   GetUseDevicePermissionDTO,
   UserDevicePermission
 >(isGetUserDevicePermissionDTO, (dto) => {

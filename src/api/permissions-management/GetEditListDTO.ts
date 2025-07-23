@@ -18,7 +18,7 @@ export function isGetEditListDTO(o: unknown): o is GetEditListDTO {
   )
 }
 
-export const EditListDeserializer = Deserializer<GetEditListDTO, EditList>(
+export const editListDeserializer = Deserializer<GetEditListDTO, EditList>(
   isGetEditListDTO,
   (dto) => {
     return {
