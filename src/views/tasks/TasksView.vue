@@ -9,7 +9,7 @@ import { tasksDeserializer } from '@/api/scripts/GetTaskDTO'
 
 const userInfo = useUserInfoStore()
 
-const tasks = ref<Task[]>()
+const tasks = ref<Task[]>([])
 
 onMounted(async () => {
   const res = await authorizedRequest('/api/tasks', userInfo.token)

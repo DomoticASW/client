@@ -5,10 +5,11 @@ import AddButton from '@/components/AddButton.vue'
 import { useUserInfoStore } from '@/stores/user-info'
 import { automationsDeserializer } from '@/api/scripts/GetAutomationDTO'
 import { authorizedRequest, deserializeBody } from '@/api/api'
+import type { Automation } from '@/model/scripts/Script'
 
 const userInfo = useUserInfoStore()
 
-const automations = ref<{ id: string; name: string; enabled: boolean }[] | undefined>(undefined)
+const automations = ref<Automation[]>()
 
 onMounted(async () => {
   const res = await authorizedRequest('/api/automations', userInfo.token)

@@ -1,7 +1,26 @@
 <script setup lang="ts">
 import InstructionItem from '@/components/tasks-automations/InstructionItem.vue'
-import { instructions } from '@/components/tasks-automations/example'
 import Trigger from '@/components/tasks-automations/TriggerComponent.vue'
+
+import { authorizedRequest, deserializeBody } from '@/api/api'
+import { automationDeserializer } from '@/api/scripts/GetAutomationDTO'
+import type { Instruction } from '@/model/scripts/Instruction'
+import { useUserInfoStore } from '@/stores/user-info'
+import { onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
+const userInfo = useUserInfoStore()
+
+const instructions = ref<Instruction[]>([])
+const automationName = ref<string>('')
+
+onMounted(async () => {
+  const res = await authorizedRequest('/api/automations/' + route.params.id, userInfo.token)
+  const automation = await deserializeBody(res, automationDeserializer)
+  instructions.value = automation.instructions
+  automationName.value = automation.name
+})
 </script>
 
 <template>

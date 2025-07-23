@@ -1,25 +1,39 @@
 <script setup lang="ts">
 import InstructionReorder from '@/components/tasks-automations/InstructionReorder.vue'
-import { instructions } from '@/components/tasks-automations/example'
 import Trigger from '@/components/tasks-automations/TriggerComponent.vue'
+
+import { authorizedRequest, deserializeBody } from '@/api/api'
+import { automationDeserializer } from '@/api/scripts/GetAutomationDTO'
+import type { Instruction } from '@/model/scripts/Instruction'
+import { useUserInfoStore } from '@/stores/user-info'
+import { onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
+const userInfo = useUserInfoStore()
+
+const instructions = ref<Instruction[]>([])
+const automationName = ref<string>('')
+
+onMounted(async () => {
+  if (route.params.id != undefined) {
+    const res = await authorizedRequest('/api/automations/' + route.params.id, userInfo.token)
+    const automation = await deserializeBody(res, automationDeserializer)
+    instructions.value = automation.instructions
+    automationName.value = automation.name
+  }
+})
 </script>
 
 <template>
   <div class="mx-6">
-    <!-- TODO: put name and not id (finding the automation from the server) -->
-    <input
-      type="text"
-      placeholder="Automation name"
-      class="input w-full"
-      :value="$route.params.id !== undefined ? $route.params.id : ''"
-    />
+    <input type="text" placeholder="Automation name" class="input w-full" :value="automationName" />
   </div>
   <hr class="m-4" />
   <h1 class="text-xl">Trigger</h1>
   <Trigger :edit="true" />
   <hr class="m-4" />
   <h1 class="text-xl">Actions</h1>
-  <!-- instructions need to be taken from the server when loading the page, if adding a new automation it is not needed (v-if already doing it) -->
-  <InstructionReorder :instructions="instructions" v-if="$route.params.id !== undefined" />
+  <InstructionReorder :instructions="instructions" />
   <div class="pb-4"></div>
 </template>
