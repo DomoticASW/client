@@ -8,7 +8,7 @@ import { useUserInfoStore } from '@/stores/user-info'
 import { onMounted, ref } from 'vue'
 
 const userInfo = useUserInfoStore()
-const scritpStore = useScript()
+const scriptStore = useScript()
 const tasks = ref<Task[]>()
 const automations = ref<Automation[]>()
 
@@ -24,7 +24,7 @@ onMounted(async () => {
 })
 
 function storeScript(script: Task | Automation) {
-  scritpStore.script = script
+  scriptStore.script = script
 }
 </script>
 
