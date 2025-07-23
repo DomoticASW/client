@@ -20,7 +20,7 @@ export interface GetAutomationDTO extends GetTaskDTO {
   trigger: GetTriggerDTO
 }
 
-function isGetPeriodTriggerDTO(o: unknown): o is GetPeriodTriggerDTO {
+export function isGetPeriodTriggerDTO(o: unknown): o is GetPeriodTriggerDTO {
   return (
     o != undefined &&
     typeof o === 'object' &&
@@ -31,7 +31,7 @@ function isGetPeriodTriggerDTO(o: unknown): o is GetPeriodTriggerDTO {
   )
 }
 
-function isGetDeviceEventTriggerDTO(o: unknown): o is GetDeviceEventTriggerDTO {
+export function isGetDeviceEventTriggerDTO(o: unknown): o is GetDeviceEventTriggerDTO {
   return (
     o != undefined &&
     typeof o === 'object' &&

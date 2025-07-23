@@ -22,7 +22,7 @@ export function isGetTaskListDTO(o: unknown): o is GetTaskListDTO {
   )
 }
 
-export const deviceDeserializer = Deserializer<GetTaskListDTO, TaskList>(
+export const TaskListDeserializer = Deserializer<GetTaskListDTO, TaskList>(
   isGetTaskListDTO,
   (dto) => {
     return {
