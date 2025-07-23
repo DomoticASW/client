@@ -1,34 +1,31 @@
 <script setup lang="ts">
+import { authorizedRequest, deserializeBody } from '@/api/api'
+import { automationDeserializer } from '@/api/scripts/GetAutomationDTO'
+import { tasksDeserializer } from '@/api/scripts/GetTaskDTO'
+import type { Automation, Task } from '@/model/scripts/Script'
+import { useScript } from '@/stores/task-automation'
 import { useUserInfoStore } from '@/stores/user-info'
-import { authorizedRequest } from '@/utils'
-import { ref } from 'vue'
-
-interface Task {
-  readonly id: string
-  name: string
-
-  instructions: any[]
-}
-
-interface Automation {
-  readonly id: string
-  name: string
-
-  instructions: any[]
-
-  enabled: boolean
-  trigger: any
-}
+import { onMounted, ref } from 'vue'
 
 const userInfo = useUserInfoStore()
-const tasks = ref<Task[] | undefined>(undefined)
-const automations = ref<Automation[] | undefined>(undefined)
-authorizedRequest('/api/tasks', userInfo.token).then(({ json }) => {
-  tasks.value = json as Task[]
+const scritpStore = useScript()
+const tasks = ref<Task[]>()
+const automations = ref<Automation[]>()
+
+onMounted(async () => {
+  const res = await authorizedRequest('/api/tasks', userInfo.token)
+  tasks.value = await deserializeBody(res, tasksDeserializer)
 })
-authorizedRequest('/api/automations', userInfo.token).then(({ json }) => {
-  automations.value = json as Automation[]
+onMounted(async () => {
+  const res = await authorizedRequest('/api/automations', userInfo.token)
+  automations.value = await deserializeBody(res, (data) =>
+    Array.isArray(data) ? data.map(automationDeserializer) : [],
+  )
 })
+
+function storeScript(script: Task | Automation) {
+  scritpStore.script = script
+}
 </script>
 
 <template>
@@ -46,6 +43,7 @@ authorizedRequest('/api/automations', userInfo.token).then(({ json }) => {
                 class="btn btn-circle btn-ghost"
                 type="button"
                 :aria-label="'Get permissions of: ' + task.name"
+                @click="storeScript(task)"
               >
                 <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                   <g
@@ -80,6 +78,7 @@ authorizedRequest('/api/automations', userInfo.token).then(({ json }) => {
                 class="btn btn-circle btn-ghost"
                 type="button"
                 :aria-label="'Get permissions of: ' + automation.name"
+                @click="storeScript(automation)"
               >
                 <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                   <g
