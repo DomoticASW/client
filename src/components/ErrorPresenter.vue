@@ -47,6 +47,10 @@ const errorCause = computed(() => {
 
 async function okPressed() {
   dialog.value!.close()
+  // Waiting a bit for the animation to end.
+  // If this was not done it would cause an ugly visual bug since the reactive
+  // state would change immediately and the user would see the dialog text change
+  // while closing.
   await new Promise((r) => setTimeout(r, dialogClosingAnimationDurationMs))
   state.errorWasViewed()
 }
