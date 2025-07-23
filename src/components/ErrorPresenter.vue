@@ -11,10 +11,19 @@ const state = useErrorPresenterStore()
 const dialogId = 'error-presenter-dialog'
 const dialog = ref<HTMLDialogElement | undefined>()
 
+function camelToSentence(str: string): string {
+  return str.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([A-Z])([A-Z][a-z])/g, '$1 $2')
+}
+
 const errorTitle = computed(() => {
   const error = state.errorShown
   if (error && '__brand' in error) {
-    return error.__brand as string
+    const sentence = camelToSentence(error.__brand as string)
+    const words = sentence.split(' ')
+    if (words.length && words[words.length - 1].toLowerCase() === 'error') {
+      words.pop()
+    }
+    return words.join(' ')
   } else {
     return 'Error'
   }
