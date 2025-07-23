@@ -22,9 +22,6 @@ async function addDevice(id: string) {
     devices.value = devices.value!.filter((d) => d.id != id)
     successAlert().classList.remove('opacity-0')
     setTimeout(() => successAlert().classList.add('opacity-0'), 2000)
-  } catch (e) {
-    // TODO: present error to the user
-    console.log(e)
   } finally {
     loadingOverlay.stopLoading()
   }

@@ -16,9 +16,6 @@ async function removeDevice(id: DeviceId) {
     loadingOverlay.startLoading()
     await api.deleteDevice(id, userInfo.token)
     devices.value = devices.value?.filter((d) => d.id != id)
-  } catch (e) {
-    // TODO: present error to the user
-    console.log(e)
   } finally {
     loadingOverlay.stopLoading()
   }
@@ -51,9 +48,6 @@ async function saveEditingDevice() {
       if (device) {
         device.name = newName
       }
-    } catch (e) {
-      // TODO: present error to the user
-      console.log(e)
     } finally {
       cancelEditingDevice()
       loadingOverlay.stopLoading()

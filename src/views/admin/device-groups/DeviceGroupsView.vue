@@ -5,7 +5,6 @@ import { useUserInfoStore } from '@/stores/user-info'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import DeviceListSkeleton from '@/components/admin/manage-devices/DeviceListSkeleton.vue'
 import type { DeviceGroup, DeviceGroupId } from '@/model/devices-management/DeviceGroup'
-import type { ServerError } from '@/api/ServerError'
 import * as api from '@/api/devices-management/requests/device-groups'
 
 const userInfo = useUserInfoStore()
@@ -28,9 +27,6 @@ async function saveCreatingGroup() {
       const id = await api.createDeviceGroup(name, userInfo.token)
       const group = await api.findDeviceGroup(id, userInfo.token)
       groups.value?.push(group)
-    } catch (e) {
-      // TODO: present error to the user
-      console.log((e as ServerError).message)
     } finally {
       cancelCreatingGroup()
       loadingOverlay.stopLoading()
