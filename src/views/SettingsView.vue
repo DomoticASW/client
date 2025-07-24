@@ -137,6 +137,7 @@
 import { defineComponent, reactive, computed, ref, watch } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required, email, minLength, sameAs, helpers } from '@vuelidate/validators';
+import { useUserInfoStore } from '@/stores/user-info';
 
 type RegisterForm = {
   nickname: string;
@@ -148,20 +149,22 @@ type RegisterForm = {
 export default defineComponent({
   name: 'RegisterView',
   setup() {
-    const initialForm = reactive<RegisterForm>({
-      nickname: 'Your Nickname',
-      email: 'your@email.com',
-      password: '',
-      confirmPassword: ''
-    });
-    
-    const previousPassword = 'password';
+      const userInfoStore = useUserInfoStore();
+      const userNickname = ref(userInfoStore.nickname);
+      const userEmail = ref(userInfoStore.email);
+
+      const initialForm = reactive<RegisterForm>({
+        nickname: userNickname.value,
+        email: userEmail.value,
+        password: '',
+        confirmPassword: ''
+      });
+
     const form = reactive<RegisterForm>({ ...initialForm });
     const hasChanges = ref(false);
     const showPassword = ref(false);
     const showConfirmPassword = ref(false);
     const password = computed(() => form.password);
-    const differentFromPrevious = (value: string) => value !== previousPassword;
     
     watch(form, (newValue) => {
       hasChanges.value = Object.keys(initialForm).some(
@@ -174,7 +177,6 @@ export default defineComponent({
       email: { required: helpers.withMessage('Email is required', required), email: helpers.withMessage('Email must be valid', email) },
       password: { 
         minLength: helpers.withMessage('Password must be at least 6 characters', minLength(6)),
-        different: helpers.withMessage('New password must be different from previous password', differentFromPrevious)
     },
       confirmPassword: { sameAsPassword: helpers.withMessage('Passwords must match', sameAs(password)) }
     };
@@ -184,10 +186,35 @@ export default defineComponent({
     return { form, v$, hasChanges, showPassword, showConfirmPassword };
   },
   methods: {
-    handleSave(): void {
+    async handleSave(): Promise<void> {
       this.v$.$touch();
-      if (!this.v$.$invalid) {
-        console.log('Settings saved:', this.form);
+      if (this.v$.$invalid) return;
+
+      const body: Record<string, string> = {};
+
+      const userInfoStore = useUserInfoStore();
+
+      if (this.form.nickname != userInfoStore.nickname) {
+        body.nickname = this.form.nickname;
+      }
+
+      if (this.form.password) {
+        body.password = this.form.password;
+      }
+
+      try {
+        const response = await fetch('/api/users', {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `${userInfoStore.token}`
+          },
+          body: JSON.stringify(body)
+        });
+
+        if (!response.ok) throw new Error(await response.text());
+      } catch (error) {
+        throw new Error('Save failed:' + error);
       }
     }
   }
