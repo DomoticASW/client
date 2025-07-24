@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useErrorPresenterStore } from '@/stores/error-presenter'
-import { computed, onMounted, ref } from 'vue'
+import { computed, useTemplateRef } from 'vue'
 
 /** Approximate duration of the dialog closing animation.
  * It's needed in order to correctly show fast subsequent errors.
@@ -8,8 +8,7 @@ import { computed, onMounted, ref } from 'vue'
 const dialogClosingAnimationDurationMs = 200
 const state = useErrorPresenterStore()
 
-const dialogId = 'error-presenter-dialog'
-const dialog = ref<HTMLDialogElement | undefined>()
+const dialog = useTemplateRef('error-presenter-dialog')
 
 function camelToSentence(str: string): string {
   return str.replace(/([a-z])([A-Z])/g, '$1 $2').replace(/([A-Z])([A-Z][a-z])/g, '$1 $2')
@@ -60,14 +59,11 @@ state.$subscribe(async () => {
     dialog.value!.showModal()
   }
 })
-onMounted(() => {
-  dialog.value = document.getElementById(dialogId) as HTMLDialogElement
-})
 </script>
 
 <template>
   <slot></slot>
-  <dialog :id="dialogId" class="modal modal-bottom sm:modal-middle">
+  <dialog ref="error-presenter-dialog" class="modal modal-bottom sm:modal-middle">
     <div class="modal-box">
       <h3 class="text-lg font-bold">{{ errorTitle }}</h3>
       <p>{{ errorMessage }}</p>
