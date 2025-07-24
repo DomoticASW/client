@@ -125,7 +125,7 @@
                 :disabled="v$.$invalid"
                 :class="{ 'btn-disabled': v$.$invalid }"
               >
-                Sign up
+                Sign in
               </button>
             </div>
           </div>
@@ -185,10 +185,35 @@ export default defineComponent({
     return { form, v$, showPassword, showConfirmPassword };
   },
   methods: {
-    handleSignin(): void {
+    async handleSignin(): Promise<void> {
       this.v$.$touch();
-      if (!this.v$.$invalid) {
-        console.log('Registration submitted:', this.form);
+      if (this.v$.$invalid) return;
+
+      try {
+        const response = await fetch('/api/registrationRequests', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            nickname: this.form.nickname,
+            email: this.form.email,
+            password: this.form.password
+          })
+        });
+
+        if (!response.ok) throw new Error(await response.text());
+
+        this.$router.push('/login');
+
+      } catch (error) {
+        console.error('Registration failed:', error);
+      } finally {
+        this.form.nickname = '';
+        this.form.email = '';
+        this.form.password = '';
+        this.form.confirmPassword = '';
+        this.v$.$reset();
       }
     }
   }

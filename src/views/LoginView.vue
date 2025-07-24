@@ -83,7 +83,7 @@
         <div class="text-center">
           <p class="text-sm">Don't have an account?</p>
           <router-link to="/signin" class="link link-primary text-sm">
-            Sign up
+            Sign in
           </router-link>
         </div>
       </div>
@@ -95,6 +95,8 @@
 import { defineComponent, reactive, ref } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required, email, helpers } from '@vuelidate/validators';
+import { UserRole, useUserInfoStore } from '@/stores/user-info';
+import router from '@/router';
 
 type LoginForm = {
   email: string;
@@ -121,10 +123,51 @@ export default defineComponent({
     return { form, v$, showPassword };
   },
   methods: {
-    handleLogin(): void {
+    async handleLogin(): Promise<void> {
       this.v$.$touch();
-      if (!this.v$.$invalid) {
-        console.log('Login submitted:', this.form);
+      if (this.v$.$invalid) return;
+
+      try {
+        const loginResponse = await fetch('/api/users/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: this.form.email,
+            password: this.form.password
+          })
+        });
+
+        if (!loginResponse.ok) {
+          throw new Error('Login failed:' + await loginResponse.text());
+        }
+
+        const token = await loginResponse.json();
+
+        const userResponse = await fetch('/api/user', {
+          method: 'GET',
+          headers: {
+            Authorization: `${token.source}`
+          }
+        });
+
+        if (!userResponse.ok) {
+          throw new Error('Failed to fetch user information:' + await userResponse.text());
+        }
+
+        const userData = await userResponse.json();
+        const userInfo = useUserInfoStore();
+        userInfo.setUserInfo({
+          email: this.form.email,
+          nickname: userData.nickname,
+          token: token.source,
+          role: UserRole.User
+        });
+        router.push('/');
+
+      } catch (error) {
+        throw new Error('Login failed:' + error);
       }
     }
   }

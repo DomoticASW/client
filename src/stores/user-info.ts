@@ -30,5 +30,32 @@ export const useUserInfoStore = defineStore('user-info', {
     token: (state) => state.userInfo.token,
     role: (state) => state.userInfo.role,
   },
-  actions: {},
+  actions: {
+    setUserInfo(info: UserInfo) {
+      if (!isUserInfo(info)) {
+        throw new Error("Invalid user info format");
+      }
+      this.userInfo = info;
+      // Optionally save to localStorage for persistence
+      localStorage.setItem('userInfo', JSON.stringify(info));
+    },
+    clearUserInfo() {
+      this.userInfo = {} as UserInfo;
+      localStorage.removeItem('userInfo');
+    },
+    // Call this during app initialization to load persisted user info
+    loadFromStorage() {
+      const stored = localStorage.getItem('userInfo');
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          if (isUserInfo(parsed)) {
+            this.userInfo = parsed;
+          }
+        } catch (e) {
+          console.error("Failed to parse stored user info", e);
+        }
+      }
+    }
+  },
 })
