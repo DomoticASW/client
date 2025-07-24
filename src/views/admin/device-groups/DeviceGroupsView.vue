@@ -13,7 +13,7 @@ const groups = ref<DeviceGroup[] | undefined>(undefined)
 
 /* Group creation */
 const groupCreatingName = ref<string | undefined>(undefined)
-const createGroupModal = useTemplateRef('create_group_modal')
+const createGroupModal = useTemplateRef('create-group-modal')
 function cancelCreatingGroup() {
   groupCreatingName.value = undefined
   createGroupModal.value!.close()
@@ -37,7 +37,7 @@ async function saveCreatingGroup() {
 const groupEditing = ref<DeviceGroupId | undefined>(undefined)
 const groupEditingName = ref<string | undefined>(undefined)
 
-const editGroupNameModal = useTemplateRef('edit_group_name_modal')
+const editGroupNameModal = useTemplateRef('edit-group-name-modal')
 function startEditingGroup(id: string) {
   const group = groups.value?.find((g) => g.id == id)
   if (group) {
@@ -83,7 +83,7 @@ onMounted(async () => {
         @click="createGroupModal?.showModal()"
       ></button>
       <!-- Dialog for creating a new group -->
-      <dialog ref="create_group_modal" class="modal modal-bottom sm:modal-middle">
+      <dialog ref="create-group-modal" class="modal modal-bottom sm:modal-middle">
         <div class="modal-box">
           <h3 class="text-lg font-bold">Create a new group</h3>
           <input type="text" placeholder="Group name" class="input" v-model="groupCreatingName" />
@@ -116,7 +116,7 @@ onMounted(async () => {
     <DeviceListSkeleton v-else />
 
     <!-- Dialog for changing a group name -->
-    <dialog ref="edit_group_name_modal" class="modal modal-bottom sm:modal-middle">
+    <dialog ref="edit-group-name-modal" class="modal modal-bottom sm:modal-middle">
       <div class="modal-box">
         <h3 class="text-lg font-bold">Change the group name</h3>
         <input type="text" placeholder="Group name" class="input" v-model="groupEditingName" />

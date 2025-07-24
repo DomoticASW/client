@@ -24,7 +24,7 @@ async function removeDevice(id: DeviceId) {
 const deviceEditing = ref<DeviceId | undefined>(undefined)
 const deviceEditingName = ref<string | undefined>(undefined)
 
-const editDeviceNameModal = useTemplateRef('edit_device_name_modal')
+const editDeviceNameModal = useTemplateRef('edit-device-name-modal')
 function startEditingDevice(id: DeviceId) {
   const device = devices.value!.find((d) => d.id == id)!
   deviceEditing.value = device.id
@@ -86,7 +86,7 @@ onMounted(async () => {
     <DeviceListSkeleton v-else />
 
     <!-- Dialog for changing a device name -->
-    <dialog ref="edit_device_name_modal" class="modal modal-bottom sm:modal-middle">
+    <dialog ref="edit-device-name-modal" class="modal modal-bottom sm:modal-middle">
       <div class="modal-box">
         <h3 class="text-lg font-bold">Change the device name</h3>
         <input type="text" placeholder="Device name" class="input" v-model="deviceEditingName" />

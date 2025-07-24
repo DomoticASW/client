@@ -10,7 +10,7 @@ const userInfo = useUserInfoStore()
 const loadingOverlay = useLoadingOverlayStore()
 const devices = ref<DiscoveredDevice[] | undefined>()
 
-const successAlert = useTemplateRef('success_alert_id')
+const successAlert = useTemplateRef('success-alert-id')
 async function addDevice(id: string) {
   const deviceToAdd = devices.value!.find((d) => d.id == id)!
   const host = deviceToAdd.address.host
@@ -49,7 +49,7 @@ onMounted(async () => {
     </ul>
     <DeviceListSkeleton v-else />
     <div
-      ref="success_alert_id"
+      ref="success-alert-id"
       role="alert"
       class="alert alert-success fixed bottom-1 inset-x-1 opacity-0 transition-all duration-300"
     >
