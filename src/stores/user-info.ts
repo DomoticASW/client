@@ -1,24 +1,6 @@
 import { defineStore } from "pinia";
-
-// TODO: substitute in favor of a proper domain model enum
-export enum Role {
-  Admin = "Admin",
-  User = "User"
-}
-export interface UserInfo {
-  email: string,
-  nickname: string,
-  token: string,
-  role: Role,
-}
-export function isUserInfo(a: unknown): a is UserInfo {
-  return typeof a === "object" && a != null &&
-    "email" in a && typeof a.email === "string" &&
-    "nickname" in a && typeof a.nickname === "string" &&
-    "token" in a && typeof a.token === "string" &&
-    "role" in a && typeof a.role === "string" &&
-    Object.values(Role).includes(a.role as Role);
-}
+import { type UserInfo } from '@/model/users-management/User';
+import { isUserInfoDTO } from '@/api/users-management/GetUserInfoDTO';
 
 export const useUserInfoStore = defineStore('user-info', {
   state: () => ({
@@ -32,7 +14,7 @@ export const useUserInfoStore = defineStore('user-info', {
   },
   actions: {
     setUserInfo(info: UserInfo) {
-      if (!isUserInfo(info)) {
+      if (!isUserInfoDTO(info)) {
         throw new Error("Invalid user info format");
       }
       this.userInfo = info;
@@ -47,7 +29,7 @@ export const useUserInfoStore = defineStore('user-info', {
       if (stored) {
         try {
           const parsed = JSON.parse(stored);
-          if (isUserInfo(parsed)) {
+          if (isUserInfoDTO(parsed)) {
             this.userInfo = parsed;
           }
         } catch (e) {
