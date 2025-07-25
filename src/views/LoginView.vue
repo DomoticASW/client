@@ -163,7 +163,7 @@ export default defineComponent({
           email: this.form.email,
           nickname: userData.nickname,
           token: token.source,
-          role: Role.User
+          role: userData.role
         });
         router.push('/');
 
