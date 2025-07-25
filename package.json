@@ -26,7 +26,8 @@
     "vue": "^3.5.13",
     "vue-router": "^4.5.0",
     "autoprefixer": "^10.4.21",
-    "postcss": "^8.5.6"
+    "postcss": "^8.5.6",
+    "pinia-plugin-persistedstate": "^2.4.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.7.1",
