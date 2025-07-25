@@ -134,12 +134,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, computed, ref, watch } from 'vue';
+import { defineComponent, reactive, computed, ref, watch, onMounted } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required, email, minLength, sameAs, helpers } from '@vuelidate/validators';
 import { useUserInfoStore } from '@/stores/user-info';
 
-type RegisterForm = {
+type SettingsForm = {
   nickname: string;
   email: string;
   password: string;
@@ -147,20 +147,26 @@ type RegisterForm = {
 };
 
 export default defineComponent({
-  name: 'RegisterView',
+  name: 'SettingsView',
   setup() {
       const userInfoStore = useUserInfoStore();
+      userInfoStore.loadFromStorage();
       const userNickname = ref(userInfoStore.nickname);
       const userEmail = ref(userInfoStore.email);
+      
+      onMounted(() => {
+        userNickname.value = userInfoStore.nickname;
+        userEmail.value = userInfoStore.email;
+      });
 
-      const initialForm = reactive<RegisterForm>({
+      const initialForm = reactive<SettingsForm>({
         nickname: userNickname.value,
         email: userEmail.value,
         password: '',
         confirmPassword: ''
       });
 
-    const form = reactive<RegisterForm>({ ...initialForm });
+    const form = reactive<SettingsForm>({ ...initialForm });
     const hasChanges = ref(false);
     const showPassword = ref(false);
     const showConfirmPassword = ref(false);
@@ -168,7 +174,7 @@ export default defineComponent({
     
     watch(form, (newValue) => {
       hasChanges.value = Object.keys(initialForm).some(
-      key => newValue[key as keyof RegisterForm] !== initialForm[key as keyof RegisterForm]
+      key => newValue[key as keyof SettingsForm] !== initialForm[key as keyof SettingsForm]
       );
     }, { deep: true });
     
