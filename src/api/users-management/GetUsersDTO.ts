@@ -1,4 +1,4 @@
-import { Role, type User } from '@/model/users-management/User';
+import { type User } from '@/model/users-management/User';
 import { isUserDTO } from './GetUserDTO';
 import { Deserializer } from "../Deserializer"
 

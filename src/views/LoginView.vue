@@ -96,7 +96,6 @@ import { defineComponent, reactive, ref } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required, email, helpers } from '@vuelidate/validators';
 import { useUserInfoStore } from '@/stores/user-info';
-import { Role } from '@/model/users-management/User';
 import router from '@/router';
 
 type LoginForm = {
