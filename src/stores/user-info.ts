@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 
 // TODO: substitute in favor of a proper domain model enum
-export enum UserRole {
+export enum Role {
   Admin = "Admin",
   User = "User"
 }
@@ -9,7 +9,7 @@ export interface UserInfo {
   email: string,
   nickname: string,
   token: string,
-  role: UserRole,
+  role: Role,
 }
 export function isUserInfo(a: unknown): a is UserInfo {
   return typeof a === "object" && a != null &&
@@ -17,7 +17,7 @@ export function isUserInfo(a: unknown): a is UserInfo {
     "nickname" in a && typeof a.nickname === "string" &&
     "token" in a && typeof a.token === "string" &&
     "role" in a && typeof a.role === "string" &&
-    Object.values(UserRole).includes(a.role as UserRole);
+    Object.values(Role).includes(a.role as Role);
 }
 
 export const useUserInfoStore = defineStore('user-info', {

@@ -95,7 +95,7 @@
 import { defineComponent, reactive, ref } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required, email, helpers } from '@vuelidate/validators';
-import { UserRole, useUserInfoStore } from '@/stores/user-info';
+import { Role, useUserInfoStore } from '@/stores/user-info';
 import router from '@/router';
 
 type LoginForm = {
@@ -162,7 +162,7 @@ export default defineComponent({
           email: this.form.email,
           nickname: userData.nickname,
           token: token.source,
-          role: UserRole.User
+          role: Role.User
         });
         router.push('/');
 
