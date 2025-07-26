@@ -6,38 +6,40 @@
           <h1 class="card-title text-3xl font-bold">Welcome back!</h1>
         </div>
 
-        <form @submit.prevent="handleLogin" class="w-full">
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">Email</span>
-            </label>
+      <form @submit.prevent="handleLogin" class="w-full">
+
+        <div class="form-control">
+          <span class="label-text">Email</span><br>
+          <label class="input validator w-full">
+            <i class="fa-regular fa-envelope opacity-50"></i>
             <input 
               v-model="form.email" 
               type="email" 
               placeholder="your@email.com" 
-              class="input input-bordered w-full"
+              name="email"
               :class="{ 'input-error': v$.email.$error }"
               @blur="v$.email.$touch()"
             />
+          </label>
             <div class="min-h-[1.5rem]">
-              <label class="label py-0" v-if="v$.email.$error">
-                <span class="label-text-alt text-error">
-                  {{ v$.email.$errors[0].$message }}
-                </span>
-              </label>
-            </div>
-          </div>
-          
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">Password</span>
+            <label class="label py-0" v-if="v$.email.$error">
+              <span class="label-text-alt text-error">
+                {{ v$.email.$errors[0].$message }}
+              </span>
             </label>
-            <div class="relative">
+          </div>
+        </div>
+          
+        <div class="form-control">
+          <span class="label-text">Password</span>
+          <div class="relative">
+            <label class="input validator w-full">
+              <i class="fa-solid fa-key opacity-50"></i>
               <input 
-                v-model="form.password"
+                v-model="form.password" 
                 :type="showPassword ? 'text' : 'password'" 
-                placeholder="••••••••" 
-                class="input input-bordered w-full"
+                placeholder="••••••••"
+                name="password"
                 :class="{ 'input-error': v$.password.$error }"
                 @blur="v$.password.$touch()"
               />
@@ -51,15 +53,16 @@
                   class="fas"
                 ></i>              
               </button>
-            </div>
-            <div class="min-h-[1.5rem]">
-              <label class="label py-0" v-if="v$.password.$error">
-                <span class="label-text-alt text-error">
-                  {{ v$.password.$errors[0].$message }}
-                </span>
-              </label>
-            </div>
+            </label>
           </div>
+          <div class="min-h-[1.5rem]">
+            <label class="label py-0" v-if="v$.password.$error">
+              <span class="label-text-alt text-error">
+                {{ v$.password.$errors[0].$message }}
+              </span>
+            </label>
+          </div>
+        </div>
           
           <div class="flex justify-center">
             <div class="form-control mb-6">
@@ -79,8 +82,8 @@
         
         <div class="text-center">
           <p class="text-sm">Don't have an account?</p>
-          <router-link to="/register" class="link link-primary text-sm">
-            Sign up
+          <router-link to="/signin" class="link link-primary text-sm">
+            Sign in
           </router-link>
         </div>
       </div>
@@ -92,6 +95,8 @@
 import { defineComponent, reactive, ref } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required, email, helpers } from '@vuelidate/validators';
+import { useUserInfoStore } from '@/stores/user-info';
+import router from '@/router';
 
 type LoginForm = {
   email: string;
@@ -118,10 +123,51 @@ export default defineComponent({
     return { form, v$, showPassword };
   },
   methods: {
-    handleLogin(): void {
+    async handleLogin(): Promise<void> {
       this.v$.$touch();
-      if (!this.v$.$invalid) {
-        console.log('Login submitted:', this.form);
+      if (this.v$.$invalid) return;
+
+      try {
+        const loginResponse = await fetch('/api/users/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: this.form.email,
+            password: this.form.password
+          })
+        });
+
+        if (!loginResponse.ok) {
+          throw new Error('Login failed:' + await loginResponse.text());
+        }
+
+        const token = await loginResponse.json();
+
+        const userResponse = await fetch('/api/user', {
+          method: 'GET',
+          headers: {
+            Authorization: `${token.source}`
+          }
+        });
+
+        if (!userResponse.ok) {
+          throw new Error('Failed to fetch user information:' + await userResponse.text());
+        }
+
+        const userData = await userResponse.json();
+        const userInfo = useUserInfoStore();
+        userInfo.setUserInfo({
+          email: this.form.email,
+          nickname: userData.nickname,
+          token: token.source,
+          role: userData.role
+        });
+        router.push('/');
+
+      } catch (error) {
+        throw new Error('Login failed:' + error);
       }
     }
   }
