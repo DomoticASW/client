@@ -1,31 +1,31 @@
 <script setup lang="ts">
-import { UserRole, useUserInfoStore, type UserInfo } from '@/stores/user-info'
-import { authorizedRequest } from '@/utils'
-import { ref } from 'vue'
+import { authorizedRequest, deserializeBody } from '@/api/api'
+import { userInfoDeserializer } from '@/api/users-management/GetUserInfoDTO'
+import { Role, type UserInfo } from '@/model/users-management/User'
+import { useUserInfoStore } from '@/stores/user-info'
+import { onMounted, ref } from 'vue'
 
 const showToast = ref(false)
 const toastMessage = ref('')
 const userInfo = useUserInfoStore()
 const registeredUsers = ref<UserInfo[] | undefined>(undefined)
-authorizedRequest('/api/users', userInfo.token).then(({ json }) => {
-  registeredUsers.value = json as UserInfo[]
-})
 const unregisteredUsers = ref<UserInfo[] | undefined>(undefined)
-authorizedRequest('/api/registrationRequests', userInfo.token).then(({ json }) => {
-  unregisteredUsers.value = json as UserInfo[]
+onMounted(async () => {
+  const res = await authorizedRequest(`/api/users`, userInfo.token)
+  registeredUsers.value = await deserializeBody(res, userInfoDeserializer)
+})
+onMounted(async () => {
+  const res = await authorizedRequest(`/api/registrationRequests`, userInfo.token)
+  unregisteredUsers.value = await deserializeBody(res, userInfoDeserializer)
 })
 
 function removeUser(user: UserInfo) {
   authorizedRequest(`/api/users/${user.email}`, userInfo.token, {
     method: 'DELETE',
   })
-    .then(({ response }) => {
-      if (response.status === 200) {
-        registeredUsers.value = registeredUsers.value?.filter((u) => u.email !== user.email)
-        showToastMessage(`Request for ${user.nickname} removed successfully.`)
-      } else {
-        console.error('Failed to remove request:', response.statusText)
-      }
+    .then(() => {
+      registeredUsers.value = registeredUsers.value?.filter((u) => u.email !== user.email)
+      showToastMessage(`Request for ${user.nickname} removed successfully.`)
     })
     .catch((error) => {
       console.error('Error removing request:', error)
@@ -36,13 +36,9 @@ function rejectRequest(user: UserInfo) {
   authorizedRequest(`/api/registrationRequests/${user.email}/reject`, userInfo.token, {
     method: 'POST',
   })
-    .then(({ response }) => {
-      if (response.status === 200) {
-        unregisteredUsers.value = unregisteredUsers.value?.filter((u) => u.email !== user.email)
-        showToastMessage(`Request for ${user.nickname} rejected successfully.`)
-      } else {
-        console.error('Failed to reject request:', response.statusText)
-      }
+    .then(() => {
+      unregisteredUsers.value = unregisteredUsers.value?.filter((u) => u.email !== user.email)
+      showToastMessage(`Request for ${user.nickname} rejected successfully.`)
     })
     .catch((error) => {
       console.error('Error rejecting request:', error)
@@ -53,14 +49,10 @@ function approveRequest(user: UserInfo) {
   authorizedRequest(`/api/registrationRequests/${user.email}/approve`, userInfo.token, {
     method: 'POST',
   })
-    .then(({ response }) => {
-      if (response.status === 200) {
-        unregisteredUsers.value = unregisteredUsers.value?.filter((u) => u.email !== user.email)
-        registeredUsers.value?.push(user)
-        showToastMessage(`Request for ${user.nickname} accepted successfully.`)
-      } else {
-        console.error('Failed to approve request:', response.statusText)
-      }
+    .then(() => {
+      unregisteredUsers.value = unregisteredUsers.value?.filter((u) => u.email !== user.email)
+      registeredUsers.value?.push(user)
+      showToastMessage(`Request for ${user.nickname} accepted successfully.`)
     })
     .catch((error) => {
       console.error('Error approving request:', error)
@@ -97,7 +89,7 @@ function showToastMessage(msg: string) {
               <div>{{ user.nickname }}</div>
               <small class="text-gray-400 ms-1">{{ user.email }}</small>
             </div>
-            <small v-if="user.role == UserRole.Admin" class="text-gray-400 flex items-center">{{
+            <small v-if="user.role == Role.Admin" class="text-gray-400 flex items-center">{{
               user.role
             }}</small>
             <button
