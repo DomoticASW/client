@@ -1,14 +1,85 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { useScript } from '@/stores/task-automation'
+import { onMounted, reactive, ref } from 'vue'
+import { isGetDeviceEventTriggerDTO, isGetPeriodTriggerDTO } from '@/api/scripts/GetAutomationDTO'
+import { isGetInstructionDTO } from '@/api/scripts/GetInstructionDTO'
+import type { EditList } from '@/model/permissions-management/EditList'
+import type { TaskList } from '@/model/permissions-management/TaskList'
+import { authorizedRequest, deserializeBody } from '@/api/api'
+import { useUserInfoStore } from '@/stores/user-info'
+import { taskListDeserializer } from '@/api/permissions-management/GetTaskListDTO'
+import { editListDeserializer } from '@/api/permissions-management/GetEditListDTO'
 
-const whitelist = ['Liam']
-const blacklist = ['Bob']
-const editlist = ['Liam']
-const burger = ['Whitelist', 'Blacklist', 'Editlist']
-const listSelected = reactive({ name: 'Whitelist', items: whitelist })
-const users = ['Alex', 'Mia']
+const scriptStore = useScript()
+const userInfo = useUserInfoStore()
+const taskList = ref<TaskList>()
+const editlist = ref<EditList>()
+const whitelist = taskList.value?.whitelist
+const blacklist = taskList.value?.blacklist
+const burger = ['Editlist']
+const listSelected = reactive({ name: 'Editlist', items: editlist.value?.users })
+const users = ['Hugo', 'Arianna']
 const open = ref(false)
 
+onMounted(async () => {
+  try {
+    const res = await authorizedRequest(
+      `/api/permissions/editList/${scriptStore.script.id}`,
+      userInfo.token,
+    )
+    editlist.value = await deserializeBody(res, editListDeserializer)
+  } catch {
+    editlist.value = { id: scriptStore.script.id, users: [] }
+  }
+})
+
+if (isTask(scriptStore.script)) {
+  onMounted(async () => {
+    try {
+      const res = await authorizedRequest(
+        `/api/permissions/tasklists/${scriptStore.script.id}`,
+        userInfo.token,
+      )
+      taskList.value = await deserializeBody(res, taskListDeserializer)
+    } catch {
+      taskList.value = { id: scriptStore.script.id, blacklist: [], whitelist: [] }
+    }
+  })
+
+  burger.push('Whitelist', 'Blacklist')
+}
+
+function isAutomation(o: unknown): o is unknown {
+  return (
+    o != undefined &&
+    typeof o === 'object' &&
+    'id' in o &&
+    typeof o.id === 'string' &&
+    'name' in o &&
+    typeof o.name === 'string' &&
+    'enabled' in o &&
+    typeof o.enabled === 'boolean' &&
+    'trigger' in o &&
+    (isGetDeviceEventTriggerDTO(o.trigger) || isGetPeriodTriggerDTO(o.trigger)) &&
+    'instructions' in o &&
+    Array.isArray(o.instructions) &&
+    o.instructions.every((instruction) => isGetInstructionDTO(instruction))
+  )
+}
+
+function isTask(o: unknown): o is unknown {
+  return (
+    o != undefined &&
+    typeof o === 'object' &&
+    'id' in o &&
+    typeof o.id === 'string' &&
+    'name' in o &&
+    typeof o.name === 'string' &&
+    'instructions' in o &&
+    Array.isArray(o.instructions) &&
+    o.instructions.every((instruction) => isGetInstructionDTO(instruction))
+  )
+}
 function addUser(user: string) {
   // TODO: Implement the logic to add the user
   console.log(`Adding user: ${user}`)
@@ -32,7 +103,7 @@ function select(option: string) {
       break
     case 'Editlist':
       listSelected.name = 'Editlist'
-      listSelected.items = editlist
+      listSelected.items = editlist.value?.users
       break
   }
 }
