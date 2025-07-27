@@ -6,7 +6,7 @@ export interface BasicUser {
   role: Role;
 }
 
-export interface User extends RegistrationRequest {
+export interface User extends BasicUser {
   passwordHash: string;
 }
 
