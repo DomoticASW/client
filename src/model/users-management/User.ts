@@ -1,5 +1,3 @@
-import type { RegistrationRequest } from "./RegistrationRequest";
-
 export interface BasicUser {
   nickname: string;
   email: string;
