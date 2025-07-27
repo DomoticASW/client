@@ -92,11 +92,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from 'vue';
-import { useVuelidate } from '@vuelidate/core';
-import { required, email, helpers } from '@vuelidate/validators';
-import { useUserInfoStore } from '@/stores/user-info';
 import router from '@/router';
+import { useVuelidate } from '@vuelidate/core';
+import { defineComponent, reactive, ref } from 'vue';
+import { useUserInfoStore } from '@/stores/user-info';
+import { type UserInfo } from '@/model/users-management/User';
+import { required, email, helpers } from '@vuelidate/validators';
 
 type LoginForm = {
   email: string;
@@ -140,15 +141,21 @@ export default defineComponent({
         });
 
         if (!loginResponse.ok) {
-          throw new Error('Login failed:' + await loginResponse.text());
+          throw new Error("Login failed: " + await loginResponse.text());
         }
 
-        const token = await loginResponse.json();
+        const responseData = await loginResponse.json();
+        
+        if (!responseData || !responseData.source) {
+          throw new Error('Invalid response: missing token');
+        }
+
+        const token = responseData.source;
 
         const userResponse = await fetch('/api/user', {
           method: 'GET',
           headers: {
-            Authorization: `${token.source}`
+            Authorization: `${token}`
           }
         });
 
@@ -157,13 +164,20 @@ export default defineComponent({
         }
 
         const userData = await userResponse.json();
+
+        if (!userData || !userData.nickname || !userData.role) {
+          throw new Error('Invalid user data received');
+        }
+
         const userInfo = useUserInfoStore();
-        userInfo.setUserInfo({
+        const userInfoData: UserInfo = {
           email: this.form.email,
           nickname: userData.nickname,
-          token: token.source,
+          token: token,
           role: userData.role
-        });
+        };
+        userInfo.setUserInfo(userInfoData);
+
         router.push('/');
 
       } catch (error) {
