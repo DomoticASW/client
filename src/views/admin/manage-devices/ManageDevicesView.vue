@@ -1,32 +1,36 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import DeviceListSkeleton from '@/components/admin/manage-devices/DeviceListSkeleton.vue'
+import type { Device, DeviceId } from '@/model/devices-management/Device'
+import { useLoadingOverlayStore } from '@/stores/loading-overlay'
+import { useUserInfoStore } from '@/stores/user-info'
+import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
+import * as api from '@/api/devices-management/requests/devices'
 
-const devices = ref([
-  { id: '1', name: 'Roomba' },
-  { id: '2', name: 'Roomba' },
-  { id: '3', name: 'Roomba' },
-  { id: '4', name: 'Roomba' },
-  { id: '5', name: 'Roomba' },
-  { id: '6', name: 'Thermometer' },
-  { id: '7', name: 'Lamp' },
-  { id: '7', name: 'Thermometer' },
-  { id: '8', name: 'Lamp' },
-  { id: '9', name: 'Thermometer' },
-  { id: '10', name: 'Lamp' },
-  { id: '11', name: 'Thermometer' },
-  { id: '12', name: 'Thermometer' },
-  { id: '13', name: 'Lamp' },
-])
-const removeDevice = (id: string) => (devices.value = devices.value.filter((d) => d.id != id))
+const userInfo = useUserInfoStore()
+const loadingOverlay = useLoadingOverlayStore()
+const devices = ref<Device[] | undefined>()
 
-const deviceEditing = ref<string | undefined>(undefined)
+async function removeDevice(id: DeviceId) {
+  try {
+    loadingOverlay.startLoading()
+    await api.deleteDevice(id, userInfo.token)
+    devices.value = devices.value?.filter((d) => d.id != id)
+  } catch (e) {
+    // TODO: present error to the user
+    console.log(e)
+  } finally {
+    loadingOverlay.stopLoading()
+  }
+}
+
+const deviceEditing = ref<DeviceId | undefined>(undefined)
 const deviceEditingName = ref<string | undefined>(undefined)
 
 const editDeviceModalId = 'edit_device_name_modal'
 const editDeviceNameModal = () => document.getElementById(editDeviceModalId) as HTMLDialogElement
-function startEditingDevice(id: string) {
-  const device = devices.value.find((d) => d.id == id)!
+function startEditingDevice(id: DeviceId) {
+  const device = devices.value!.find((d) => d.id == id)!
   deviceEditing.value = device.id
   deviceEditingName.value = device.name
   editDeviceNameModal().showModal()
@@ -36,10 +40,36 @@ function cancelEditingDevice() {
   deviceEditingName.value = undefined
   editDeviceNameModal().close()
 }
-function saveEditingDevice() {
-  devices.value.find((d) => d.id === deviceEditing.value!)!.name = deviceEditingName.value!
+async function saveEditingDevice() {
+  const id = deviceEditing.value
+  const newName = deviceEditingName.value
+  if (devices.value && id && newName != undefined) {
+    try {
+      loadingOverlay.startLoading()
+      await api.renameDevice(id, newName, userInfo.token)
+      const device = devices.value.find((g) => g.id === id)
+      if (device) {
+        device.name = newName
+      }
+    } catch (e) {
+      // TODO: present error to the user
+      console.log(e)
+    } finally {
+      cancelEditingDevice()
+      loadingOverlay.stopLoading()
+    }
+  }
   cancelEditingDevice()
 }
+
+onMounted(async () => {
+  try {
+    devices.value = await api.getAllDevices(userInfo.token)
+  } catch (e) {
+    // TODO: present error to the user
+    console.log(e)
+  }
+})
 </script>
 
 <template>
@@ -50,7 +80,7 @@ function saveEditingDevice() {
         <a class="btn btn-ghost fa-solid fa-plus fa-lg !flex"></a>
       </RouterLink>
     </div>
-    <ul class="list">
+    <ul v-if="devices" class="list">
       <li v-for="d in devices" v-bind:key="d.id" class="list-row">
         <span class="fa-solid fa-microchip text-2xl self-center"></span>
         <div>
@@ -65,6 +95,7 @@ function saveEditingDevice() {
         <button class="btn btn-ghost fa-solid fa-trash" v-on:click="removeDevice(d.id)"></button>
       </li>
     </ul>
+    <DeviceListSkeleton v-else />
 
     <!-- Dialog for changing a device name -->
     <dialog :id="editDeviceModalId" class="modal modal-bottom sm:modal-middle">
