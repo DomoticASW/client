@@ -6,7 +6,7 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 import { useUserInfoStore } from './stores/user-info'
-import { isUserInfoDTO } from '@/api/users-management/GetUserInfoDTO'
+import { isGetUserInfoDTO } from '@/api/users-management/GetUserInfoDTO'
 
 const app = createApp(App)
 
@@ -19,7 +19,7 @@ const userInfoStr = import.meta.env.VITE_USER_INFO
 if (import.meta.env.DEV && userInfoStr) {
   try {
     const userInfo = JSON.parse(userInfoStr)
-    if (!isUserInfoDTO(userInfo)) {
+    if (!isGetUserInfoDTO(userInfo)) {
       throw new Error()
     } else {
       const userInfoStore = useUserInfoStore()

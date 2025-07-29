@@ -1,12 +1,12 @@
-import { type RegistrationRequestDTO } from "./GetRegistrationRequestDTO";
+import { type GetRegistrationRequestDTO } from "./GetRegistrationRequestDTO";
 import { Role, type User } from "@/model/users-management/User"
 import { Deserializer } from "../Deserializer"
 
-export interface UserDTO extends RegistrationRequestDTO {
+export interface GetUserDTO extends GetRegistrationRequestDTO {
   role: Role;
 }
 
-export function isUserDTO(o: unknown): o is UserDTO {
+export function isGetUserDTO(o: unknown): o is GetUserDTO {
   return o != undefined && typeof o == "object" &&
     "nickname" in o && typeof o.nickname == "string" &&
     "email" in o && typeof o.email == "string" &&
@@ -19,13 +19,13 @@ export function isRole(value: unknown): value is Role {
 }
 
 export const userDeserializer =
-  Deserializer<UserDTO, User>(
-    isUserDTO,
+  Deserializer<GetUserDTO, User>(
+    isGetUserDTO,
     (dto) => ({
       nickname: dto.nickname,
       email: dto.email,
       passwordHash: dto.passwordHash,
       role: dto.role
     }),
-    (obj) => `Unable to deserialize ${obj} into a User since it was not a UserDTO`
+    (obj) => `Unable to deserialize ${obj} into a User since it was not a GetUserDTO`
   )

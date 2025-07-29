@@ -1,22 +1,22 @@
 import { type User } from '@/model/users-management/User';
-import { isUserDTO } from './GetUserDTO';
+import { isGetUserDTO } from './GetUserDTO';
 import { Deserializer } from "../Deserializer"
 
-export interface GetRegistrationRequestsDTO {
+export interface GetUsersDTO {
   users: User[];
 }
 
-export function isGetRegistrationRequestsDTO(o: unknown): o is GetRegistrationRequestsDTO {
+export function isGetUsersDTO(o: unknown): o is GetUsersDTO {
   return o != undefined && typeof o === 'object' &&
     'users' in o && Array.isArray(o.users) &&
-    o.users.every(user => isUserDTO(user));
+    o.users.every(user => isGetUserDTO(user));
 }
 
-export const getRegistrationRequestsDeserializer = 
-  Deserializer<GetRegistrationRequestsDTO, GetRegistrationRequestsDTO>(
-    isGetRegistrationRequestsDTO,
+export const getUsersDeserializer = 
+  Deserializer<GetUsersDTO, GetUsersDTO>(
+    isGetUsersDTO,
     (dto) => ({
         users: dto.users
     }),
-    (obj) => `Unable to deserialize ${obj} into a GetRegistrationRequestsDTO since it was not a valid GetRegistrationRequestsDTO`
+    (obj) => `Unable to deserialize ${obj} into a GetUsersDTO since it was not a valid GetUsersDTO`
   )

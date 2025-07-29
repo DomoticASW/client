@@ -1,13 +1,13 @@
 import { type RegistrationRequest } from "@/model/users-management/RegistrationRequest"
 import { Deserializer } from "../Deserializer"
 
-export interface RegistrationRequestDTO {
+export interface GetRegistrationRequestDTO {
   nickname: string;
   email: string;
   passwordHash: string;
 }
 
-export function isRegistrationRequestDTO(o: unknown): o is RegistrationRequestDTO {
+export function isGetRegistrationRequestDTO(o: unknown): o is GetRegistrationRequestDTO {
   return o != undefined && typeof o == "object" &&
     "nickname" in o && typeof o.nickname == "string" &&
     "email" in o && typeof o.email == "string" &&
@@ -15,13 +15,13 @@ export function isRegistrationRequestDTO(o: unknown): o is RegistrationRequestDT
 }
 
 export const registrationRequestDeserializer =
-  Deserializer<RegistrationRequestDTO, RegistrationRequest>(
-    isRegistrationRequestDTO,
+  Deserializer<GetRegistrationRequestDTO, RegistrationRequest>(
+    isGetRegistrationRequestDTO,
     (dto) => ({
       nickname: dto.nickname,
       email: dto.email,
       passwordHash: dto.passwordHash,
     }),
-    (obj) => `Unable to deserialize ${obj} into a RegistrationRequest since it was not a RegistrationRequestDTO`
+    (obj) => `Unable to deserialize ${obj} into a RegistrationRequest since it was not a GetRegistrationRequestDTO`
   )
   

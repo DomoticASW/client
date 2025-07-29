@@ -1,5 +1,5 @@
 import { type RegistrationRequest } from '@/model/users-management/RegistrationRequest';
-import { isRegistrationRequestDTO } from './GetRegistrationRequestDTO';
+import { isGetRegistrationRequestDTO } from './GetRegistrationRequestDTO';
 import { Deserializer } from "../Deserializer"
 
 export interface GetRegistrationRequestsDTO {
@@ -9,7 +9,7 @@ export interface GetRegistrationRequestsDTO {
 export function isGetRegistrationRequestsDTO(o: unknown): o is GetRegistrationRequestsDTO {
   return o != undefined && typeof o === 'object' &&
     'registrationRequests' in o && Array.isArray(o.registrationRequests) &&
-    o.registrationRequests.every(registrationRequest => isRegistrationRequestDTO(registrationRequest));
+    o.registrationRequests.every(registrationRequest => isGetRegistrationRequestDTO(registrationRequest));
 }
 
 export const getRegistrationRequestsDeserializer = 
