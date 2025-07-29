@@ -2,8 +2,7 @@
   <InstructionLayout
     :colors="colors"
     :indent="indent"
-    :move-instruction="moveInstruction"
-    :remove-instruction="removeInstruction"
+    :edit="edit"
     :instruction="props.instruction"
   >
     <p class="truncate">Send notification to</p>
@@ -14,7 +13,7 @@
       <textarea
         placeholder="Message sent"
         class="w-full textarea"
-        :disabled="moveInstruction === undefined"
+        :disabled="edit === undefined"
         :value="instruction.message"
       />
     </div>
@@ -31,8 +30,10 @@ const props = defineProps<{
   indent: string
   depth: number
   colors: string
-  moveInstruction?: (instr: Instruction, dir: 'up' | 'down') => void
-  removeInstruction?: (instr: Instruction) => void
+  edit?: {
+    moveInstruction: (instr: Instruction, dir: 'up' | 'down') => void
+    removeInstruction: (instr: Instruction) => void
+  }
 }>()
 
 const instruction = ref(props.instruction.instruction as SendNotificationInstruction)

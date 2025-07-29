@@ -167,7 +167,9 @@ function moveInstruction(target: Instruction, dir: 'up' | 'down') {
     :key="index"
     :instruction="instruction"
     :depth="0"
-    :moveInstruction="moveInstruction"
-    :removeInstruction="removeInstruction"
+    :edit="{
+      moveInstruction,
+      removeInstruction
+    }"
   />
 </template>

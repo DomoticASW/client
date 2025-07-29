@@ -3,8 +3,7 @@
   <InstructionLayout
     :colors="colors"
     :indent="indent"
-    :move-instruction="moveInstruction"
-    :remove-instruction="removeInstruction"
+    :edit="edit"
     :instruction="props.instruction"
   >
     <p>If</p>
@@ -21,8 +20,7 @@
     :key="'then-' + i"
     :instruction="ins"
     :depth="depth + 1"
-    :moveInstruction="moveInstruction"
-    :removeInstruction="removeInstruction"
+    :edit="edit"
   />
 
   <!-- Else block -->
@@ -37,8 +35,7 @@
       :key="'else-' + i"
       :instruction="ins"
       :depth="depth + 1"
-      :moveInstruction="moveInstruction"
-      :removeInstruction="removeInstruction"
+      :edit="edit"
     />
   </template>
 
@@ -66,8 +63,10 @@ const props = defineProps<{
   indent: string
   depth: number
   colors: string
-  moveInstruction?: (instr: Instruction, dir: 'up' | 'down') => void
-  removeInstruction?: (instr: Instruction) => void
+  edit?: {
+    moveInstruction: (instr: Instruction, dir: 'up' | 'down') => void
+    removeInstruction: (instr: Instruction) => void
+  }
 }>()
 
 const instruction = ref(props.instruction.instruction as IfInstruction | IfElseInstruction)

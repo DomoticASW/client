@@ -10,18 +10,18 @@
             : 'grid-cols-2'
         "
       >
-        <template v-if="moveInstruction !== undefined">
+        <template v-if="edit">
           <button
             class="btn btn-xs btn-square fa-solid fa-angle-up col-end-1"
-            @click="moveInstruction(props.instruction, 'up')"
+            @click="edit.moveInstruction(props.instruction, 'up')"
           ></button>
           <button
             class="btn btn-xs btn-square fa-solid fa-angle-down row-start-2"
-            @click="moveInstruction(props.instruction, 'down')"
+            @click="edit.moveInstruction(props.instruction, 'down')"
           ></button>
         </template>
         <slot></slot>
-        <template v-if="removeInstruction !== undefined">
+        <template v-if="edit !== undefined">
           <button
             class="btn btn-square fa-solid fa-xmark row-start-1 place-self-center row-span-2"
             :class="
@@ -30,7 +30,7 @@
                 ? 'ml-4 col-start-6'
                 : 'col-start-3'
             "
-            @click="removeInstruction(props.instruction)"
+            @click="edit.removeInstruction(props.instruction)"
           ></button>
         </template>
       </div>
@@ -45,7 +45,9 @@ const props = defineProps<{
   instruction: Instruction
   indent: string
   colors: string
-  moveInstruction?: (instr: Instruction, dir: 'up' | 'down') => void
-  removeInstruction?: (instr: Instruction) => void
+  edit?: {
+    moveInstruction: (instr: Instruction, dir: 'up' | 'down') => void
+    removeInstruction: (instr: Instruction) => void
+  }
 }>()
 </script>

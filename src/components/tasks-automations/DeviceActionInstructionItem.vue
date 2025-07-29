@@ -2,8 +2,7 @@
   <InstructionLayout
     :colors="colors"
     :indent="indent"
-    :move-instruction="moveInstruction"
-    :remove-instruction="removeInstruction"
+    :edit="edit"
     :instruction="props.instruction"
   >
     <p class="truncate">{{ instruction.deviceId }}</p>
@@ -35,8 +34,10 @@ const props = defineProps<{
   indent: string
   depth: number
   colors: string
-  moveInstruction?: (instr: Instruction, dir: 'up' | 'down') => void
-  removeInstruction?: (instr: Instruction) => void
+  edit?: {
+    moveInstruction: (instr: Instruction, dir: 'up' | 'down') => void
+    removeInstruction: (instr: Instruction) => void
+  }
 }>()
 
 const instruction = ref(props.instruction.instruction as DeviceActionInstruction)

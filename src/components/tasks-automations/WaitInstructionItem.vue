@@ -2,12 +2,11 @@
   <InstructionLayout
     :colors="colors"
     :indent="indent"
-    :move-instruction="moveInstruction"
-    :remove-instruction="removeInstruction"
+    :edit="edit"
     :instruction="props.instruction"
   >
     <p>Wait</p>
-    <p class="font-bold truncate text-center">{{ instruction.seconds }}</p>
+    <p class="font-bold truncate text-center">{{ formatDuration(instruction.seconds) }}</p>
   </InstructionLayout>
 </template>
 
@@ -15,14 +14,17 @@
 import type { Instruction, WaitInstruction } from '@/model/scripts/Instruction'
 import InstructionLayout from './InstructionLayout.vue'
 import { ref, watch } from 'vue';
+import { formatDuration } from '@/model/scripts/Script';
 
 const props = defineProps<{
   instruction: Instruction
   indent: string
   depth: number
   colors: string
-  moveInstruction?: (instr: Instruction, dir: 'up' | 'down') => void
-  removeInstruction?: (instr: Instruction) => void
+  edit?: {
+    moveInstruction: (instr: Instruction, dir: 'up' | 'down') => void
+    removeInstruction: (instr: Instruction) => void
+  }
 }>()
 
 const instruction = ref(props.instruction.instruction as WaitInstruction)
