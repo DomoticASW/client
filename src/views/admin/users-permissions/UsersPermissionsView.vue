@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import { useUserInfoStore, type UserInfo } from '@/stores/user-info'
-import { authorizedRequest } from '@/utils'
-import { ref } from 'vue'
+import { authorizedRequest, deserializeBody } from '@/api/api'
+import { usersDeserializer } from '@/api/users-management/GetUserDTO'
+import type { User } from '@/model/users-management/User'
+import { useUserInfoStore } from '@/stores/user-info'
+import { onMounted, ref } from 'vue'
 
 const userInfo = useUserInfoStore()
-const users = ref<UserInfo[] | undefined>(undefined)
-authorizedRequest('/api/users', userInfo.token).then(({ json }) => {
-  users.value = json as UserInfo[]
+const users = ref<User[]>()
+
+onMounted(async () => {
+  const res = await authorizedRequest(`/api/users`, userInfo.token)
+  users.value = await deserializeBody(res, usersDeserializer)
 })
 </script>
 
@@ -17,7 +21,7 @@ authorizedRequest('/api/users', userInfo.token).then(({ json }) => {
         {{ user.nickname }}
       </div>
       <RouterLink :to="{ name: 'user-permission', params: { id: user.email } }">
-        <button
+        <a
           class="btn btn-circle btn-ghost"
           type="button"
           :aria-label="'Get permissions of: ' + user.nickname"
@@ -33,7 +37,7 @@ authorizedRequest('/api/users', userInfo.token).then(({ json }) => {
               <path d="M6 3L20 12 6 21 6 3z"></path>
             </g>
           </svg>
-        </button>
+        </a>
       </RouterLink>
     </li>
   </ul>
