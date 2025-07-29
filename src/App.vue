@@ -1,11 +1,19 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
+import LoadingOverlay from './components/LoadingOverlay.vue'
+import ErrorPresenter from './components/ErrorPresenter.vue'
 </script>
 
 <template>
-  <div class="flex justify-center bg-base-100">
-    <div class="p-4 w-full max-w-xl">
-      <RouterView />
-    </div>
+  <div class="flex justify-center">
+    <ErrorPresenter>
+      <LoadingOverlay>
+        <div class="p-4 h-screen w-lg">
+          <RouterView />
+        </div>
+      </LoadingOverlay>
+    </ErrorPresenter>
   </div>
 </template>
+
+<style></style>
