@@ -1,20 +1,18 @@
-import type { RegistrationRequest } from "./RegistrationRequest";
-
 export interface BasicUser {
-  nickname: string;
-  email: string;
-  role: Role;
+  nickname: string
+  email: string
+  role: Role
 }
 
-export interface User extends RegistrationRequest {
+export interface User extends BasicUser {
   passwordHash: string;
 }
 
 export interface UserInfo extends BasicUser {
-  token: string;
+  token: string
 }
 
 export enum Role {
-  Admin = "Admin",
-  User = "User"
+  Admin = 'Admin',
+  User = 'User',
 }
