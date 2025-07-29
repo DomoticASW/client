@@ -1,5 +1,5 @@
 import { type RegistrationRequest } from "@/model/users-management/RegistrationRequest"
-import { Deserializer } from "../Deserializer"
+import { arrayDeserializer, Deserializer } from "../Deserializer"
 
 export interface RegistrationRequestDTO {
   nickname: string;
@@ -24,4 +24,5 @@ export const registrationRequestDeserializer =
     }),
     (obj) => `Unable to deserialize ${obj} into a RegistrationRequest since it was not a RegistrationRequestDTO`
   )
-  
+
+export const registrationRequestsDeserializer = arrayDeserializer(registrationRequestDeserializer)

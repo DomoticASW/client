@@ -1,6 +1,6 @@
 import { type RegistrationRequestDTO } from "./GetRegistrationRequestDTO";
 import { Role, type User } from "@/model/users-management/User"
-import { Deserializer } from "../Deserializer"
+import { arrayDeserializer, Deserializer } from "../Deserializer"
 
 export interface UserDTO extends RegistrationRequestDTO {
   role: Role;
@@ -29,3 +29,5 @@ export const userDeserializer =
     }),
     (obj) => `Unable to deserialize ${obj} into a User since it was not a UserDTO`
   )
+
+export const usersDeserializer = arrayDeserializer(userDeserializer)
