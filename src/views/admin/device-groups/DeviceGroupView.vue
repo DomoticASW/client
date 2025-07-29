@@ -29,9 +29,6 @@ async function removeDeviceFromGroup(deviceId: DeviceId) {
     loadingOverlay.startLoading()
     await api.removeDeviceFromDeviceGroup(groupId, deviceId, userInfo.token)
     group.value!.devices = group.value!.devices.filter((d) => d.id != deviceId)
-  } catch (e) {
-    // TODO: present error to the user
-    console.log(e)
   } finally {
     loadingOverlay.stopLoading()
   }
@@ -44,9 +41,6 @@ async function addDeviceToGroup(deviceId: DeviceId) {
     if (device) {
       group.value!.devices.push(device)
     }
-  } catch (e) {
-    // TODO: present error to the user
-    console.log(e)
   } finally {
     loadingOverlay.stopLoading()
   }
@@ -56,29 +50,16 @@ async function deleteGroup() {
     loadingOverlay.startLoading()
     await api.deleteDeviceGroup(groupId, userInfo.token)
     router.back()
-  } catch (e) {
-    // TODO: present error to the user
-    console.log(e)
   } finally {
     loadingOverlay.stopLoading()
   }
 }
 
 onMounted(async () => {
-  try {
-    group.value = await api.findDeviceGroup(groupId, userInfo.token)
-  } catch (e) {
-    // TODO: present error to the user
-    console.log(e)
-  }
+  group.value = await api.findDeviceGroup(groupId, userInfo.token)
 })
 onMounted(async () => {
-  try {
-    devices.value = await devicesApi.getAllDevices(userInfo.token)
-  } catch (e) {
-    // TODO: present error to the user
-    console.log(e)
-  }
+  devices.value = await devicesApi.getAllDevices(userInfo.token)
 })
 </script>
 
