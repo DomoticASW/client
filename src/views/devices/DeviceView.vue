@@ -10,6 +10,7 @@ import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import { useUserInfoStore } from '@/stores/user-info'
 import * as api from '@/api/devices-management/requests/devices'
 import * as notificationsApi from '@/api/notifications-management/requests'
+import DevicePropertyControl from '@/components/devices/DevicePropertyControl.vue'
 
 const props = defineProps({ id: { type: String, required: true } })
 const deviceId = DeviceId(props.id)
@@ -73,7 +74,7 @@ onMounted(async () => {
   <ul v-if="device" class="list">
     <li v-for="p in device.properties" v-bind:key="p.id" class="list-row items-center">
       <span class="list-col-grow"> {{ p.name }} </span>
-      <span> {{ p.value }} </span>
+      <DevicePropertyControl :property="p"/>
     </li>
     <li v-for="a in actionsToShow" v-bind:key="a.id" class="list-row items-center">
       <span class="list-col-grow"> {{ a.name }} </span>
