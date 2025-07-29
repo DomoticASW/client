@@ -1,0 +1,78 @@
+<script setup lang="ts">
+import {
+  Color,
+  type IntRange,
+  type DoubleRange,
+  type TypeConstraints,
+  type Enum,
+} from '@/model/devices-management/Types'
+import { Type } from '@/model/Type'
+import hexRgb from 'hex-rgb'
+import rgbHex from 'rgb-hex'
+
+const { type, typeConstraints } = defineProps<{
+  type: Type
+  typeConstraints?: TypeConstraints<unknown>
+}>()
+const input = defineModel({ required: true })
+
+function isEnumTypeConstraints(tc: TypeConstraints<unknown>): tc is Enum {
+  return tc.__brand == 'Enum'
+}
+function isRangeTypeConstraints(tc: TypeConstraints<unknown>): tc is IntRange | DoubleRange {
+  return isIntRangeTypeConstraints(tc) || isDoubleRangeTypeConstraints(tc)
+}
+function isIntRangeTypeConstraints(tc: TypeConstraints<unknown>): tc is IntRange {
+  return tc.__brand == 'IntRange'
+}
+function isDoubleRangeTypeConstraints(tc: TypeConstraints<unknown>): tc is DoubleRange {
+  return tc.__brand == 'DoubleRange'
+}
+function setColor(hex: string) {
+  const rgb = hexRgb(hex)
+  input.value = Color(rgb.red, rgb.green, rgb.blue)
+}
+</script>
+
+<template>
+  <div v-if="type === Type.BooleanType">
+    <input type="checkbox" v-model="input" class="toggle" />
+  </div>
+  <div v-if="type === Type.StringType">
+    <div v-if="typeConstraints && isEnumTypeConstraints(typeConstraints)">
+      <select class="select" v-model="input">
+        <option v-for="v in typeConstraints.values" :key="v">{{ v }}</option>
+      </select>
+    </div>
+    <input v-else type="text" v-model="input" />
+  </div>
+  <div v-if="type === Type.IntType || type === Type.DoubleType">
+    <div v-if="typeConstraints && isRangeTypeConstraints(typeConstraints)" class="flex flex-col">
+    <!-- TODO: user can still input non valid values -->
+      <input
+        type="range"
+        class="range"
+        :min="typeConstraints.min"
+        :max="typeConstraints.max"
+        v-model="input"
+      />
+      <div class="flex flex-row justify-between">
+        <span class="opacity-60">{{ typeConstraints.min }}</span>
+        <span class="opacity-60">{{ typeConstraints.max }}</span>
+      </div>
+    </div>
+    <input
+      v-else
+      type="number"
+      :step="typeConstraints && isIntRangeTypeConstraints(typeConstraints) ? 1 : 'any'"
+      v-model="input"
+    />
+  </div>
+  <div v-if="type === Type.ColorType">
+    <input
+      type="color"
+      @change="setColor(($event.target! as HTMLInputElement).value)"
+      :value="'#' + rgbHex((input as Color).r, (input as Color).g, (input as Color).b)"
+    />
+  </div>
+</template>
