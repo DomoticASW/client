@@ -47,6 +47,24 @@
     :moveInstruction="moveInstruction"
     :removeInstruction="removeInstruction"
   />
+  <WaitInstructionItem
+    v-else-if="instruction.type === InstructionType.WaitInstruction"
+    :instruction="instruction"
+    :depth="depthLevel"
+    :indent="indentClass"
+    :colors="colors"
+    :moveInstruction="moveInstruction"
+    :removeInstruction="removeInstruction"
+  />
+  <StartTaskInstructionItem
+    v-else-if="instruction.type === InstructionType.StartTaskInstruction"
+    :instruction="instruction"
+    :depth="depthLevel"
+    :indent="indentClass"
+    :colors="colors"
+    :moveInstruction="moveInstruction"
+    :removeInstruction="removeInstruction"
+  />
 </template>
 
 <script setup lang="ts">
@@ -57,10 +75,9 @@ import CreateDevicePropertyConstantInstructionItem from '@/components/tasks-auto
 
 import DeviceActionInstructionItem from '@/components/tasks-automations/DeviceActionInstructionItem.vue'
 import SendNotificationInstructionItem from '@/components/tasks-automations/SendNotificationInstructionItem.vue'
-import {
-  InstructionType,
-  type Instruction,
-} from '@/model/scripts/Instruction'
+import { InstructionType, type Instruction } from '@/model/scripts/Instruction'
+import WaitInstructionItem from './WaitInstructionItem.vue'
+import StartTaskInstructionItem from './StartTaskInstructionItem.vue'
 
 const props = defineProps<{
   instruction: Instruction
