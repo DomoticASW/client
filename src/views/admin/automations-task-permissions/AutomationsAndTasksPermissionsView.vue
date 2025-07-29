@@ -3,12 +3,10 @@ import { authorizedRequest, deserializeBody } from '@/api/api'
 import { automationDeserializer } from '@/api/scripts/GetAutomationDTO'
 import { tasksDeserializer } from '@/api/scripts/GetTaskDTO'
 import type { Automation, Task } from '@/model/scripts/Script'
-import { useScript } from '@/stores/task-automation'
 import { useUserInfoStore } from '@/stores/user-info'
 import { onMounted, ref } from 'vue'
 
 const userInfo = useUserInfoStore()
-const scriptStore = useScript()
 const tasks = ref<Task[]>()
 const automations = ref<Automation[]>()
 
@@ -23,9 +21,6 @@ onMounted(async () => {
   )
 })
 
-function storeScript(script: Task | Automation) {
-  scriptStore.script = script
-}
 </script>
 
 <template>
@@ -39,11 +34,10 @@ function storeScript(script: Task | Automation) {
               {{ task.name }}
             </div>
             <RouterLink :to="{ name: 'automation-and-task-permission', params: { id: task.id } }">
-              <button
+              <a
                 class="btn btn-circle btn-ghost"
                 type="button"
                 :aria-label="'Get permissions of: ' + task.name"
-                @click="storeScript(task)"
               >
                 <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                   <g
@@ -56,7 +50,7 @@ function storeScript(script: Task | Automation) {
                     <path d="M6 3L20 12 6 21 6 3z"></path>
                   </g>
                 </svg>
-              </button>
+              </a>
             </RouterLink>
           </li>
         </ul>
@@ -74,11 +68,10 @@ function storeScript(script: Task | Automation) {
             <RouterLink
               :to="{ name: 'automation-and-task-permission', params: { id: automation.id } }"
             >
-              <button
+              <a
                 class="btn btn-circle btn-ghost"
                 type="button"
                 :aria-label="'Get permissions of: ' + automation.name"
-                @click="storeScript(automation)"
               >
                 <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                   <g
@@ -91,7 +84,7 @@ function storeScript(script: Task | Automation) {
                     <path d="M6 3L20 12 6 21 6 3z"></path>
                   </g>
                 </svg>
-              </button>
+              </a>
             </RouterLink>
           </li>
         </ul>
