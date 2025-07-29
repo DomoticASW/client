@@ -34,7 +34,7 @@ onMounted(async () => {
             class="toggle toggle-sm"
             :aria-label="'Change ' + automation.name + ' status'"
             @click.stop
-            @change="toggleAutomation(automation, userInfo.token)"
+            @change="toggleAutomation(automation.id, automation.enabled, userInfo.token)"
           />
         </div>
       </li>
