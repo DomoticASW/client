@@ -1,10 +1,6 @@
 @import './fonts/all.css';
 @import "tailwindcss";
 
-@plugin "daisyui";
-
-/*
-{
-  themes: nord or lofi --default, business --prefersdark;
+@plugin "daisyui" {
+  themes: lofi --default, business --prefersdark;
 }
-*/

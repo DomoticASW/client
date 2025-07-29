@@ -22,7 +22,7 @@ const props = defineProps<{ name?: string; modal: boolean }>()
   </div>
 
   <dialog id="addButtonModal" class="modal modal-end">
-    <div class="modal-box">
+    <div class="modal-box sm:w-4/12 w-7/12 max-w-screen">
       <slot></slot>
     </div>
     <form method="dialog" class="modal-backdrop">

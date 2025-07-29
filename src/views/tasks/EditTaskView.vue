@@ -6,6 +6,7 @@ import { onMounted, ref } from 'vue'
 import AddButton from '@/components/AddButton.vue'
 import { findTask } from '@/api/scripts/requests/tasks'
 import { TaskId } from '@/model/scripts/Script'
+import InstructionItems from '@/components/tasks-automations/InstructionItems.vue'
 
 const props = defineProps<{ id?: string }>()
 const userInfo = useUserInfoStore()
@@ -29,5 +30,7 @@ onMounted(async () => {
   <hr class="m-4" />
   <InstructionReorder :instructions="instructions" />
   <div class="pb-4"></div>
-  <AddButton :modal="true"> </AddButton>
+  <AddButton :modal="true">
+    <InstructionItems />
+  </AddButton>
 </template>

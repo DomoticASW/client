@@ -7,6 +7,7 @@ import { useUserInfoStore } from '@/stores/user-info'
 import { onMounted, ref } from 'vue'
 import { AutomationId, type Trigger as AutomationTrigger } from '@/model/scripts/Script'
 import { findAutomation } from '@/api/scripts/requests/automations'
+import InstructionItems from '@/components/tasks-automations/InstructionItems.vue'
 
 const props = defineProps<{ id?: string }>()
 const userInfo = useUserInfoStore()
@@ -36,5 +37,7 @@ onMounted(async () => {
   <h1 class="text-xl">Actions</h1>
   <InstructionReorder :instructions="instructions" />
   <div class="pb-4"></div>
-  <AddButton :modal="true"> </AddButton>
+  <AddButton :modal="true">
+    <InstructionItems/>
+  </AddButton>
 </template>

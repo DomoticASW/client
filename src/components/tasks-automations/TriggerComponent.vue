@@ -24,8 +24,8 @@ function removeTrigger() {
 
 <template>
   <div class="grid grid-cols-2 p-4 justify-items-center" v-if="trigger === undefined">
-    <button class="btn btn-neutral w-50" type="button">Device Event</button>
-    <button class="btn btn-neutral w-50" type="button">Period</button>
+    <button class="btn btn-neutral sm:w-50 w-25" type="button">Device Event</button>
+    <button class="btn btn-neutral sm:w-50 w-25" type="button">Period</button>
   </div>
   <div class="card card-sm bg-secondary/70 text-secondary-content my-2" v-else>
     <div class="card-body text-base grid grid-cols-2 px-4" v-if="'start' in trigger">
