@@ -1,21 +1,19 @@
 <script setup lang="ts">
-import { authorizedRequest, deserializeBody } from '@/api/api'
-import { taskDeserializer } from '@/api/scripts/GetTaskDTO'
+import { findTask } from '@/api/scripts/requests/tasks'
 import InstructionItem from '@/components/tasks-automations/InstructionItem.vue'
 import type { Instruction } from '@/model/scripts/Instruction'
+import { TaskId } from '@/model/scripts/Script'
 import { useUserInfoStore } from '@/stores/user-info'
 import { onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
 
-const route = useRoute()
+const props = defineProps<{ id: string }>()
 const userInfo = useUserInfoStore()
 
 const instructions = ref<Instruction[]>([])
 const taskName = ref<string>('')
 
 onMounted(async () => {
-  const res = await authorizedRequest('/api/tasks/' + route.params.id, userInfo.token)
-  const task = await deserializeBody(res, taskDeserializer)
+  const task = await findTask(TaskId(props.id), userInfo.token)
   instructions.value = task.instructions
   taskName.value = task.name
 })

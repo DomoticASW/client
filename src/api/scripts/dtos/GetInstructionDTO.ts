@@ -10,8 +10,8 @@ import type {
   StartTaskInstruction,
   WaitInstruction,
 } from '@/model/scripts/Instruction'
-import { arrayDeserializer, Deserializer } from '../Deserializer'
-import { isGetTypeDTO, typeDeserializer, type GetTypeDTO } from '../GetTypeDTO'
+import { arrayDeserializer, Deserializer } from '../../Deserializer'
+import { isGetTypeDTO, typeDeserializer, type GetTypeDTO } from '../../GetTypeDTO'
 import { conditionDeserializer, isGetConditionDTO, type GetConditionDTO } from './GetConditionDTO'
 import {
   instructionTypeDeserializer,

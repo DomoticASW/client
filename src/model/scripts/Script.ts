@@ -1,12 +1,22 @@
-import type { Instruction } from "./Instruction"
+import type { Brand } from '@/utils'
+import type { Instruction } from './Instruction'
 
-export interface Task {
-  id: string
+export type ScriptId = TaskId | AutomationId
+
+export type TaskId = Brand<string, 'TaskId'>
+export type AutomationId = Brand<string, 'AutomationId'>
+export function TaskId(id: string): TaskId { return id as TaskId }
+export function AutomationId(id: string): AutomationId { return id as AutomationId }
+
+export interface Script<ScriptId> {
+  id: ScriptId
   name: string
   instructions: Instruction[]
 }
 
-export interface Automation extends Task{
+export type Task = Script<TaskId>
+
+export interface Automation extends Script<AutomationId> {
   enabled: boolean
   trigger: Trigger
 }
@@ -19,7 +29,7 @@ export interface PeriodTrigger {
 }
 
 export interface DeviceEventTrigger {
-  deviceId: string,
+  deviceId: string
   eventName: string
 }
 
@@ -52,4 +62,3 @@ export function formatDuration(seconds: number): string {
 
   return parts.join(' ')
 }
-

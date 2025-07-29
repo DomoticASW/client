@@ -1,5 +1,5 @@
-import type { Automation, DeviceEventTrigger, PeriodTrigger } from '@/model/scripts/Script'
-import { arrayDeserializer, Deserializer } from '../Deserializer'
+import { AutomationId, type Automation, type DeviceEventTrigger, type PeriodTrigger } from '@/model/scripts/Script'
+import { arrayDeserializer, Deserializer } from '../../Deserializer'
 import type { GetTaskDTO } from './GetTaskDTO'
 import { instructionsDeserializer, isGetInstructionDTO } from './GetInstructionDTO'
 
@@ -84,7 +84,7 @@ export const automationDeserializer = Deserializer<GetAutomationDTO, Automation>
   isGetAutomationDTO,
   (dto) => {
     return {
-      id: dto.id,
+      id: AutomationId(dto.id),
       name: dto.name,
       enabled: dto.enabled,
       trigger: isGetDeviceEventTriggerDTO(dto.trigger)

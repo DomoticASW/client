@@ -13,10 +13,10 @@
 <script setup lang="ts">
 import type { Instruction, StartTaskInstruction } from '@/model/scripts/Instruction'
 import InstructionLayout from './InstructionLayout.vue'
-import { onMounted, ref, /*watch*/ } from 'vue'
+import { onMounted, ref /*watch*/ } from 'vue'
 import { authorizedRequest, deserializeBody } from '@/api/api'
 import { useUserInfoStore } from '@/stores/user-info'
-import { taskDeserializer } from '@/api/scripts/GetTaskDTO'
+import { taskDeserializer } from '@/api/scripts/dtos/GetTaskDTO'
 const userInfo = useUserInfoStore()
 
 const props = defineProps<{
@@ -35,14 +35,6 @@ const taskName = ref('')
 onMounted(async () => {
   updateTaskName(props.instruction.instruction as StartTaskInstruction)
 })
-
-// watch(
-//   () => props.instruction,
-//   async (val) => {
-//     updateTaskName(val.instruction as StartTaskInstruction)
-//   },
-//   { immediate: true },
-// )
 
 async function updateTaskName(instruction: StartTaskInstruction) {
   const res = await authorizedRequest('/api/tasks/' + instruction.taskId, userInfo.token)

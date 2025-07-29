@@ -1,5 +1,5 @@
-import { InstructionType } from "@/model/scripts/Instruction"
-import { Deserializer } from "../Deserializer"
+import { InstructionType } from '@/model/scripts/Instruction'
+import { Deserializer } from '../../Deserializer'
 
 export enum GetInstructionTypeDTO {
   SendNotificationInstruction = 'SendNotificationInstruction',
@@ -9,17 +9,20 @@ export enum GetInstructionTypeDTO {
   CreateConstantInstruction = 'CreateConstantInstruction',
   CreateDevicePropertyConstantInstruction = 'CreateDevicePropertyConstantInstruction',
   IfInstruction = 'IfInstruction',
-  IfElseInstruction = 'IfElseInstruction'
+  IfElseInstruction = 'IfElseInstruction',
 }
 
 export function isGetInstructionTypeDTO(o: unknown): o is GetInstructionTypeDTO {
   return (
     o != undefined &&
     typeof o == 'string' &&
-    Object.values(GetInstructionTypeDTO).some(el => el.valueOf() === o)
+    Object.values(GetInstructionTypeDTO).some((el) => el.valueOf() === o)
   )
 }
 
-export const instructionTypeDeserializer = Deserializer<GetInstructionTypeDTO, InstructionType>(isGetInstructionTypeDTO, (dto) => {
-  return Object.values(InstructionType).find(el => el === dto.valueOf())!
-})
+export const instructionTypeDeserializer = Deserializer<GetInstructionTypeDTO, InstructionType>(
+  isGetInstructionTypeDTO,
+  (dto) => {
+    return Object.values(InstructionType).find((el) => el === dto.valueOf())!
+  },
+)

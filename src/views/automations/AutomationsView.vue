@@ -3,28 +3,17 @@ import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import AddButton from '@/components/AddButton.vue'
 import { useUserInfoStore } from '@/stores/user-info'
-import { automationsDeserializer } from '@/api/scripts/GetAutomationDTO'
-import { authorizedRequest, deserializeBody } from '@/api/api'
 import type { Automation } from '@/model/scripts/Script'
+import { getAllAutomations, toggleAutomation } from '@/api/scripts/requests/automations'
 
 const userInfo = useUserInfoStore()
 
 const automations = ref<Automation[]>()
 
 onMounted(async () => {
-  const res = await authorizedRequest('/api/automations', userInfo.token)
-
-  automations.value = await deserializeBody(res, automationsDeserializer)
+  automations.value = await getAllAutomations(userInfo.token)
 })
 
-function toggleAutomation(automation: { id: string; name: string; enabled: boolean }) {
-  authorizedRequest('/api/automations/' + automation.id, userInfo.token, {
-    method: 'POST',
-    body: JSON.stringify({
-      enable: automation.enabled,
-    }),
-  })
-}
 </script>
 
 <template>
@@ -45,14 +34,14 @@ function toggleAutomation(automation: { id: string; name: string; enabled: boole
             class="toggle toggle-sm"
             :aria-label="'Change ' + automation.name + ' status'"
             @click.stop
-            @change="toggleAutomation(automation)"
+            @change="toggleAutomation(automation, userInfo.token)"
           />
         </div>
       </li>
     </RouterLink>
   </ul>
 
-  <AddButton name="add-automation"></AddButton>
+  <AddButton name="add-automation" :modal="false" />
 </template>
 
 <style></style>
