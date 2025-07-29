@@ -7,11 +7,19 @@ import App from './App.vue'
 import router from './router'
 import { useUserInfoStore } from './stores/user-info'
 import { isGetUserInfoDTO } from '@/api/users-management/GetUserInfoDTO'
+import { useErrorPresenterStore } from './stores/error-presenter'
 
 const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
+
+const errorPresenterStore = useErrorPresenterStore()
+app.config.errorHandler = (err) => {
+  if (typeof err == "object" && err != undefined) {
+    errorPresenterStore.showError(err)
+  }
+}
 
 // During development it's possible to set a VITE_USER_INFO object to skip login:
 // VITE_USER_INFO='{"email": "a@email.com", "nickname": "Foo", "token": "blablabla", "role": "Admin" }' npm run dev
