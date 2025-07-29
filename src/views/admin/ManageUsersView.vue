@@ -1,25 +1,27 @@
 <script setup lang="ts">
 import { authorizedRequest, deserializeBody } from '@/api/api'
-import { userInfoDeserializer } from '@/api/users-management/GetUserInfoDTO'
-import { Role, type UserInfo } from '@/model/users-management/User'
+import { registrationRequestsDeserializer } from '@/api/users-management/GetRegistrationRequestDTO'
+import { usersDeserializer } from '@/api/users-management/GetUserDTO'
+import type { RegistrationRequest } from '@/model/users-management/RegistrationRequest'
+import { Role, type User } from '@/model/users-management/User'
 import { useUserInfoStore } from '@/stores/user-info'
 import { onMounted, ref } from 'vue'
 
 const showToast = ref(false)
 const toastMessage = ref('')
 const userInfo = useUserInfoStore()
-const registeredUsers = ref<UserInfo[] | undefined>(undefined)
-const unregisteredUsers = ref<UserInfo[] | undefined>(undefined)
+const registeredUsers = ref<User[]>()
+const unregisteredUsers = ref<RegistrationRequest[]>()
 onMounted(async () => {
   const res = await authorizedRequest(`/api/users`, userInfo.token)
-  registeredUsers.value = await deserializeBody(res, userInfoDeserializer)
+  registeredUsers.value = await deserializeBody(res, usersDeserializer)
 })
 onMounted(async () => {
   const res = await authorizedRequest(`/api/registrationRequests`, userInfo.token)
-  unregisteredUsers.value = await deserializeBody(res, userInfoDeserializer)
+  unregisteredUsers.value = await deserializeBody(res, registrationRequestsDeserializer)
 })
 
-function removeUser(user: UserInfo) {
+function removeUser(user: User) {
   authorizedRequest(`/api/users/${user.email}`, userInfo.token, {
     method: 'DELETE',
   })
@@ -32,7 +34,7 @@ function removeUser(user: UserInfo) {
     })
 }
 
-function rejectRequest(user: UserInfo) {
+function rejectRequest(user: RegistrationRequest) {
   authorizedRequest(`/api/registrationRequests/${user.email}/reject`, userInfo.token, {
     method: 'POST',
   })
@@ -45,13 +47,19 @@ function rejectRequest(user: UserInfo) {
     })
 }
 
-function approveRequest(user: UserInfo) {
+function approveRequest(user: RegistrationRequest) {
   authorizedRequest(`/api/registrationRequests/${user.email}/approve`, userInfo.token, {
     method: 'POST',
   })
     .then(() => {
       unregisteredUsers.value = unregisteredUsers.value?.filter((u) => u.email !== user.email)
-      registeredUsers.value?.push(user)
+      const newUser: User = {
+        email: user.email,
+        nickname: user.nickname,
+        passwordHash: user.passwordHash,
+        role: Role.User,
+      }
+      registeredUsers.value?.push(newUser)
       showToastMessage(`Request for ${user.nickname} accepted successfully.`)
     })
     .catch((error) => {
