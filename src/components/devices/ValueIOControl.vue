@@ -9,7 +9,7 @@ import {
 import { Type } from '@/model/Type'
 import hexRgb from 'hex-rgb'
 import rgbHex from 'rgb-hex'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
 const { typeConstraints, isInput } = defineProps<{
   typeConstraints: TypeConstraints<unknown>
@@ -34,6 +34,8 @@ function setColor(hex: string) {
   const rgb = hexRgb(hex)
   value.value = Color(rgb.red, rgb.green, rgb.blue)
 }
+
+const rangePreview = ref<number | undefined>()
 </script>
 
 <template>
@@ -52,20 +54,23 @@ function setColor(hex: string) {
     <span v-else> {{ value }} </span>
   </div>
   <div v-if="type === Type.IntType || type === Type.DoubleType">
-    <div v-if="isRangeTypeConstraints(typeConstraints)" class="max-w-xs">
+    <div v-if="isRangeTypeConstraints(typeConstraints)" class="flex flex-col max-w-xs">
       <!-- TODO: user can still input non valid values -->
+      <span class="self-center">{{ rangePreview ?? value }}</span>
       <input
         type="range"
-        class="range"
+        class="range range-primary"
         :min="typeConstraints.min"
         :max="typeConstraints.max"
         :step="type == Type.IntType ? 1 : 'any'"
         :disabled="!isInput"
-        v-model.lazy="value"
+        @mouseup="rangePreview = undefined"
+        @input="rangePreview = Number.parseFloat(($event.target as HTMLInputElement).value)"
+        @change="value = Number.parseFloat(($event.target as HTMLInputElement).value)"
       />
       <div class="flex flex-row justify-between">
-        <span class="opacity-60">{{ typeConstraints.min }}</span>
-        <span class="opacity-60">{{ typeConstraints.max }}</span>
+        <span class="opacity-30">{{ typeConstraints.min }}</span>
+        <span class="opacity-30">{{ typeConstraints.max }}</span>
       </div>
     </div>
     <input
