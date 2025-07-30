@@ -4,9 +4,11 @@ import { registrationRequestsDeserializer } from '@/api/users-management/GetRegi
 import { usersDeserializer } from '@/api/users-management/GetUserDTO'
 import type { RegistrationRequest } from '@/model/users-management/RegistrationRequest'
 import { Role, type User } from '@/model/users-management/User'
+import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import { useUserInfoStore } from '@/stores/user-info'
 import { onMounted, ref } from 'vue'
 
+const loadingOverlay = useLoadingOverlayStore()
 const showToast = ref(false)
 const toastMessage = ref('')
 const userInfo = useUserInfoStore()
@@ -22,49 +24,63 @@ onMounted(async () => {
 })
 
 function removeUser(user: User) {
-  authorizedRequest(`/api/users/${user.email}`, userInfo.token, {
-    method: 'DELETE',
-  })
-    .then(() => {
-      registeredUsers.value = registeredUsers.value?.filter((u) => u.email !== user.email)
-      showToastMessage(`Request for ${user.nickname} removed successfully.`)
+  try {
+    loadingOverlay.startLoading()
+    authorizedRequest(`/api/users/${user.email}`, userInfo.token, {
+      method: 'DELETE',
     })
-    .catch((error) => {
-      console.error('Error removing request:', error)
-    })
+      .then(() => {
+        registeredUsers.value = registeredUsers.value?.filter((u) => u.email !== user.email)
+        showToastMessage(`Request for ${user.nickname} removed successfully.`)
+      })
+      .catch((error) => {
+        console.error('Error removing request:', error)
+      })
+  } finally {
+    loadingOverlay.stopLoading()
+  }
 }
 
 function rejectRequest(user: RegistrationRequest) {
-  authorizedRequest(`/api/registrationRequests/${user.email}/reject`, userInfo.token, {
-    method: 'POST',
-  })
-    .then(() => {
-      unregisteredUsers.value = unregisteredUsers.value?.filter((u) => u.email !== user.email)
-      showToastMessage(`Request for ${user.nickname} rejected successfully.`)
+  try {
+      authorizedRequest(`/api/registrationRequests/${user.email}/reject`, userInfo.token, {
+      method: 'POST',
     })
-    .catch((error) => {
-      console.error('Error rejecting request:', error)
-    })
+      .then(() => {
+        unregisteredUsers.value = unregisteredUsers.value?.filter((u) => u.email !== user.email)
+        showToastMessage(`Request for ${user.nickname} rejected successfully.`)
+      })
+      .catch((error) => {
+        console.error('Error rejecting request:', error)
+      })
+  } finally {
+    loadingOverlay.stopLoading()
+  }
 }
 
 function approveRequest(user: RegistrationRequest) {
-  authorizedRequest(`/api/registrationRequests/${user.email}/approve`, userInfo.token, {
-    method: 'POST',
-  })
-    .then(() => {
-      unregisteredUsers.value = unregisteredUsers.value?.filter((u) => u.email !== user.email)
-      const newUser: User = {
-        email: user.email,
-        nickname: user.nickname,
-        passwordHash: user.passwordHash,
-        role: Role.User,
-      }
-      registeredUsers.value?.push(newUser)
-      showToastMessage(`Request for ${user.nickname} accepted successfully.`)
+  try {
+    loadingOverlay.startLoading()
+    authorizedRequest(`/api/registrationRequests/${user.email}/approve`, userInfo.token, {
+      method: 'POST',
     })
-    .catch((error) => {
-      console.error('Error approving request:', error)
-    })
+      .then(() => {
+        unregisteredUsers.value = unregisteredUsers.value?.filter((u) => u.email !== user.email)
+        const newUser: User = {
+          email: user.email,
+          nickname: user.nickname,
+          passwordHash: user.passwordHash,
+          role: Role.User,
+        }
+        registeredUsers.value?.push(newUser)
+        showToastMessage(`Request for ${user.nickname} accepted successfully.`)
+      })
+      .catch((error) => {
+        console.error('Error approving request:', error)
+      })
+  } finally {
+    loadingOverlay.stopLoading()
+  }
 }
 
 function showToastMessage(msg: string) {

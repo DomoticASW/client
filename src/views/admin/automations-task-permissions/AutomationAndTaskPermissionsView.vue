@@ -12,8 +12,10 @@ import type { Automation, Task } from '@/model/scripts/Script'
 import { taskDeserializer } from '@/api/scripts/GetTaskDTO'
 import { automationDeserializer } from '@/api/scripts/GetAutomationDTO'
 import { useRoute } from 'vue-router'
+import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 
 const route = useRoute()
+const loadingOverlay = useLoadingOverlayStore()
 const script = ref<Task | Automation>()
 const userInfo = useUserInfoStore()
 const taskList = ref<TaskList>()
@@ -85,55 +87,64 @@ async function getTaskList() {
 
 function addUser(user: User) {
   const list = listSelectedName.value.toLowerCase()
-  authorizedRequest(`/api/permissions/${list}/${route.params.id}`, userInfo.token, {
-    method: 'PATCH',
-    body: JSON.stringify({ email: user.email }),
-  })
-    .then(() => {
-      if (listSelectedName.value === 'Editlist' && editlist.value) {
-        if (!editlist.value.users) {
-          editlist.value.users = []
+  try {
+    loadingOverlay.startLoading()
+    authorizedRequest(`/api/permissions/${list}/${route.params.id}`, userInfo.token, {
+      method: 'PATCH',
+      body: JSON.stringify({ email: user.email }),
+    })
+      .then(() => {
+        if (listSelectedName.value === 'Editlist' && editlist.value) {
+          if (!editlist.value.users) {
+            editlist.value.users = []
+          }
+          editlist.value.users.push(user.email)
+        } else if (listSelectedName.value === 'Whitelist' && taskList.value) {
+          taskList.value.whitelist.push(user.email)
+        } else if (listSelectedName.value === 'Blacklist' && taskList.value) {
+          taskList.value.blacklist.push(user.email)
         }
-        editlist.value.users.push(user.email)
-      } else if (listSelectedName.value === 'Whitelist' && taskList.value) {
-        taskList.value.whitelist.push(user.email)
-      } else if (listSelectedName.value === 'Blacklist' && taskList.value) {
-        taskList.value.blacklist.push(user.email)
-      }
-    })
-    .catch((error) => {
-      console.error('Error adding user:', error)
-    })
+      })
+      .catch((error) => {
+        console.error('Error adding user:', error)
+      })
+  } finally {
+    loadingOverlay.stopLoading();
+  }
 }
 
 function removeUser(userEmail: string) {
   const list = listSelectedName.value.toLowerCase()
-
-  authorizedRequest(`/api/permissions/${list}/${route.params.id}`, userInfo.token, {
-    method: 'DELETE',
-    body: JSON.stringify({ email: userEmail }),
-  })
-    .then(() => {
-      if (listSelectedName.value === 'Editlist' && editlist.value?.users) {
-        const index = editlist.value.users.indexOf(userEmail)
-        if (index > -1) {
-          editlist.value.users.splice(index, 1)
-        }
-      } else if (listSelectedName.value === 'Whitelist' && taskList.value) {
-        const index = taskList.value.whitelist.indexOf(userEmail)
-        if (index > -1) {
-          taskList.value.whitelist.splice(index, 1)
-        }
-      } else if (listSelectedName.value === 'Blacklist' && taskList.value) {
-        const index = taskList.value.blacklist.indexOf(userEmail)
-        if (index > -1) {
-          taskList.value.blacklist.splice(index, 1)
-        }
-      }
+  try {
+    loadingOverlay.startLoading();
+    authorizedRequest(`/api/permissions/${list}/${route.params.id}`, userInfo.token, {
+      method: 'DELETE',
+      body: JSON.stringify({ email: userEmail }),
     })
-    .catch((error) => {
-      console.error('Error removing user:', error)
-    })
+      .then(() => {
+        if (listSelectedName.value === 'Editlist' && editlist.value?.users) {
+          const index = editlist.value.users.indexOf(userEmail)
+          if (index > -1) {
+            editlist.value.users.splice(index, 1)
+          }
+        } else if (listSelectedName.value === 'Whitelist' && taskList.value) {
+          const index = taskList.value.whitelist.indexOf(userEmail)
+          if (index > -1) {
+            taskList.value.whitelist.splice(index, 1)
+          }
+        } else if (listSelectedName.value === 'Blacklist' && taskList.value) {
+          const index = taskList.value.blacklist.indexOf(userEmail)
+          if (index > -1) {
+            taskList.value.blacklist.splice(index, 1)
+          }
+        }
+      })
+      .catch((error) => {
+        console.error('Error removing user:', error)
+      })
+  } finally {
+    loadingOverlay.stopLoading();
+  }
 }
 
 function select(option: string) {
