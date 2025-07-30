@@ -1,52 +1,21 @@
 <script setup lang="ts">
 import router from '@/router'
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import DeviceRowSkeleton from '@/components/admin/manage-devices/DeviceListSkeleton.vue'
+import { DeviceGroupId, type DeviceGroup } from '@/model/devices-management/DeviceGroup'
+import type { Device, DeviceId } from '@/model/devices-management/Device'
+import { useLoadingOverlayStore } from '@/stores/loading-overlay'
+import { useUserInfoStore } from '@/stores/user-info'
+import * as api from '@/api/devices-management/requests/device-groups'
+import * as devicesApi from '@/api/devices-management/requests/devices'
 
 const props = defineProps({ id: { type: String, required: true } })
-
-interface Device {
-  id: string
-  name: string
-}
-interface DeviceGroup {
-  id: string
-  name: string
-  devices: Device[]
-}
+const groupId = DeviceGroupId(props.id)
+const userInfo = useUserInfoStore()
+const loadingOverlay = useLoadingOverlayStore()
 
 const group = ref<DeviceGroup | undefined>(undefined)
-// TODO: call the sever
-setTimeout(
-  () =>
-    (group.value = {
-      id: props.id,
-      name: 'Kitchen',
-      devices: [
-        { id: '1', name: 'Roomba' },
-        { id: '2', name: 'Thermometer' },
-        { id: '3', name: 'Lamp' },
-      ],
-    }),
-  1000,
-)
-
 const devices = ref<Device[] | undefined>(undefined)
-setTimeout(
-  () =>
-    (devices.value = [
-      { id: '1', name: 'Roomba' },
-      { id: '2', name: 'Thermometer' },
-      { id: '3', name: 'Lamp' },
-      { id: '4', name: 'Lamp2' },
-      { id: '5', name: 'Lamp3' },
-      { id: '6', name: 'Lamp4' },
-      { id: '7', name: 'Lamp5' },
-      { id: '8', name: 'Lamp6' },
-      { id: '9', name: 'Lamp7' },
-    ]),
-  1500,
-)
 
 const devicesNotInGroup = computed(() => {
   if (group.value && devices.value)
@@ -55,19 +24,43 @@ const devicesNotInGroup = computed(() => {
     )
   else return undefined
 })
-function removeDeviceFromGroup(deviceId: string) {
-  group.value!.devices = group.value!.devices.filter((d) => d.id != deviceId)
-}
-function addDeviceToGroup(deviceId: string) {
-  const device = devices.value!.find((d) => d.id == deviceId)
-  if (device) {
-    group.value!.devices.push(device)
+async function removeDeviceFromGroup(deviceId: DeviceId) {
+  try {
+    loadingOverlay.startLoading()
+    await api.removeDeviceFromDeviceGroup(groupId, deviceId, userInfo.token)
+    group.value!.devices = group.value!.devices.filter((d) => d.id != deviceId)
+  } finally {
+    loadingOverlay.stopLoading()
   }
 }
-function deleteGroup() {
-  // TODO: delete group
-  router.back()
+async function addDeviceToGroup(deviceId: DeviceId) {
+  try {
+    loadingOverlay.startLoading()
+    await api.addDeviceToDeviceGroup(groupId, deviceId, userInfo.token)
+    const device = devices.value!.find((d) => d.id == deviceId)
+    if (device) {
+      group.value!.devices.push(device)
+    }
+  } finally {
+    loadingOverlay.stopLoading()
+  }
 }
+async function deleteGroup() {
+  try {
+    loadingOverlay.startLoading()
+    await api.deleteDeviceGroup(groupId, userInfo.token)
+    router.back()
+  } finally {
+    loadingOverlay.stopLoading()
+  }
+}
+
+onMounted(async () => {
+  group.value = await api.findDeviceGroup(groupId, userInfo.token)
+})
+onMounted(async () => {
+  devices.value = await devicesApi.getAllDevices(userInfo.token)
+})
 </script>
 
 <template>
