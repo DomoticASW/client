@@ -152,23 +152,7 @@ function calculateUsersNotInList(list: string[], users: User[]): User[] {
       <div class="flex items-center space-x-2">
         <h1 class="text-2xl font-bold dark:text-white">{{ listSelectedName }}</h1>
         <div v-if="burger.length > 1">
-          <button class="btn btn-circle btn-ghost" type="button" @click="open = !open">
-            <svg
-              class="size-[1.2em] transition-transform duration-200"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-            >
-              <g
-                stroke-linejoin="round"
-                stroke-linecap="round"
-                stroke-width="2"
-                fill="none"
-                stroke="currentColor"
-              >
-                <path d="M6 9l6 6 6-6"></path>
-              </g>
-            </svg>
-          </button>
+          <button class="btn btn-circle btn-ghost fa-solid fa-angle-down" type="button" @click="open = !open"></button>
         </div>
       </div>
       <transition
@@ -202,24 +186,12 @@ function calculateUsersNotInList(list: string[], users: User[]): User[] {
             <div class="list-col-grow flex items-center">
               {{ user }}
             </div>
-
             <button
-              class="btn btn-circle btn-ghost"
+              class="btn btn-circle btn-ghost fa-solid fa-xmark"
               type="button"
               :aria-label="'Remove user: ' + user"
               @click="removeUser(user)"
             >
-              <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <g
-                  stroke-linejoin="round"
-                  stroke-linecap="round"
-                  stroke-width="2"
-                  fill="none"
-                  stroke="currentColor"
-                >
-                  <path d="M6 6l12 12M6 18L18 6"></path>
-                </g>
-              </svg>
             </button>
           </li>
         </ul>
@@ -236,22 +208,11 @@ function calculateUsersNotInList(list: string[], users: User[]): User[] {
             </div>
             <div v-if="user.role === Role.User">
               <button
-                class="btn btn-circle btn-ghost"
+                class="btn btn-circle btn-ghost fa-solid fa-plus"
                 type="button"
                 :aria-label="'Add user: ' + user.nickname"
                 @click="addUser(user)"
               >
-                <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                  <g
-                    stroke-linejoin="round"
-                    stroke-linecap="round"
-                    stroke-width="2"
-                    fill="none"
-                    stroke="currentColor"
-                  >
-                    <path d="M12 5v14M5 12h14"></path>
-                  </g>
-                </svg>
               </button>
             </div>
           </li>

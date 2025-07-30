@@ -26,17 +26,7 @@ onMounted(async () => {
           type="button"
           :aria-label="'Get permissions of: ' + user.nickname"
         >
-          <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <g
-              stroke-linejoin="round"
-              stroke-linecap="round"
-              stroke-width="2"
-              fill="none"
-              stroke="currentColor"
-            >
-              <path d="M6 3L20 12 6 21 6 3z"></path>
-            </g>
-          </svg>
+          <i class="fa-solid fa-play"></i>
         </a>
       </RouterLink>
     </li>

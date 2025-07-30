@@ -102,22 +102,11 @@ function showToastMessage(msg: string) {
             }}</small>
             <button
               v-else
-              class="btn btn-circle btn-ghost"
+              class="btn btn-circle btn-ghost fa-solid fa-xmark"
               type="button"
               :aria-label="'Remove: ' + user"
               @click="removeUser(user)"
             >
-              <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <g
-                  stroke-linejoin="round"
-                  stroke-linecap="round"
-                  stroke-width="2"
-                  fill="none"
-                  stroke="currentColor"
-                >
-                  <path d="M6 6l12 12M6 18L18 6"></path>
-                </g>
-              </svg>
             </button>
           </li>
         </ul>
@@ -135,40 +124,18 @@ function showToastMessage(msg: string) {
             </div>
             <div>
               <button
-                class="btn btn-circle btn-ghost"
+                class="btn btn-circle btn-ghost fa-solid fa-xmark"
                 type="button"
                 :aria-label="'Remove request of: ' + user"
                 @click="rejectRequest(user)"
               >
-                <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                  <g
-                    stroke-linejoin="round"
-                    stroke-linecap="round"
-                    stroke-width="2"
-                    fill="none"
-                    stroke="currentColor"
-                  >
-                    <path d="M6 6l12 12M6 18L18 6"></path>
-                  </g>
-                </svg>
               </button>
               <button
-                class="btn btn-circle btn-ghost"
+                class="btn btn-circle btn-ghost fa-solid fa-plus"
                 type="button"
                 :aria-label="'Accept request of: ' + user"
                 @click="approveRequest(user)"
               >
-                <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                  <g
-                    stroke-linejoin="round"
-                    stroke-linecap="round"
-                    stroke-width="2"
-                    fill="none"
-                    stroke="currentColor"
-                  >
-                    <path d="M12 5v14M5 12h14"></path>
-                  </g>
-                </svg>
               </button>
             </div>
           </li>
