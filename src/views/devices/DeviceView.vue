@@ -6,7 +6,7 @@ import { useUserInfoStore } from '@/stores/user-info'
 import * as api from '@/api/devices-management/requests/devices'
 import * as notificationsApi from '@/api/notifications-management/requests'
 import { Type } from '@/model/Type'
-import InputForTypeConstraints from '@/components/devices/InputForTypeConstraints.vue'
+import ValueIOControl from '@/components/devices/ValueIOControl.vue'
 import { Color } from '@/model/devices-management/Types'
 
 const props = defineProps({ id: { type: String, required: true } })
@@ -122,7 +122,7 @@ onMounted(async () => {
   <ul v-if="device" class="list">
     <li v-for="p in device.properties" v-bind:key="p.id" class="list-row items-center">
       <span class="list-col-grow"> {{ p.name }} </span>
-      <InputForTypeConstraints
+      <ValueIOControl
         v-model="p.value"
         :typeConstraints="p.typeConstraints"
         :isInput="p.setter !== undefined"
@@ -144,7 +144,7 @@ onMounted(async () => {
   <dialog ref="action-input-modal" class="modal modal-bottom sm:modal-middle">
     <div class="modal-box">
       <h3 class="text-lg font-bold">Action input</h3>
-      <InputForTypeConstraints
+      <ValueIOControl
         v-if="executingAction"
         :typeConstraints="executingAction!.inputTypeConstraints"
         :isInput="true"
