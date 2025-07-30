@@ -5,10 +5,10 @@
     :edit="edit"
     :instruction="props.instruction"
   >
-    <p class="truncate">{{ instruction.deviceId }}</p>
+    <p class="truncate">{{ instruction.deviceId }}</p> <!-- To get name of the device -->
     <p class="font-bold text-center truncate">{{ instruction.name }}</p>
-    <p class="text-xs truncate">{{ instruction.devicePropertyId }}</p>
-    <p class="text-center truncate">value to get</p>
+    <p class="text-xs truncate">{{ instruction.devicePropertyId }}</p> <!-- To get the name of the property -->
+    <p class="text-center truncate"></p> <!-- Value to get from the server, maybe with socket io -->
   </InstructionLayout>
 </template>
 

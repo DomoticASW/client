@@ -1,23 +1,23 @@
 <script setup lang="ts">
-const props = defineProps<{ name?: string; modal: boolean }>()
+const props = defineProps<{ name?: string }>()
 </script>
 
 <template>
   <div class="px-4 pb-4 fixed bottom-0 max-w-[inherit] w-[inherit]">
     <div class="flex justify-end px-5">
-      <template v-if="modal">
+      <RouterLink
+        v-if="name"
+        :to="{ name: props.name }"
+        type="button"
+        class="btn btn-circle btn-neutral fa-solid fa-plus fa-lg !flex"
+      ></RouterLink>
+      <template v-else>
         <button
           type="button"
           onclick="addButtonModal.showModal()"
           class="btn btn-circle btn-neutral fa-solid fa-plus fa-lg !flex"
         ></button>
       </template>
-      <RouterLink
-        v-else
-        :to="{ name: props.name }"
-        type="button"
-        class="btn btn-circle btn-neutral fa-solid fa-plus fa-lg !flex"
-      ></RouterLink>
     </div>
   </div>
 

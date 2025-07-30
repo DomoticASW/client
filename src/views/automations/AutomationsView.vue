@@ -41,7 +41,7 @@ onMounted(async () => {
     </RouterLink>
   </ul>
 
-  <AddButton name="add-automation" :modal="false" />
+  <AddButton name="add-automation" />
 </template>
 
 <style></style>

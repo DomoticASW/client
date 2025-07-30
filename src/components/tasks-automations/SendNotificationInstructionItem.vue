@@ -12,8 +12,8 @@
     <div class="row-start-3 col-span-full">
       <textarea
         placeholder="Message sent"
-        class="w-full textarea"
-        :disabled="edit === undefined"
+        class="w-full textarea text-base-content"
+        :disabled="!edit"
         :value="instruction.message"
       />
     </div>

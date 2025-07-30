@@ -13,7 +13,7 @@
 <script setup lang="ts">
 import type { Instruction, StartTaskInstruction } from '@/model/scripts/Instruction'
 import InstructionLayout from './InstructionLayout.vue'
-import { onMounted, ref /*watch*/ } from 'vue'
+import { onMounted, ref } from 'vue'
 import { authorizedRequest, deserializeBody } from '@/api/api'
 import { useUserInfoStore } from '@/stores/user-info'
 import { taskDeserializer } from '@/api/scripts/dtos/GetTaskDTO'

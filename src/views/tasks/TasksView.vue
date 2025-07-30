@@ -34,7 +34,7 @@ onMounted(async () => {
     </RouterLink>
   </ul>
 
-  <AddButton name="add-task" :modal="false" />
+  <AddButton name="add-task" />
 </template>
 
 <style></style>

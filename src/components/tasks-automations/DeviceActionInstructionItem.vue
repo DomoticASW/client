@@ -5,7 +5,7 @@
     :edit="edit"
     :instruction="props.instruction"
   >
-    <p class="truncate">{{ instruction.deviceId }}</p>
+    <p class="truncate">{{ instruction.deviceId }}</p> <!-- To get name of the device -->
     <!-- <p class="font-bold text-center truncate" v-if="'values' in instruction.typeConstraints">
           Enum type constraint, to do better check
           {{ instruction.input }}

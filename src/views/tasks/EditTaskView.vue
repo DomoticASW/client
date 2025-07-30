@@ -30,7 +30,7 @@ onMounted(async () => {
   <hr class="m-4" />
   <InstructionReorder :instructions="instructions" />
   <div class="pb-4"></div>
-  <AddButton :modal="true">
-    <InstructionItems />
+  <AddButton>
+    <InstructionItems :instructions="instructions" />
   </AddButton>
 </template>
