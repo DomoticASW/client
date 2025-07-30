@@ -1,111 +1,154 @@
 <script setup lang="ts">
-import { useScript } from '@/stores/task-automation'
-import { onMounted, reactive, ref } from 'vue'
-import { isGetDeviceEventTriggerDTO, isGetPeriodTriggerDTO } from '@/api/scripts/GetAutomationDTO'
-import { isGetInstructionDTO } from '@/api/scripts/GetInstructionDTO'
+import { computed, onMounted, ref } from 'vue'
 import type { EditList } from '@/model/permissions-management/EditList'
 import type { TaskList } from '@/model/permissions-management/TaskList'
 import { authorizedRequest, deserializeBody } from '@/api/api'
 import { useUserInfoStore } from '@/stores/user-info'
 import { taskListDeserializer } from '@/api/permissions-management/GetTaskListDTO'
 import { editListDeserializer } from '@/api/permissions-management/GetEditListDTO'
+import { Role, type User } from '@/model/users-management/User'
+import { usersDeserializer } from '@/api/users-management/GetUserDTO'
+import type { Automation, Task } from '@/model/scripts/Script'
+import { taskDeserializer } from '@/api/scripts/GetTaskDTO'
+import { automationDeserializer } from '@/api/scripts/GetAutomationDTO'
+import { useRoute } from 'vue-router'
+import { get } from 'http'
 
-const scriptStore = useScript()
+const route = useRoute()
+const script = ref<Task | Automation>()
 const userInfo = useUserInfoStore()
 const taskList = ref<TaskList>()
 const editlist = ref<EditList>()
-const whitelist = taskList.value?.whitelist
-const blacklist = taskList.value?.blacklist
+const whitelist = computed(() => taskList.value?.whitelist || [])
+const blacklist = computed(() => taskList.value?.blacklist || [])
 const burger = ['Editlist']
-const listSelected = reactive({ name: 'Editlist', items: editlist.value?.users })
-const users = ['Hugo', 'Arianna']
+const listSelectedName = ref('Editlist')
+const users = ref<User[]>([])
 const open = ref(false)
+const listSelectedItems = computed(() => {
+  switch (listSelectedName.value) {
+    case 'Whitelist':
+      return whitelist.value
+    case 'Blacklist':
+      return blacklist.value
+    case 'Editlist':
+      return editlist.value?.users || []
+    default:
+      return []
+  }
+})
+const usersNotInList = computed(() => {
+  return calculateUsersNotInList(listSelectedItems.value || [], users.value || [])
+})
 
 onMounted(async () => {
   try {
     const res = await authorizedRequest(
-      `/api/permissions/editList/${scriptStore.script.id}`,
+      `/api/automations/${route.params.id}`,
       userInfo.token,
     )
-    editlist.value = await deserializeBody(res, editListDeserializer)
+    script.value = await deserializeBody(res, automationDeserializer)
   } catch {
-    editlist.value = { id: scriptStore.script.id, users: [] }
+    getTaskList();
   }
 })
 
-if (isTask(scriptStore.script)) {
-  onMounted(async () => {
-    try {
-      const res = await authorizedRequest(
-        `/api/permissions/tasklists/${scriptStore.script.id}`,
-        userInfo.token,
-      )
-      taskList.value = await deserializeBody(res, taskListDeserializer)
-    } catch {
-      taskList.value = { id: scriptStore.script.id, blacklist: [], whitelist: [] }
-    }
-  })
+onMounted(async () => {
+  const res = await authorizedRequest(
+    `/api/permissions/editList/${route.params.id}`,
+    userInfo.token,
+  )
+  editlist.value = await deserializeBody(res, editListDeserializer)
+})
 
+onMounted(async () => {
+  const res = await authorizedRequest(`/api/users`, userInfo.token)
+  users.value = await deserializeBody(res, usersDeserializer)
+})
+
+async function getTaskList() {
+  const res = await authorizedRequest(
+    `/api/tasks/${route.params.id}`,
+    userInfo.token,
+  )
+  script.value = await deserializeBody(res, taskDeserializer)
+  try {
+    const res = await authorizedRequest(
+      `/api/permissions/tasklists/${route.params.id}`,
+      userInfo.token,
+    )
+    taskList.value = await deserializeBody(res, taskListDeserializer)
+  } catch {
+    taskList.value = { id: route.params.id as string, blacklist: [], whitelist: [] }
+  }
   burger.push('Whitelist', 'Blacklist')
 }
 
-function isAutomation(o: unknown): o is unknown {
-  return (
-    o != undefined &&
-    typeof o === 'object' &&
-    'id' in o &&
-    typeof o.id === 'string' &&
-    'name' in o &&
-    typeof o.name === 'string' &&
-    'enabled' in o &&
-    typeof o.enabled === 'boolean' &&
-    'trigger' in o &&
-    (isGetDeviceEventTriggerDTO(o.trigger) || isGetPeriodTriggerDTO(o.trigger)) &&
-    'instructions' in o &&
-    Array.isArray(o.instructions) &&
-    o.instructions.every((instruction) => isGetInstructionDTO(instruction))
-  )
+
+// function isAutomation(o: unknown): o is Automation {
+//   isGetAutomation
+// }
+
+function addUser(user: User) {
+  const list = listSelectedName.value.toLowerCase()
+  authorizedRequest(`/api/permissions/${list}/${route.params.id}`, userInfo.token, {
+    method: 'PATCH',
+    body: JSON.stringify({ email: user.email }),
+  })
+    .then(() => {
+      if (listSelectedName.value === 'Editlist' && editlist.value) {
+        if (!editlist.value.users) {
+          editlist.value.users = []
+        }
+        editlist.value.users.push(user.email)
+      } else if (listSelectedName.value === 'Whitelist' && taskList.value) {
+        taskList.value.whitelist.push(user.email)
+      } else if (listSelectedName.value === 'Blacklist' && taskList.value) {
+        taskList.value.blacklist.push(user.email)
+      }
+    })
+    .catch((error) => {
+      console.error('Error adding user:', error)
+    })
 }
 
-function isTask(o: unknown): o is unknown {
-  return (
-    o != undefined &&
-    typeof o === 'object' &&
-    'id' in o &&
-    typeof o.id === 'string' &&
-    'name' in o &&
-    typeof o.name === 'string' &&
-    'instructions' in o &&
-    Array.isArray(o.instructions) &&
-    o.instructions.every((instruction) => isGetInstructionDTO(instruction))
-  )
-}
-function addUser(user: string) {
-  // TODO: Implement the logic to add the user
-  console.log(`Adding user: ${user}`)
-}
+function removeUser(userEmail: string) {
+  const list = listSelectedName.value.toLowerCase()
 
-function removeUser(user: string) {
-  // TODO: Implement the logic to add the user
-  console.log(`Adding user: ${user}`)
+  authorizedRequest(`/api/permissions/${list}/${route.params.id}`, userInfo.token, {
+    method: 'DELETE',
+    body: JSON.stringify({ email: userEmail }),
+  })
+    .then(() => {
+      if (listSelectedName.value === 'Editlist' && editlist.value?.users) {
+        const index = editlist.value.users.indexOf(userEmail)
+        if (index > -1) {
+          editlist.value.users.splice(index, 1)
+        }
+      } else if (listSelectedName.value === 'Whitelist' && taskList.value) {
+        const index = taskList.value.whitelist.indexOf(userEmail)
+        if (index > -1) {
+          taskList.value.whitelist.splice(index, 1)
+        }
+      } else if (listSelectedName.value === 'Blacklist' && taskList.value) {
+        const index = taskList.value.blacklist.indexOf(userEmail)
+        if (index > -1) {
+          taskList.value.blacklist.splice(index, 1)
+        }
+      }
+    })
+    .catch((error) => {
+      console.error('Error removing user:', error)
+    })
 }
 
 function select(option: string) {
   open.value = false
-  switch (option) {
-    case 'Whitelist':
-      listSelected.name = 'Whitelist'
-      listSelected.items = whitelist
-      break
-    case 'Blacklist':
-      listSelected.name = 'Blacklist'
-      listSelected.items = blacklist
-      break
-    case 'Editlist':
-      listSelected.name = 'Editlist'
-      listSelected.items = editlist.value?.users
-      break
-  }
+  listSelectedName.value = option
+}
+
+function calculateUsersNotInList(list: string[], users: User[]): User[] {
+  return users.filter((user) => !list.some((email) => email === user.email))
 }
 </script>
 
@@ -113,7 +156,7 @@ function select(option: string) {
   <div>
     <div class="relative">
       <div class="flex items-center space-x-2">
-        <h1 class="text-2xl font-bold dark:text-white">{{ listSelected.name }}</h1>
+        <h1 class="text-2xl font-bold dark:text-white">{{ listSelectedName }}</h1>
         <button class="btn btn-circle btn-ghost" type="button" @click="open = !open">
           <svg
             class="size-[1.2em] transition-transform duration-200"
@@ -159,14 +202,16 @@ function select(option: string) {
       </transition>
       <div>
         <ul class="list rounded-box">
-          <li class="list-row" v-for="user in listSelected.items" :key="user">
+          <li class="list-row" v-for="user in listSelectedItems" :key="user">
             <div class="list-col-grow flex items-center">
               {{ user }}
             </div>
+
             <button
               class="btn btn-circle btn-ghost"
               type="button"
-              :aria-label="'Get permissions of: ' + user"
+              :aria-label="'Remove user: ' + user"
+              @click="removeUser(user)"
             >
               <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <g
@@ -175,7 +220,6 @@ function select(option: string) {
                   stroke-width="2"
                   fill="none"
                   stroke="currentColor"
-                  @click="removeUser(user)"
                 >
                   <path d="M6 6l12 12M6 18L18 6"></path>
                 </g>
@@ -190,28 +234,30 @@ function select(option: string) {
       <h1 class="text-2xl font-bold dark:text-white">Users</h1>
       <div>
         <ul class="list rounded-box">
-          <li class="list-row" v-for="user in users" :key="user">
+          <li class="list-row" v-for="user in usersNotInList" :key="user.email">
             <div class="list-col-grow flex items-center">
-              {{ user }}
+              {{ user.nickname }}
             </div>
-            <button
-              class="btn btn-circle btn-ghost"
-              type="button"
-              :aria-label="'Get permissions of: ' + user"
-            >
-              <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <g
-                  stroke-linejoin="round"
-                  stroke-linecap="round"
-                  stroke-width="2"
-                  fill="none"
-                  stroke="currentColor"
-                  @click="addUser(user)"
-                >
-                  <path d="M12 5v14M5 12h14"></path>
-                </g>
-              </svg>
-            </button>
+            <div v-if="user.role === Role.User">
+              <button
+                class="btn btn-circle btn-ghost"
+                type="button"
+                :aria-label="'Add user: ' + user.nickname"
+                @click="addUser(user)"
+              >
+                <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <g
+                    stroke-linejoin="round"
+                    stroke-linecap="round"
+                    stroke-width="2"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <path d="M12 5v14M5 12h14"></path>
+                  </g>
+                </svg>
+              </button>
+            </div>
           </li>
         </ul>
       </div>
