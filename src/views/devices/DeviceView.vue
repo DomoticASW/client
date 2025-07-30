@@ -1,29 +1,31 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
-import {
-  DeviceActionId,
-  DeviceId,
-  type Device,
-  type DeviceAction,
-} from '@/model/devices-management/Device'
+import { computed, onMounted, ref, useTemplateRef } from 'vue'
+import { DeviceId, type Device, type DeviceAction } from '@/model/devices-management/Device'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import { useUserInfoStore } from '@/stores/user-info'
 import * as api from '@/api/devices-management/requests/devices'
 import * as notificationsApi from '@/api/notifications-management/requests'
 import DevicePropertyControl from '@/components/devices/DevicePropertyControl.vue'
+import { Type } from '@/model/Type'
+import InputForTypeConstraints from '@/components/devices/InputForTypeConstraints.vue'
+import { Color } from '@/model/devices-management/Types'
 
 const props = defineProps({ id: { type: String, required: true } })
 const deviceId = DeviceId(props.id)
 const userInfo = useUserInfoStore()
 const loadingOverlay = useLoadingOverlayStore()
+const actionInputModal = useTemplateRef('action-input-modal')
 
 const device = ref<Device | undefined>(undefined)
 const isSubscribedForOfflineNotifications = ref<boolean | undefined>(undefined)
+const executingAction = ref<DeviceAction<unknown> | undefined>(undefined)
+const executingActionInput = ref<unknown | undefined>(undefined)
 
-const actionsToShow = computed<DeviceAction<undefined>[] | undefined>(() => {
+const actionsToShow = computed<DeviceAction<unknown>[] | undefined>(() => {
   const d = device.value
   if (d) {
-    return d.actions.filter((a) => !d.properties.some((p) => p.setter?.id == a.id))
+    return d.actions
+    // return d.actions.filter((a) => !d.properties.some((p) => p.setter?.id == a.id))
   }
   return undefined
 })
@@ -44,8 +46,56 @@ async function toggleOfflineNotificationsSubscription() {
     }
   }
 }
-function executeAction(actionId: DeviceActionId) {
-  // TODO
+async function onAskActionInput(action: DeviceAction<unknown>) {
+  executingAction.value = action
+  switch (action.inputTypeConstraints.type) {
+    case Type.IntType:
+      executingActionInput.value = 0
+      if (action.inputTypeConstraints.__brand === 'IntRange') {
+        executingActionInput.value = action.inputTypeConstraints.min
+      }
+      break
+    case Type.DoubleType:
+      executingActionInput.value = 0
+      if (action.inputTypeConstraints.__brand === 'DoubleRange') {
+        executingActionInput.value = action.inputTypeConstraints.min
+      }
+      break
+    case Type.BooleanType:
+      executingActionInput.value = true
+      break
+    case Type.ColorType:
+      executingActionInput.value = Color(0, 0, 0)
+      break
+    case Type.StringType:
+      executingActionInput.value = ''
+      if (action.inputTypeConstraints.__brand === 'Enum') {
+        executingActionInput.value = Array.from(action.inputTypeConstraints.values)[0]
+      }
+      break
+    case Type.VoidType:
+      executingActionInput.value = undefined
+      break
+  }
+  if (action.inputTypeConstraints.type != Type.VoidType) {
+    actionInputModal.value!.showModal()
+  } else {
+    await onExecuteAction()
+  }
+}
+async function onExecuteAction() {
+  actionInputModal.value!.close()
+  await executeAction(executingAction.value!, executingActionInput.value)
+  executingAction.value = undefined
+  executingActionInput.value = undefined
+}
+async function executeAction(action: DeviceAction<unknown>, input?: unknown) {
+  loadingOverlay.startLoading()
+  try {
+    await api.executeAction(deviceId, action.id, input, userInfo.token)
+  } finally {
+    loadingOverlay.stopLoading()
+  }
 }
 onMounted(async () => {
   device.value = await api.findDevice(deviceId, userInfo.token)
@@ -74,11 +124,11 @@ onMounted(async () => {
   <ul v-if="device" class="list">
     <li v-for="p in device.properties" v-bind:key="p.id" class="list-row items-center">
       <span class="list-col-grow"> {{ p.name }} </span>
-      <DevicePropertyControl :property="p"/>
+      <DevicePropertyControl :property="p" />
     </li>
     <li v-for="a in actionsToShow" v-bind:key="a.id" class="list-row items-center">
       <span class="list-col-grow"> {{ a.name }} </span>
-      <button class="btn btn-ghost fa-solid fa-play" @click="executeAction(a.id)"></button>
+      <button class="btn btn-ghost fa-solid fa-play" @click="onAskActionInput(a)"></button>
     </li>
   </ul>
   <ul v-else class="list">
@@ -87,6 +137,25 @@ onMounted(async () => {
       <div class="skeleton h-5 w-18"></div>
     </li>
   </ul>
+
+  <!-- Dialog for action input -->
+  <dialog ref="action-input-modal" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box">
+      <h3 class="text-lg font-bold">Action input</h3>
+      <InputForTypeConstraints
+        v-if="executingAction"
+        :type="executingAction!.inputTypeConstraints.type"
+        :typeConstraints="executingAction!.inputTypeConstraints"
+        v-model="executingActionInput"
+      />
+      <div class="modal-action">
+        <button class="btn btn-primary" v-on:click="onExecuteAction">Execute</button>
+        <button class="btn btn-primary btn-soft" v-on:click="actionInputModal!.close()">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </dialog>
 </template>
 
 <style></style>
