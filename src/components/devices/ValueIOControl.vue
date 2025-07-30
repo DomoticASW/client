@@ -9,7 +9,7 @@ import {
 import { Type } from '@/model/Type'
 import hexRgb from 'hex-rgb'
 import rgbHex from 'rgb-hex'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 const { typeConstraints, isInput } = defineProps<{
   typeConstraints: TypeConstraints<unknown>
@@ -17,6 +17,23 @@ const { typeConstraints, isInput } = defineProps<{
 }>()
 const type = computed(() => typeConstraints.type)
 const value = defineModel({ required: true })
+const isInputValid = defineModel<boolean>('isInputValid', { required: false })
+
+watch(value, (newValue) => {
+  isInputValid.value = true
+  if (type.value == Type.IntType && !Number.isInteger(newValue)) {
+    isInputValid.value = false
+  }
+  if (
+    isRangeTypeConstraints(typeConstraints) &&
+    ((newValue as number) < typeConstraints.min || (newValue as number) > typeConstraints.max)
+  ) {
+    isInputValid.value = false
+  }
+  if (isEnumTypeConstraints(typeConstraints) && typeConstraints.values.has(newValue as string)) {
+    isInputValid.value = false
+  }
+})
 
 function isEnumTypeConstraints(tc: TypeConstraints<unknown>): tc is Enum {
   return tc.__brand == 'Enum'
