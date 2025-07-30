@@ -47,7 +47,7 @@ function setColor(hex: string) {
           <option v-for="v in typeConstraints.values" :key="v">{{ v }}</option>
         </select>
       </div>
-      <input v-else type="text" v-model="value" />
+      <input v-else type="text" v-model.lazy="value" />
     </div>
     <span v-else> {{ value }} </span>
   </div>
@@ -61,7 +61,7 @@ function setColor(hex: string) {
         :max="typeConstraints.max"
         :step="type == Type.IntType ? 1 : 'any'"
         :disabled="!isInput"
-        v-model="value"
+        v-model.lazy="value"
       />
       <div class="flex flex-row justify-between">
         <span class="opacity-60">{{ typeConstraints.min }}</span>
@@ -72,7 +72,7 @@ function setColor(hex: string) {
       v-else-if="isInput"
       type="number"
       :step="type == Type.IntType ? 1 : 'any'"
-      v-model="value"
+      v-model.lazy="value"
     />
     <span v-else> {{ value }} </span>
   </div>
