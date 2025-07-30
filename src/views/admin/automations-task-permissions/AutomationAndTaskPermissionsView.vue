@@ -12,7 +12,6 @@ import type { Automation, Task } from '@/model/scripts/Script'
 import { taskDeserializer } from '@/api/scripts/GetTaskDTO'
 import { automationDeserializer } from '@/api/scripts/GetAutomationDTO'
 import { useRoute } from 'vue-router'
-import { get } from 'http'
 
 const route = useRoute()
 const script = ref<Task | Automation>()
