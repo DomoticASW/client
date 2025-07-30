@@ -97,7 +97,7 @@ function addDevicePropertyConstantInstruction(instructions: Instruction[], devic
       type="button"
       v-for="device in selectedGroup ? selectedGroup.devices : devices"
       :key="device.id"
-      class="btn justify-start my-1 col-span-2 ml-4"
+      class="btn justify-start my-1 sm:col-span-2 col-span-3 ml-4"
       @click="addDevicePropertyConstantInstruction(props.instructions, device)"
     >
       {{ device.name }}
@@ -107,14 +107,14 @@ function addDevicePropertyConstantInstruction(instructions: Instruction[], devic
     <h3 class="text-xl col-span-3 mb-2 mt-1">Control flow</h3>
     <button
       type="button"
-      class="btn justify-start my-1 col-span-2"
+      class="btn justify-start my-1 sm:col-span-2 col-span-3"
       @click="addIfInstruction(props.instructions)"
     >
       If
     </button>
     <button
       type="button"
-      class="btn justify-start my-1 col-span-2"
+      class="btn justify-start my-1 sm:col-span-2 col-span-3"
       @click="addIfElseInstruction(props.instructions)"
     >
       If-Else
@@ -124,28 +124,28 @@ function addDevicePropertyConstantInstruction(instructions: Instruction[], devic
     <h3 class="text-xl col-span-3 mb-2 mt-1">Others</h3>
     <button
       type="button"
-      class="btn justify-start col-span-2 my-1"
+      class="btn justify-start sm:col-span-2 col-span-3 my-1"
       @click="addWaitInstruction(props.instructions)"
     >
       Wait
     </button>
     <button
       type="button"
-      class="btn justify-start col-span-2 my-1"
+      class="btn justify-start sm:col-span-2 col-span-3 my-1"
       @click="addStartTaskInstruction(props.instructions)"
     >
       Start task
     </button>
     <button
       type="button"
-      class="btn justify-start col-span-2 my-1"
+      class="btn justify-start sm:col-span-2 col-span-3 my-1"
       @click="addConstantInstruction(props.instructions)"
     >
       Constant
     </button>
     <button
       type="button"
-      class="btn justify-start col-span-2 my-1"
+      class="btn justify-start sm:col-span-2 col-span-3 my-1"
       @click="addSendNotification(props.instructions)"
     >
       Send notification
