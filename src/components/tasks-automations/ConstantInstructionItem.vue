@@ -9,30 +9,51 @@
   >
     <p>Constant</p>
     <p class="font-bold truncate text-center">{{ instruction.name }}</p>
-    <p class="col-start-2 truncate text-center">
-      <template
-        v-if="
-          instruction.type === Type.DoubleType ||
-          instruction.type === Type.IntType ||
-          instruction.type === Type.StringType
-        "
-      >
+
+    <template
+      v-if="
+        instruction.type === Type.DoubleType ||
+        instruction.type === Type.IntType ||
+        instruction.type === Type.StringType
+      "
+    >
+      <p class="col-start-2 truncate text-center">
         {{ instruction.value }}
-      </template>
-      <template v-else-if="instruction.type === Type.BooleanType">
+      </p>
+    </template>
+    <template v-else-if="instruction.type === Type.BooleanType">
+      <p class="col-start-2 truncate text-center">
         {{
           typeof instruction.value === 'boolean' ? instruction.value.toString() : 'not a boolean'
         }}
-      </template>
-    </p>
+      </p>
+    </template>
+    <template v-else>
+      <input
+        class="col-start-2 place-self-center"
+        type="color"
+        disabled
+        :value="instruction.value"
+      />
+    </template>
   </InstructionLayout>
 
   <dialog :id="id.toString()" class="modal">
     <div class="modal-box max-w-sm">
-      <h3 class="card-title mx-2 mb-2">Set variable</h3>
+      <h3 class="card-title mx-2 mb-2">Set constant</h3>
       <form @submit.prevent="handleConfirm">
-        <input type="text" class="input m-2" placeholder="Name" v-model="variableForm.name" />
-        <select v-model="variableForm.type" class="select m-2">
+        <label for="name" class="fieldset-legend text-sm mx-3 mt-2">Name</label>
+        <input
+          name="name"
+          id="name"
+          type="text"
+          class="input mt-2 mx-2"
+          placeholder="Name"
+          v-model="variableForm.name"
+        />
+
+        <label for="type" class="fieldset-legend text-sm mx-3">Type</label>
+        <select name="type" id="type" v-model="variableForm.type" class="select mt-2 mx-2">
           <option selected disabled>Type</option>
           <option
             v-for="type in Object.values(Type).filter((type) => type !== Type.VoidType)"
@@ -42,19 +63,25 @@
             {{ trimAfterSecondUppercase(type) }}
           </option>
         </select>
+
+        <label for="value" class="fieldset-legend text-sm mx-3">Value</label>
         <input
-          v-if="variableType().type !== 'checkbox'"
+          v-if="variableType().type === 'number' || variableType().type === 'color'"
           :type="variableType().type"
-          :class="['m-2', variableType().class]"
+          :class="['mt-2 mx-2', variableType().class]"
           :step="variableForm.type === Type.DoubleType ? 'any' : '1'"
           placeholder="Value"
           v-model="variableForm.value"
+          name="value"
+          id="value"
         />
         <input
           v-else
           :type="variableType().type"
-          :class="['m-2', variableType().class]"
+          :class="['mt-2 mx-2', variableType().class]"
           v-model="variableForm.value"
+          name="value"
+          id="value"
         />
         <div class="modal-action grid grid-cols-3 w-full">
           <button type="button" class="btn btn-error col-start-1" @click="closeDialog">
@@ -70,7 +97,7 @@
 <script setup lang="ts">
 import type { CreateConstantInstruction, Instruction } from '@/model/scripts/Instruction'
 import InstructionLayout from './InstructionLayout.vue'
-import { reactive, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { Type } from '@/model/Type'
 
 const props = defineProps<{
@@ -102,28 +129,37 @@ function trimAfterSecondUppercase(str: string) {
   return match ? match[1] : str
 }
 
-const variableForm = reactive<CreateConstantInstruction>({
-  name: '',
-  type: Type.StringType,
-  value: '',
+const variableForm = ref<CreateConstantInstruction>({
+  name: instruction.value.name,
+  type: instruction.value.type,
+  value: instruction.value.value,
 })
 
 watch(
-  () => variableForm.type,
+  () => variableForm.value.type,
   (val) => {
     if (val === Type.BooleanType) {
-      variableForm.value = false
+      variableForm.value.value = false
+    } else if (val === Type.IntType || val == Type.DoubleType) {
+      variableForm.value.value = 0
+    } else if (val === Type.ColorType) {
+      variableForm.value.value = '#000000'
+    } else if (val === Type.StringType) {
+      variableForm.value.value = ''
     }
   },
   { immediate: true },
 )
 
 function variableType() {
-  if (variableForm.type === Type.StringType) {
+  if (variableForm.value.type === Type.StringType) {
     return { type: 'text', class: 'input' }
-  } else if (variableForm.type === Type.DoubleType || variableForm.type === Type.IntType) {
+  } else if (
+    variableForm.value.type === Type.DoubleType ||
+    variableForm.value.type === Type.IntType
+  ) {
     return { type: 'number', class: 'input' }
-  } else if (variableForm.type === Type.ColorType) {
+  } else if (variableForm.value.type === Type.ColorType) {
     return { type: 'color', class: '' }
   } else {
     return { type: 'checkbox', class: 'toggle' }
@@ -131,19 +167,18 @@ function variableType() {
 }
 
 function openDialog() {
-  variableForm.name = instruction.value.name
-  variableForm.type = instruction.value.type
-  variableForm.value = instruction.value.value
+  variableForm.value.name = instruction.value.name
+  variableForm.value.type = instruction.value.type
+  variableForm.value.value = instruction.value.value
   const dialog = document.getElementById(props.id.toString()) as HTMLDialogElement
   dialog.showModal()
 }
 
 function handleConfirm() {
-  console.log(variableForm.value)
   instruction.value = {
-    name: variableForm.name,
-    type: variableForm.type,
-    value: variableForm.value,
+    name: variableForm.value.name,
+    type: variableForm.value.type,
+    value: variableForm.value.value,
   }
   closeDialog()
 }
