@@ -28,9 +28,10 @@ onMounted(async () => {
   <hr class="m-4" />
   <h1 class="text-xl">Actions</h1>
   <InstructionItem
-    v-for="[key, instruction] in instructions.entries()"
-    :key="key"
+    v-for="[index, instruction] in instructions.entries()"
+    :key="index"
     :instruction="instruction"
+    :id="index.toString()"
   />
   <div class="pb-4"></div>
 </template>

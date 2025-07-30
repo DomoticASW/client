@@ -17,7 +17,8 @@
   <!-- Then instructions -->
   <InstructionItem
     v-for="(ins, i) in instruction.thenInstructions"
-    :key="'then-' + i"
+    :key="id + 'then-' + i"
+    :id="id + 'then' + i.toString()"
     :instruction="ins"
     :depth="depth + 1"
     :edit="edit"
@@ -32,7 +33,8 @@
     </div>
     <InstructionItem
       v-for="(ins, i) in instruction.elseInstructions"
-      :key="'else-' + i"
+      :key="id + 'else-' + i"
+      :id="id + 'else' + i.toString()"
       :instruction="ins"
       :depth="depth + 1"
       :edit="edit"
@@ -56,9 +58,10 @@ import {
 } from '@/model/scripts/Instruction'
 import InstructionItem from './InstructionItem.vue'
 import InstructionLayout from './InstructionLayout.vue'
-import { ref, watch } from 'vue';
+import { ref, watch } from 'vue'
 
 const props = defineProps<{
+  id: string
   instruction: Instruction
   indent: string
   depth: number

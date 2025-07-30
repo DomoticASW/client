@@ -24,6 +24,7 @@ onMounted(async () => {
     v-for="[index, instruction] in instructions.entries()"
     :key="index"
     :instruction="instruction"
+    :id="index.toString()"
   />
   <div class="pb-4"></div>
 </template>

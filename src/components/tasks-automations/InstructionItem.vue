@@ -4,6 +4,7 @@
       instruction.type === InstructionType.IfInstruction ||
       instruction.type === InstructionType.IfElseInstruction
     "
+    :id="id"
     :instruction="instruction"
     :depth="depthLevel"
     :indent="indentClass"
@@ -12,6 +13,7 @@
   />
   <ConstantInstructionItem
     v-else-if="instruction.type === InstructionType.CreateConstantInstruction"
+    :id="id"
     :instruction="instruction"
     :depth="depthLevel"
     :indent="indentClass"
@@ -73,6 +75,7 @@ import WaitInstructionItem from './WaitInstructionItem.vue'
 import StartTaskInstructionItem from './StartTaskInstructionItem.vue'
 
 const props = defineProps<{
+  id: string,
   instruction: Instruction
   depth?: number // Depth for indentation
   edit?: {

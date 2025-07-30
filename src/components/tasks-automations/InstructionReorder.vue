@@ -166,10 +166,11 @@ function moveInstruction(target: Instruction, dir: 'up' | 'down') {
     v-for="(instruction, index) in instructions"
     :key="index"
     :instruction="instruction"
+    :id="index"
     :depth="0"
     :edit="{
       moveInstruction,
-      removeInstruction
+      removeInstruction,
     }"
   />
 </template>

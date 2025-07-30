@@ -6,7 +6,11 @@
     :instruction="props.instruction"
   >
     <p class="truncate">Send notification to</p>
-    <p class="font-bold text-center truncate">{{ instruction.email }}</p>
+    <p v-if="!edit" class="font-bold text-center truncate">{{ instruction.email }}</p>
+    <select v-else class="select text-center truncate h-7 text-base-content"> <!-- Show all the users -->
+      <option :value="instruction.email" selected>{{ instruction.email }}</option>
+    </select>
+    <!-- To see if it is possible to retrieve the name of a user just by using its email -->
 
     <label class="label mb-2 text-secondary-content col-span-2">Message sent</label>
     <div class="row-start-3 col-span-full">
@@ -14,7 +18,7 @@
         placeholder="Message sent"
         class="w-full textarea text-base-content"
         :disabled="!edit"
-        :value="instruction.message"
+        v-model="instruction.message"
       />
     </div>
   </InstructionLayout>
