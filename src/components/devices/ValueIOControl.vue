@@ -52,7 +52,7 @@ function setColor(hex: string) {
     <span v-else> {{ value }} </span>
   </div>
   <div v-if="type === Type.IntType || type === Type.DoubleType">
-    <div v-if="isRangeTypeConstraints(typeConstraints)" class="flex flex-col">
+    <div v-if="isRangeTypeConstraints(typeConstraints)" class="max-w-xs">
       <!-- TODO: user can still input non valid values -->
       <input
         type="range"
