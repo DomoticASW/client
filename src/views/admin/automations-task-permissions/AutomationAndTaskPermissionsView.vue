@@ -83,11 +83,6 @@ async function getTaskList() {
   burger.push('Whitelist', 'Blacklist')
 }
 
-
-// function isAutomation(o: unknown): o is Automation {
-//   isGetAutomation
-// }
-
 function addUser(user: User) {
   const list = listSelectedName.value.toLowerCase()
   authorizedRequest(`/api/permissions/${list}/${route.params.id}`, userInfo.token, {
