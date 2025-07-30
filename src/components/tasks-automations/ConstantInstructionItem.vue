@@ -5,7 +5,7 @@
     :edit="edit"
     :instruction="props.instruction"
     @click="openDialog"
-    :class="'cursor-pointer transition-all hover:bg-secondary'"
+    :class="[edit ? 'cursor-pointer transition-all hover:bg-secondary' : '']"
   >
     <p>Constant</p>
     <p class="font-bold truncate text-center">{{ instruction.name }}</p>
@@ -95,10 +95,15 @@
 </template>
 
 <script setup lang="ts">
-import type { CreateConstantInstruction, Instruction } from '@/model/scripts/Instruction'
+import {
+  InstructionType,
+  type CreateConstantInstruction,
+  type Instruction,
+} from '@/model/scripts/Instruction'
 import InstructionLayout from './InstructionLayout.vue'
 import { ref, watch } from 'vue'
 import { Type } from '@/model/Type'
+import { useInstructionsStore } from '@/stores/instructions'
 
 const props = defineProps<{
   id: string
@@ -106,11 +111,10 @@ const props = defineProps<{
   indent: string
   depth: number
   colors: string
-  edit?: {
-    moveInstruction: (instr: Instruction, dir: 'up' | 'down') => void
-    removeInstruction: (instr: Instruction) => void
-  }
+  edit: boolean
 }>()
+
+const instructionsStore = useInstructionsStore()
 
 const instruction = ref<CreateConstantInstruction>(
   props.instruction.instruction as CreateConstantInstruction,
@@ -167,19 +171,24 @@ function variableType() {
 }
 
 function openDialog() {
-  variableForm.value.name = instruction.value.name
-  variableForm.value.type = instruction.value.type
-  variableForm.value.value = instruction.value.value
-  const dialog = document.getElementById(props.id.toString()) as HTMLDialogElement
-  dialog.showModal()
+  if (props.edit) {
+    variableForm.value.name = instruction.value.name
+    variableForm.value.type = instruction.value.type
+    variableForm.value.value = instruction.value.value
+    const dialog = document.getElementById(props.id.toString()) as HTMLDialogElement
+    dialog.showModal()
+  }
 }
 
 function handleConfirm() {
-  instruction.value = {
-    name: variableForm.value.name,
-    type: variableForm.value.type,
-    value: variableForm.value.value,
-  }
+  instructionsStore.changeInstruction(props.instruction, {
+    type: InstructionType.CreateConstantInstruction,
+    instruction: {
+      name: variableForm.value.name,
+      type: variableForm.value.type,
+      value: variableForm.value.value,
+    },
+  })
   closeDialog()
 }
 

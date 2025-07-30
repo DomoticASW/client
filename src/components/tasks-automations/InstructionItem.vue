@@ -78,10 +78,7 @@ const props = defineProps<{
   id: string,
   instruction: Instruction
   depth?: number // Depth for indentation
-  edit?: {
-    moveInstruction: (instr: Instruction, dir: 'up' | 'down') => void
-    removeInstruction: (instr: Instruction) => void
-  }
+  edit: boolean
 }>()
 
 const depthLevel = props.depth ?? 0

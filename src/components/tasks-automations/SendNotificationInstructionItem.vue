@@ -34,10 +34,7 @@ const props = defineProps<{
   indent: string
   depth: number
   colors: string
-  edit?: {
-    moveInstruction: (instr: Instruction, dir: 'up' | 'down') => void
-    removeInstruction: (instr: Instruction) => void
-  }
+  edit: boolean
 }>()
 
 const instruction = ref(props.instruction.instruction as SendNotificationInstruction)

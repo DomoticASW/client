@@ -1,23 +1,22 @@
 <script setup lang="ts">
-import InstructionReorder from '@/components/tasks-automations/InstructionReorder.vue'
-import type { Instruction } from '@/model/scripts/Instruction'
 import { useUserInfoStore } from '@/stores/user-info'
 import { onMounted, ref } from 'vue'
 import AddButton from '@/components/AddButton.vue'
 import { findTask } from '@/api/scripts/requests/tasks'
 import { TaskId } from '@/model/scripts/Script'
 import InstructionItems from '@/components/tasks-automations/InstructionItems.vue'
+import { useInstructionsStore } from '@/stores/instructions'
+import InstructionItem from '@/components/tasks-automations/InstructionItem.vue'
 
 const props = defineProps<{ id?: string }>()
 const userInfo = useUserInfoStore()
-
-const instructions = ref<Instruction[]>([])
+const instructionsStore = useInstructionsStore()
 const taskName = ref<string>('')
 
 onMounted(async () => {
   if (props.id) {
     const task = await findTask(TaskId(props.id), userInfo.token)
-    instructions.value = task.instructions
+    instructionsStore.instructions = task.instructions
     taskName.value = task.name
   }
 })
@@ -28,9 +27,15 @@ onMounted(async () => {
     <input type="text" placeholder="Task name" class="input w-full" :value="taskName" />
   </div>
   <hr class="m-4" />
-  <InstructionReorder :instructions="instructions" />
+  <InstructionItem
+    v-for="(instruction, index) in instructionsStore.instructions"
+    :key="index"
+    :instruction="instruction"
+    :id="index.toString()"
+    :edit="true"
+  />
   <div class="pb-4"></div>
   <AddButton>
-    <InstructionItems :instructions="instructions" />
+    <InstructionItems />
   </AddButton>
 </template>

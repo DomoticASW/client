@@ -3,7 +3,7 @@ import { getAllDeviceGroups } from '@/api/devices-management/requests/device-gro
 import { getAllDevices } from '@/api/devices-management/requests/devices'
 import type { Device } from '@/model/devices-management/Device'
 import type { DeviceGroup } from '@/model/devices-management/DeviceGroup'
-import { type Instruction, InstructionType } from '@/model/scripts/Instruction'
+import { InstructionType } from '@/model/scripts/Instruction'
 import { useUserInfoStore } from '@/stores/user-info'
 import { onMounted, ref } from 'vue'
 import {
@@ -15,10 +15,9 @@ import {
   EmtpyConstantInstruction,
 } from './emptyInstructions'
 import { Type } from '@/model/Type'
+import { useInstructionsStore } from '@/stores/instructions'
 
-const props = defineProps<{
-  instructions: Instruction[]
-}>()
+const instructionsStore = useInstructionsStore()
 
 const userInfo = useUserInfoStore()
 const groups = ref<DeviceGroup[]>()
@@ -30,50 +29,50 @@ onMounted(async () => {
   devices.value = await getAllDevices(userInfo.token)
 })
 
-function addIfInstruction(instructions: Instruction[]) {
-  instructions.push({
+function addIfInstruction() {
+  instructionsStore.instructions.push({
     type: InstructionType.IfInstruction,
     instruction: EmptyIfInstruction(),
   })
 }
 
-function addIfElseInstruction(instructions: Instruction[]) {
-  instructions.push({
+function addIfElseInstruction() {
+  instructionsStore.instructions.push({
     type: InstructionType.IfElseInstruction,
     instruction: EmptyIfElseInstruction(),
   })
 }
 
-function addWaitInstruction(instructions: Instruction[]) {
-  instructions.push({
+function addWaitInstruction() {
+  instructionsStore.instructions.push({
     type: InstructionType.WaitInstruction,
     instruction: EmptyWaitInstruction(),
   })
 }
 
-function addStartTaskInstruction(instructions: Instruction[]) {
-  instructions.push({
+function addStartTaskInstruction() {
+  instructionsStore.instructions.push({
     type: InstructionType.StartTaskInstruction,
     instruction: EmptyStartTaskInstruction(),
   })
 }
 
-function addConstantInstruction(instructions: Instruction[]) {
-  instructions.push({
+function addConstantInstruction() {
+  instructionsStore.instructions.push({
     type: InstructionType.CreateConstantInstruction,
     instruction: EmtpyConstantInstruction(),
   })
 }
 
-function addSendNotification(instructions: Instruction[]) {
-  instructions.push({
+function addSendNotification() {
+  instructionsStore.instructions.push({
     type: InstructionType.SendNotificationInstruction,
     instruction: EmptySendNotification(),
   })
 }
 
-function addDevicePropertyConstantInstruction(instructions: Instruction[], device: Device) {
-  instructions.push({
+function addDevicePropertyConstantInstruction(device: Device) {
+  instructionsStore.instructions.push({
     type: InstructionType.CreateDevicePropertyConstantInstruction,
     instruction: {
       deviceId: device.id,
@@ -98,7 +97,7 @@ function addDevicePropertyConstantInstruction(instructions: Instruction[], devic
       v-for="device in selectedGroup ? selectedGroup.devices : devices"
       :key="device.id"
       class="btn justify-start my-1 sm:col-span-2 col-span-3 ml-4"
-      @click="addDevicePropertyConstantInstruction(props.instructions, device)"
+      @click="addDevicePropertyConstantInstruction(device)"
     >
       {{ device.name }}
     </button>
@@ -108,14 +107,14 @@ function addDevicePropertyConstantInstruction(instructions: Instruction[], devic
     <button
       type="button"
       class="btn justify-start my-1 sm:col-span-2 col-span-3"
-      @click="addIfInstruction(props.instructions)"
+      @click="addIfInstruction()"
     >
       If
     </button>
     <button
       type="button"
       class="btn justify-start my-1 sm:col-span-2 col-span-3"
-      @click="addIfElseInstruction(props.instructions)"
+      @click="addIfElseInstruction()"
     >
       If-Else
     </button>
@@ -125,28 +124,28 @@ function addDevicePropertyConstantInstruction(instructions: Instruction[], devic
     <button
       type="button"
       class="btn justify-start sm:col-span-2 col-span-3 my-1"
-      @click="addWaitInstruction(props.instructions)"
+      @click="addWaitInstruction()"
     >
       Wait
     </button>
     <button
       type="button"
       class="btn justify-start sm:col-span-2 col-span-3 my-1"
-      @click="addStartTaskInstruction(props.instructions)"
+      @click="addStartTaskInstruction()"
     >
       Start task
     </button>
     <button
       type="button"
       class="btn justify-start sm:col-span-2 col-span-3 my-1"
-      @click="addConstantInstruction(props.instructions)"
+      @click="addConstantInstruction()"
     >
       Constant
     </button>
     <button
       type="button"
       class="btn justify-start sm:col-span-2 col-span-3 my-1"
-      @click="addSendNotification(props.instructions)"
+      @click="addSendNotification()"
     >
       Send notification
     </button>

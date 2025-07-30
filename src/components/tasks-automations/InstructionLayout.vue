@@ -13,15 +13,17 @@
         <template v-if="edit">
           <button
             class="btn btn-xs btn-square fa-solid fa-angle-up col-end-1"
-            @click="edit.moveInstruction(props.instruction, 'up')"
+            @click="instructionsStore.moveInstruction(props.instruction, 'up')"
+            @click.stop
           ></button>
           <button
             class="btn btn-xs btn-square fa-solid fa-angle-down row-start-2"
-            @click="edit.moveInstruction(props.instruction, 'down')"
+            @click="instructionsStore.moveInstruction(props.instruction, 'down')"
+            @click.stop
           ></button>
         </template>
         <slot></slot>
-        <template v-if="edit !== undefined">
+        <template v-if="edit">
           <button
             class="btn btn-square fa-solid fa-xmark row-start-1 place-self-center row-span-2"
             :class="
@@ -30,7 +32,8 @@
                 ? 'ml-4 col-start-6'
                 : 'col-start-3'
             "
-            @click="edit.removeInstruction(props.instruction)"
+            @click="instructionsStore.removeInstruction(props.instruction)"
+            @click.stop
           ></button>
         </template>
       </div>
@@ -40,14 +43,15 @@
 
 <script setup lang="ts">
 import { InstructionType, type Instruction } from '@/model/scripts/Instruction'
+import { useInstructionsStore } from '@/stores/instructions';
 
 const props = defineProps<{
   instruction: Instruction
   indent: string
   colors: string
-  edit?: {
-    moveInstruction: (instr: Instruction, dir: 'up' | 'down') => void
-    removeInstruction: (instr: Instruction) => void
-  }
+  edit: boolean
 }>()
+
+const instructionsStore = useInstructionsStore()
+
 </script>
