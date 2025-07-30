@@ -9,12 +9,14 @@ import {
 import { Type } from '@/model/Type'
 import hexRgb from 'hex-rgb'
 import rgbHex from 'rgb-hex'
+import { computed } from 'vue'
 
-const { type, typeConstraints } = defineProps<{
-  type: Type
-  typeConstraints?: TypeConstraints<unknown>
+const { typeConstraints, isInput } = defineProps<{
+  typeConstraints: TypeConstraints<unknown>
+  isInput: boolean
 }>()
-const input = defineModel({ required: true })
+const type = computed(() => typeConstraints.type)
+const value = defineModel({ required: true })
 
 function isEnumTypeConstraints(tc: TypeConstraints<unknown>): tc is Enum {
   return tc.__brand == 'Enum'
@@ -30,31 +32,36 @@ function isDoubleRangeTypeConstraints(tc: TypeConstraints<unknown>): tc is Doubl
 }
 function setColor(hex: string) {
   const rgb = hexRgb(hex)
-  input.value = Color(rgb.red, rgb.green, rgb.blue)
+  value.value = Color(rgb.red, rgb.green, rgb.blue)
 }
 </script>
 
 <template>
   <div v-if="type === Type.BooleanType">
-    <input type="checkbox" v-model="input" class="toggle" />
+    <input type="checkbox" v-model="value" class="toggle" :disabled="!isInput" />
   </div>
   <div v-if="type === Type.StringType">
-    <div v-if="typeConstraints && isEnumTypeConstraints(typeConstraints)">
-      <select class="select" v-model="input">
-        <option v-for="v in typeConstraints.values" :key="v">{{ v }}</option>
-      </select>
+    <div v-if="isInput">
+      <div v-if="isEnumTypeConstraints(typeConstraints)">
+        <select class="select" v-model="value">
+          <option v-for="v in typeConstraints.values" :key="v">{{ v }}</option>
+        </select>
+      </div>
+      <input v-else type="text" v-model="value" />
     </div>
-    <input v-else type="text" v-model="input" />
+    <span v-else> {{ value }} </span>
   </div>
   <div v-if="type === Type.IntType || type === Type.DoubleType">
-    <div v-if="typeConstraints && isRangeTypeConstraints(typeConstraints)" class="flex flex-col">
-    <!-- TODO: user can still input non valid values -->
+    <div v-if="isRangeTypeConstraints(typeConstraints)" class="flex flex-col">
+      <!-- TODO: user can still input non valid values -->
       <input
         type="range"
         class="range"
         :min="typeConstraints.min"
         :max="typeConstraints.max"
-        v-model="input"
+        :step="type == Type.IntType ? 1 : 'any'"
+        :disabled="!isInput"
+        v-model="value"
       />
       <div class="flex flex-row justify-between">
         <span class="opacity-60">{{ typeConstraints.min }}</span>
@@ -62,17 +69,19 @@ function setColor(hex: string) {
       </div>
     </div>
     <input
-      v-else
+      v-else-if="isInput"
       type="number"
-      :step="typeConstraints && isIntRangeTypeConstraints(typeConstraints) ? 1 : 'any'"
-      v-model="input"
+      :step="type == Type.IntType ? 1 : 'any'"
+      v-model="value"
     />
+    <span v-else> {{ value }} </span>
   </div>
   <div v-if="type === Type.ColorType">
     <input
       type="color"
       @change="setColor(($event.target! as HTMLInputElement).value)"
-      :value="'#' + rgbHex((input as Color).r, (input as Color).g, (input as Color).b)"
+      :value="'#' + rgbHex((value as Color).r, (value as Color).g, (value as Color).b)"
+      :disabled="!isInput"
     />
   </div>
 </template>

@@ -5,7 +5,6 @@ import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import { useUserInfoStore } from '@/stores/user-info'
 import * as api from '@/api/devices-management/requests/devices'
 import * as notificationsApi from '@/api/notifications-management/requests'
-import DevicePropertyControl from '@/components/devices/DevicePropertyControl.vue'
 import { Type } from '@/model/Type'
 import InputForTypeConstraints from '@/components/devices/InputForTypeConstraints.vue'
 import { Color } from '@/model/devices-management/Types'
@@ -24,8 +23,7 @@ const executingActionInput = ref<unknown | undefined>(undefined)
 const actionsToShow = computed<DeviceAction<unknown>[] | undefined>(() => {
   const d = device.value
   if (d) {
-    return d.actions
-    // return d.actions.filter((a) => !d.properties.some((p) => p.setter?.id == a.id))
+    return d.actions.filter((a) => !d.properties.some((p) => p.setter?.id == a.id))
   }
   return undefined
 })
@@ -124,7 +122,11 @@ onMounted(async () => {
   <ul v-if="device" class="list">
     <li v-for="p in device.properties" v-bind:key="p.id" class="list-row items-center">
       <span class="list-col-grow"> {{ p.name }} </span>
-      <DevicePropertyControl :property="p" />
+      <InputForTypeConstraints
+        v-model="p.value"
+        :typeConstraints="p.typeConstraints"
+        :isInput="p.setter !== undefined"
+      />
     </li>
     <li v-for="a in actionsToShow" v-bind:key="a.id" class="list-row items-center">
       <span class="list-col-grow"> {{ a.name }} </span>
@@ -144,8 +146,8 @@ onMounted(async () => {
       <h3 class="text-lg font-bold">Action input</h3>
       <InputForTypeConstraints
         v-if="executingAction"
-        :type="executingAction!.inputTypeConstraints.type"
         :typeConstraints="executingAction!.inputTypeConstraints"
+        :isInput="true"
         v-model="executingActionInput"
       />
       <div class="modal-action">
