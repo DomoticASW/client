@@ -20,7 +20,7 @@ const taskList = ref<TaskList>()
 const editlist = ref<EditList>()
 const whitelist = computed(() => taskList.value?.whitelist || [])
 const blacklist = computed(() => taskList.value?.blacklist || [])
-const burger = ['Editlist']
+const burger = ref(['Editlist'])
 const listSelectedName = ref('Editlist')
 const users = ref<User[]>([])
 const open = ref(false)
@@ -80,7 +80,7 @@ async function getTaskList() {
   } catch {
     taskList.value = { id: route.params.id as string, blacklist: [], whitelist: [] }
   }
-  burger.push('Whitelist', 'Blacklist')
+  burger.value.push('Whitelist', 'Blacklist')
 }
 
 function addUser(user: User) {
@@ -151,23 +151,25 @@ function calculateUsersNotInList(list: string[], users: User[]): User[] {
     <div class="relative">
       <div class="flex items-center space-x-2">
         <h1 class="text-2xl font-bold dark:text-white">{{ listSelectedName }}</h1>
-        <button class="btn btn-circle btn-ghost" type="button" @click="open = !open">
-          <svg
-            class="size-[1.2em] transition-transform duration-200"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-          >
-            <g
-              stroke-linejoin="round"
-              stroke-linecap="round"
-              stroke-width="2"
-              fill="none"
-              stroke="currentColor"
+        <div v-if="burger.length > 1">
+          <button class="btn btn-circle btn-ghost" type="button" @click="open = !open">
+            <svg
+              class="size-[1.2em] transition-transform duration-200"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
             >
-              <path d="M6 9l6 6 6-6"></path>
-            </g>
-          </svg>
-        </button>
+              <g
+                stroke-linejoin="round"
+                stroke-linecap="round"
+                stroke-width="2"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path d="M6 9l6 6 6-6"></path>
+              </g>
+            </svg>
+          </button>
+        </div>
       </div>
       <transition
         name="slide"
