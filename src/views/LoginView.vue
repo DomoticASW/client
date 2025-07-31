@@ -98,6 +98,9 @@ import { defineComponent, reactive, ref } from 'vue';
 import { useUserInfoStore } from '@/stores/user-info';
 import { type UserInfo } from '@/model/users-management/User';
 import { required, email, helpers } from '@vuelidate/validators';
+import * as api from '@/api/api';
+import { userDeserializer } from '@/api/users-management/GetUserDTO';
+import { tokenDeserializer } from '@/api/users-management/GetTokenDTO';
 
 type LoginForm = {
   email: string;
@@ -128,61 +131,32 @@ export default defineComponent({
       this.v$.$touch();
       if (this.v$.$invalid) return;
 
-      try {
-        const loginResponse = await fetch('/api/users/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            email: this.form.email,
-            password: this.form.password
-          })
-        });
-
-        if (!loginResponse.ok) {
-          throw new Error("Login failed: " + await loginResponse.text());
-        }
-
-        const responseData = await loginResponse.json();
-        
-        if (!responseData || !responseData.source) {
-          throw new Error('Invalid response: missing token');
-        }
-
-        const token = responseData.source;
-
-        const userResponse = await fetch('/api/user', {
-          method: 'GET',
-          headers: {
-            Authorization: `${token}`
-          }
-        });
-
-        if (!userResponse.ok) {
-          throw new Error('Failed to fetch user information:' + await userResponse.text());
-        }
-
-        const userData = await userResponse.json();
-
-        if (!userData || !userData.nickname || !userData.role) {
-          throw new Error('Invalid user data received');
-        }
-
-        const userInfo = useUserInfoStore();
-        const userInfoData: UserInfo = {
+      const loginResponse = await api.request('/api/users/login', {
+        method: 'POST',
+        body: JSON.stringify({
           email: this.form.email,
-          nickname: userData.nickname,
-          token: token,
-          role: userData.role
-        };
-        userInfo.setUserInfo(userInfoData);
+          password: this.form.password
+        })
+      });
 
-        router.push('/');
+      const token = await api.deserializeBody(loginResponse, tokenDeserializer);
 
-      } catch (error) {
-        throw new Error('Login failed:' + error);
-      }
+      const userResponse = await api.authorizedRequest('/api/user', token, {
+        method: 'GET'
+      });
+
+      const userData = await api.deserializeBody(userResponse, userDeserializer);
+
+      const userInfo = useUserInfoStore();
+      const userInfoData: UserInfo = {
+        email: this.form.email,
+        nickname: userData.nickname,
+        token: token,
+        role: userData.role
+      };
+      userInfo.setUserInfo(userInfoData);
+
+      router.push('/');
     }
   }
 });

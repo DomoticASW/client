@@ -148,6 +148,7 @@
 import { defineComponent, reactive, computed, ref } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required, email, minLength, sameAs, helpers } from '@vuelidate/validators';
+import * as api from '@/api/api';
 
 type SigninForm = {
   nickname: string;
@@ -189,32 +190,16 @@ export default defineComponent({
       this.v$.$touch();
       if (this.v$.$invalid) return;
 
-      try {
-        const response = await fetch('/api/registrationRequests', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            nickname: this.form.nickname,
-            email: this.form.email,
-            password: this.form.password
-          })
-        });
+      await api.request('/api/registrationRequests', {
+        method: 'POST',
+        body: JSON.stringify({
+          nickname: this.form.nickname,
+          email: this.form.email,
+          password: this.form.password
+        })
+      });
 
-        if (!response.ok) throw new Error(await response.text());
-
-        this.$router.push('/login');
-
-      } catch (error) {
-        console.error('Registration failed:', error);
-      } finally {
-        this.form.nickname = '';
-        this.form.email = '';
-        this.form.password = '';
-        this.form.confirmPassword = '';
-        this.v$.$reset();
-      }
+      this.$router.push('/login');
     }
   }
 });

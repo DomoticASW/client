@@ -138,6 +138,7 @@ import { defineComponent, reactive, computed, ref, watch, onMounted } from 'vue'
 import { useVuelidate } from '@vuelidate/core';
 import { required, email, minLength, sameAs, helpers } from '@vuelidate/validators';
 import { useUserInfoStore } from '@/stores/user-info';
+import * as api from '@/api/api';
 
 type SettingsForm = {
   nickname: string;
@@ -208,20 +209,10 @@ export default defineComponent({
         body.password = this.form.password;
       }
 
-      try {
-        const response = await fetch('/api/users', {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `${userInfoStore.token}`
-          },
-          body: JSON.stringify(body)
-        });
-
-        if (!response.ok) throw new Error(await response.text());
-      } catch (error) {
-        throw new Error('Save failed:' + error);
-      }
+      await api.authorizedRequest('/api/users', userInfoStore.token, {
+        method: 'PATCH',
+        body: JSON.stringify(body)
+      });
     }
   }
 });
