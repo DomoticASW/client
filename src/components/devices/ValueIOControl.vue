@@ -92,6 +92,7 @@ const rangePreview = ref<number | undefined>()
     </div>
     <input
       v-else-if="isInput"
+      class="input validator field-sizing-content min-w-[8rem]"
       type="number"
       :step="type == Type.IntType ? 1 : 'any'"
       v-model.lazy="value"
