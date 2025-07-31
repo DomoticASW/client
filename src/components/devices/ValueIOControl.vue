@@ -83,7 +83,8 @@ const rangePreview = ref<number | undefined>()
         :disabled="!isInput"
         @mouseup="rangePreview = undefined"
         @input="rangePreview = Number.parseFloat(($event.target as HTMLInputElement).value)"
-        @change="value = Number.parseFloat(($event.target as HTMLInputElement).value)"
+        @change="((value = rangePreview), (rangePreview = undefined))"
+        :value="rangePreview ?? value"
       />
       <div class="flex flex-row justify-between">
         <span class="opacity-30">{{ typeConstraints.min }}</span>
