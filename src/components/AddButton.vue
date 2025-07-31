@@ -9,13 +9,13 @@ const props = defineProps<{ name?: string }>()
         v-if="name"
         :to="{ name: props.name }"
         type="button"
-        class="btn btn-circle btn-neutral fa-solid fa-plus fa-lg !flex"
+        class="btn btn-circle btn-base-300 shadow fa-solid fa-plus fa-lg !flex"
       ></RouterLink>
       <template v-else>
         <button
           type="button"
           onclick="addButtonModal.showModal()"
-          class="btn btn-circle btn-neutral fa-solid fa-plus fa-lg !flex"
+          class="btn btn-circle btn-base-300 fa-solid fa-plus fa-lg !flex"
         ></button>
       </template>
     </div>

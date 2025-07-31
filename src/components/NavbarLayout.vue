@@ -1,5 +1,5 @@
 <template>
-  <div class="navbar bg-base-300 shadow-sm mb-4">
+  <div class="navbar bg-base-300 shadow mb-4">
     <div class="navbar-start">
       <template v-if="showBackButton">
         <button

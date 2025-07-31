@@ -8,9 +8,32 @@
   >
     <p>If</p>
     <div class="font-bold grid grid-cols-5 col-span-3 row-span-2">
-      <p class="truncate col-span-2">{{ instruction.condition.leftConstantName }}</p>
-      <p class="truncate">{{ operatorSymbol }}</p>
-      <p class="truncate col-span-2">{{ instruction.condition.rightConstantName }}</p>
+      <p class="truncate col-span-2" v-if="!edit">{{ instruction.condition.leftConstantName }}</p>
+      <p class="truncate col-span-2" v-if="!edit">{{ operatorSymbol }}</p>
+      <p class="truncate" v-if="!edit">{{ instruction.condition.rightConstantName }}</p>
+      <input
+        v-if="edit"
+        type="text"
+        class="input col-span-2 text-base-content"
+        placeholder="Constant name"
+        v-model="instruction.condition.leftConstantName"
+      />
+      <select
+        v-if="edit"
+        v-model="instruction.condition.conditionOperatorType"
+        class="select text-base-content"
+      >
+        <option v-for="operator in ConditionOperatorType" :key="operator" :value="operator">
+          {{ getOperator(operator) }}
+        </option>
+      </select>
+      <input
+        v-if="edit"
+        type="text"
+        class="input col-span-2 text-base-content"
+        placeholder="Constant name"
+        v-model="instruction.condition.rightConstantName"
+      />
     </div>
   </InstructionLayout>
 
@@ -79,13 +102,16 @@ watch(
   { immediate: true },
 )
 
-const operatorSymbol = getOperator()
+const operatorSymbol = getOperator(instruction.value.condition.conditionOperatorType)
 
-function getOperator() {
-  switch (instruction.value.condition.conditionOperatorType) {
+function getOperator(operator: ConditionOperatorType) {
+  switch (operator) {
     case ConditionOperatorType.BooleanEOperator:
+      return 'bool eq'
     case ConditionOperatorType.ColorEOperator:
+      return 'color eq'
     case ConditionOperatorType.StringEOperator:
+      return 'is'
     case ConditionOperatorType.NumberEOperator:
       return '=='
     case ConditionOperatorType.NumberGEOperator:
