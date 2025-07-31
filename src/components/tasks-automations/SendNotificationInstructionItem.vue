@@ -7,7 +7,7 @@
   >
     <p class="truncate">Send notification to</p>
     <p v-if="!edit" class="font-bold text-center truncate">{{ instruction.email }}</p>
-    <select v-else class="select text-center truncate h-7 text-base-content"> <!-- Show all the users -->
+    <select v-model="instruction.email" v-else class="select text-center truncate h-7 text-base-content"> <!-- Show all the users -->
       <option :value="instruction.email" selected>{{ instruction.email }}</option>
     </select>
     <!-- To see if it is possible to retrieve the name of a user just by using its email -->

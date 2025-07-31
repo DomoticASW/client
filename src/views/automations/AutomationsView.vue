@@ -5,15 +5,20 @@ import AddButton from '@/components/AddButton.vue'
 import { useUserInfoStore } from '@/stores/user-info'
 import type { Automation } from '@/model/scripts/Script'
 import { getAllAutomations, toggleAutomation } from '@/api/scripts/requests/automations'
+import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 
 const userInfo = useUserInfoStore()
 
 const automations = ref<Automation[]>()
+const loadingOverlay = useLoadingOverlayStore()
 
 onMounted(async () => {
-  automations.value = await getAllAutomations(userInfo.token)
+  try {
+    automations.value = await getAllAutomations(userInfo.token)
+  } finally {
+    loadingOverlay.stopLoading()
+  }
 })
-
 </script>
 
 <template>

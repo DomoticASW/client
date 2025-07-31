@@ -5,12 +5,19 @@ import AddButton from '@/components/AddButton.vue'
 import { useUserInfoStore } from '@/stores/user-info'
 import type { Task } from '@/model/scripts/Script'
 import { getAllTasks } from '@/api/scripts/requests/tasks'
+import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 
 const userInfo = useUserInfoStore()
 const tasks = ref<Task[]>([])
 
+const loadingOverlay = useLoadingOverlayStore()
+
 onMounted(async () => {
-  tasks.value = await getAllTasks(userInfo.token)
+  try {
+    tasks.value = await getAllTasks(userInfo.token)
+  } finally {
+    loadingOverlay.stopLoading()
+  }
 })
 </script>
 
