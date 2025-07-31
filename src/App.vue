@@ -2,16 +2,19 @@
 import { RouterView } from 'vue-router'
 import LoadingOverlay from './components/LoadingOverlay.vue'
 import ErrorPresenter from './components/ErrorPresenter.vue'
+import SuccessPresenter from './components/SuccessPresenter.vue'
 </script>
 
 <template>
   <div class="flex justify-center">
     <ErrorPresenter>
-      <LoadingOverlay>
-        <div class="p-4 h-screen w-lg">
-          <RouterView />
-        </div>
-      </LoadingOverlay>
+        <LoadingOverlay>
+          <div class="p-4 h-screen w-lg">
+            <SuccessPresenter>
+            </SuccessPresenter>
+            <RouterView />
+          </div>
+        </LoadingOverlay>
     </ErrorPresenter>
   </div>
 </template>

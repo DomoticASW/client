@@ -5,12 +5,14 @@ import { usersDeserializer } from '@/api/users-management/GetUserDTO'
 import type { RegistrationRequest } from '@/model/users-management/RegistrationRequest'
 import { Role, type User } from '@/model/users-management/User'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
+import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
 import { useUserInfoStore } from '@/stores/user-info'
 import { onMounted, ref } from 'vue'
 
 const loadingOverlay = useLoadingOverlayStore()
-const showToast = ref(false)
-const toastMessage = ref('')
+// const showToast = ref(false)
+// const toastMessage = ref('')
+const successPresenter = useSuccessPresenterStore();
 const userInfo = useUserInfoStore()
 const registeredUsers = ref<User[]>()
 const unregisteredUsers = ref<RegistrationRequest[]>()
@@ -84,18 +86,19 @@ function approveRequest(user: RegistrationRequest) {
 }
 
 function showToastMessage(msg: string) {
-  toastMessage.value = msg
-  showToast.value = true
-  setTimeout(() => {
-    showToast.value = false
-  }, 2000) // 2 seconds
+  // toastMessage.value = msg
+  // showToast.value = true
+  // setTimeout(() => {
+  //   showToast.value = false
+  // }, 2000) // 2 seconds
+  successPresenter.showSuccess(presentSuccess(msg, "", "", 5000))
 }
 </script>
 
 <template>
   <div>
     <!-- Toast -->
-    <div
+    <!-- <div
       v-if="showToast"
       class="toast toast-center toast-success fixed top-10 left-1/2 transform -translate-x-1/2"
     >
@@ -104,7 +107,7 @@ function showToastMessage(msg: string) {
           <span>{{ toastMessage }}</span>
         </div>
       </div>
-    </div>
+    </div> -->
     <div>
       <div>
         <ul class="list rounded-box">
