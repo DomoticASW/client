@@ -66,8 +66,8 @@ state.$subscribe(async () => {
   <dialog ref="error-presenter-dialog" class="modal modal-bottom sm:modal-middle">
     <div class="modal-box">
       <h3 class="text-lg font-bold">{{ errorTitle }}</h3>
-      <p>{{ errorMessage }}</p>
-      <p v-if="errorCause" class="text-sm opacity-60">{{ errorCause }}</p>
+      <p class="whitespace-pre-line">{{ errorMessage }}</p>
+      <p v-if="errorCause" class="text-sm opacity-60 whitespace-pre-line">{{ errorCause }}</p>
       <div class="modal-action">
         <button class="btn btn-primary btn-soft" @click="okPressed">Ok</button>
       </div>
