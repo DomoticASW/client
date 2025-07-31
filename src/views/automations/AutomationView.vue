@@ -8,6 +8,7 @@ import { findAutomation } from '@/api/scripts/requests/automations'
 import { useInstructionsStore } from '@/stores/instructions'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import Route from '@/router/index'
+import NavbarLayout from '@/components/NavbarLayout.vue'
 
 const props = defineProps<{ id: string }>()
 const userInfo = useUserInfoStore()
@@ -39,16 +40,18 @@ onMounted(async () => {
 </script>
 
 <template>
-  <h1 class="text-xl">Trigger</h1>
-  <Trigger :trigger="trigger" :edit="false" />
-  <hr class="m-4" />
-  <h1 class="text-xl">Actions</h1>
-  <InstructionItem
-    v-for="(instruction, index) in instructionsStore.instructions"
-    :key="index"
-    :instruction="instruction"
-    :id="index.toString()"
-    :edit="false"
-  />
-  <div class="pb-4"></div>
+  <NavbarLayout :title="automationName" :show-back-button="true">
+    <h1 class="text-xl">Trigger</h1>
+    <Trigger :trigger="trigger" :edit="false" />
+    <hr class="m-4" />
+    <h1 class="text-xl">Actions</h1>
+    <InstructionItem
+      v-for="(instruction, index) in instructionsStore.instructions"
+      :key="index"
+      :instruction="instruction"
+      :id="index.toString()"
+      :edit="false"
+    />
+    <div class="pb-4"></div>
+  </NavbarLayout>
 </template>

@@ -10,6 +10,7 @@ import { useInstructionsStore } from '@/stores/instructions'
 import InstructionItem from '@/components/tasks-automations/InstructionItem.vue'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import Route from '@/router/index'
+import NavbarLayout from '@/components/NavbarLayout.vue'
 
 const props = defineProps<{ id?: string }>()
 const userInfo = useUserInfoStore()
@@ -38,28 +39,40 @@ onMounted(async () => {
     } finally {
       loadingOverlay.stopLoading()
     }
+  } else {
+    instructionsStore.instructions = []
   }
 })
 </script>
 
 <template>
-  <div class="mx-6">
-    <input type="text" placeholder="Automation name" class="input w-full" :value="automationName" />
-  </div>
-  <hr class="m-4" />
-  <h1 class="text-xl">Trigger</h1>
-  <Trigger :trigger="trigger" :edit="true" />
-  <hr class="m-4" />
-  <h1 class="text-xl">Actions</h1>
-  <InstructionItem
-    v-for="(instruction, index) in instructionsStore.instructions"
-    :key="index"
-    :instruction="instruction"
-    :id="index.toString()"
-    :edit="true"
-  />
-  <div class="pb-4"></div>
-  <AddButton>
-    <InstructionItems />
-  </AddButton>
+  <NavbarLayout
+    :title="props.id ? 'Edit automation' : 'Create automation'"
+    :show-back-button="true"
+  >
+    <div class="mx-6">
+      <input
+        type="text"
+        placeholder="Automation name"
+        class="input w-full"
+        v-model="automationName"
+      />
+    </div>
+    <hr class="m-4" />
+    <h1 class="text-xl">Trigger</h1>
+    <Trigger :trigger="trigger" :edit="true" />
+    <hr class="m-4" />
+    <h1 class="text-xl">Actions</h1>
+    <InstructionItem
+      v-for="(instruction, index) in instructionsStore.instructions"
+      :key="index"
+      :instruction="instruction"
+      :id="index.toString()"
+      :edit="true"
+    />
+    <div class="pb-4"></div>
+    <AddButton>
+      <InstructionItems />
+    </AddButton>
+  </NavbarLayout>
 </template>

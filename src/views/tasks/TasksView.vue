@@ -6,6 +6,7 @@ import { useUserInfoStore } from '@/stores/user-info'
 import type { Task, TaskId } from '@/model/scripts/Script'
 import { executeTask, getAllTasks } from '@/api/scripts/requests/tasks'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
+import NavbarLayout from '@/components/NavbarLayout.vue'
 
 const userInfo = useUserInfoStore()
 const tasks = ref<Task[]>([])
@@ -32,25 +33,27 @@ async function startTask(taskId: TaskId) {
 </script>
 
 <template>
-  <ul class="list rounded-box" v-if="tasks">
-    <li class="list-row" v-for="task in tasks" :key="task.id">
-      <RouterLink
-        class="list-col-grow flex items-center"
-        :to="{ name: 'task', params: { id: task.id } }"
-      >
-        {{ task.name }}
-      </RouterLink>
+  <NavbarLayout title="Tasks" :show-back-button="false">
+    <ul class="list rounded-box" v-if="tasks">
+      <li class="list-row" v-for="task in tasks" :key="task.id">
+        <RouterLink
+          class="list-col-grow flex items-center"
+          :to="{ name: 'task', params: { id: task.id } }"
+        >
+          {{ task.name }}
+        </RouterLink>
 
-      <button
-        type="button"
-        class="btn btn-circle btn-ghost fa-solid fa-play fa-lg !flex"
-        @click="startTask(task.id)"
-        :aria-label="'Start task: ' + task"
-      ></button>
-    </li>
-  </ul>
+        <button
+          type="button"
+          class="btn btn-circle btn-ghost fa-solid fa-play fa-lg !flex"
+          @click="startTask(task.id)"
+          :aria-label="'Start task: ' + task"
+        ></button>
+      </li>
+    </ul>
 
-  <AddButton name="add-task" />
+    <AddButton name="add-task" />
+  </NavbarLayout>
 </template>
 
 <style></style>

@@ -7,6 +7,7 @@ import { useUserInfoStore } from '@/stores/user-info'
 import { onMounted, ref } from 'vue'
 import Route from '@/router/index.ts'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
+import NavbarLayout from '@/components/NavbarLayout.vue'
 
 const props = defineProps<{ id: string }>()
 const userInfo = useUserInfoStore()
@@ -15,6 +16,7 @@ const instructionsStore = useInstructionsStore()
 const loadingOverlay = useLoadingOverlayStore()
 
 const taskName = ref<string>('')
+const taskId = ref<TaskId>()
 
 onMounted(async () => {
   try {
@@ -22,6 +24,7 @@ onMounted(async () => {
     const task = await findTask(TaskId(props.id), userInfo.token)
     instructionsStore.instructions = task.instructions
     taskName.value = task.name
+    taskId.value = task.id
   } catch (err: unknown) {
     if (typeof err == 'object' && err != undefined) {
       if (err && '__brand' in err) {
@@ -35,15 +38,32 @@ onMounted(async () => {
     loadingOverlay.stopLoading()
   }
 })
+
+async function removeTask() {
+  try {
+    loadingOverlay.startLoading()
+    Route.back()
+  } finally {
+    loadingOverlay.stopLoading()
+  }
+}
 </script>
 
 <template>
-  <InstructionItem
-    v-for="(instruction, index) in instructionsStore.instructions"
-    :key="index"
-    :instruction="instruction"
-    :id="index.toString()"
-    :edit="false"
-  />
-  <div class="pb-4"></div>
+  <NavbarLayout :title="taskName" :show-back-button="true">
+    <template #actions>
+      <RouterLink :to="{ name: 'edit-task', params: { id: taskId } }" class="btn btn-ghost"
+        >Edit</RouterLink
+      >
+      <button class="btn btn-ghost text-error" @click="removeTask()">Delete</button>
+    </template>
+    <InstructionItem
+      v-for="(instruction, index) in instructionsStore.instructions"
+      :key="index"
+      :instruction="instruction"
+      :id="index.toString()"
+      :edit="false"
+    />
+    <div class="pb-4"></div>
+  </NavbarLayout>
 </template>
