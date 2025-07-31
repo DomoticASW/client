@@ -6,7 +6,15 @@
     :instruction="props.instruction"
   >
     <p>Start task</p>
-    <p class="font-bold truncate text-center">{{ taskName }}</p>
+    <p v-if="!edit" class="font-bold truncate text-center">{{ taskName }}</p>
+    <select
+      v-model="(instruction.instruction as StartTaskInstruction).taskId"
+      v-else
+      class="select h-7 text-center text-base-content"
+    >
+      <option value="" selected disabled>Choose a task</option>
+      <option :value="task.id" v-for="task in tasks" :key="task.id">{{ task.name }}</option>
+    </select>
   </InstructionLayout>
 </template>
 
@@ -14,9 +22,10 @@
 import type { Instruction, StartTaskInstruction } from '@/model/scripts/Instruction'
 import InstructionLayout from './InstructionLayout.vue'
 import { onMounted, ref } from 'vue'
-import { authorizedRequest, deserializeBody } from '@/api/api'
 import { useUserInfoStore } from '@/stores/user-info'
-import { taskDeserializer } from '@/api/scripts/dtos/GetTaskDTO'
+import { useLoadingOverlayStore } from '@/stores/loading-overlay'
+import { findTask, getAllTasks } from '@/api/scripts/requests/tasks'
+import { TaskId, type Task } from '@/model/scripts/Script'
 const userInfo = useUserInfoStore()
 
 const props = defineProps<{
@@ -28,14 +37,23 @@ const props = defineProps<{
 }>()
 
 const taskName = ref('')
+const tasks = ref<Task[]>([])
+
+const loadingOverlay = useLoadingOverlayStore()
 
 onMounted(async () => {
-  updateTaskName(props.instruction.instruction as StartTaskInstruction)
+  try {
+    loadingOverlay.startLoading()
+    updateTaskName(props.instruction.instruction as StartTaskInstruction)
+    if (props.edit) {
+      tasks.value = await getAllTasks(userInfo.token)
+    }
+  } finally {
+    loadingOverlay.stopLoading()
+  }
 })
 
 async function updateTaskName(instruction: StartTaskInstruction) {
-  const res = await authorizedRequest('/api/tasks/' + instruction.taskId, userInfo.token)
-
-  taskName.value = (await deserializeBody(res, taskDeserializer)).name
+  taskName.value = (await findTask(TaskId(instruction.taskId), userInfo.token)).name
 }
 </script>

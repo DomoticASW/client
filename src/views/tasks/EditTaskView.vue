@@ -19,6 +19,7 @@ const loadingOverlay = useLoadingOverlayStore()
 onMounted(async () => {
   if (props.id) {
     try {
+      loadingOverlay.startLoading()
       const task = await findTask(TaskId(props.id), userInfo.token)
       instructionsStore.instructions = task.instructions
       taskName.value = task.name

@@ -18,6 +18,7 @@ const loadingOverlay = useLoadingOverlayStore()
 
 onMounted(async () => {
   try {
+    loadingOverlay.startLoading()
     const automation = await findAutomation(AutomationId(props.id), userInfo.token)
     instructionsStore.instructions = automation.instructions
     automationName.value = automation.name

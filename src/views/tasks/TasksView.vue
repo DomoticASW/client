@@ -14,6 +14,7 @@ const loadingOverlay = useLoadingOverlayStore()
 
 onMounted(async () => {
   try {
+    loadingOverlay.startLoading()
     tasks.value = await getAllTasks(userInfo.token)
   } finally {
     loadingOverlay.stopLoading()
