@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, useTemplateRef } from 'vue'
+import { computed, onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
 import { DeviceId, type Device, type DeviceAction } from '@/model/devices-management/Device'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import { useUserInfoStore } from '@/stores/user-info'
@@ -8,6 +8,7 @@ import * as notificationsApi from '@/api/notifications-management/requests'
 import { Type } from '@/model/Type'
 import ValueIOControl from '@/components/devices/ValueIOControl.vue'
 import { Color } from '@/model/devices-management/Types'
+import { io } from 'socket.io-client'
 
 const props = defineProps({ id: { type: String, required: true } })
 const deviceId = DeviceId(props.id)
@@ -101,6 +102,22 @@ onMounted(async () => {
 onMounted(async () => {
   isSubscribedForOfflineNotifications.value =
     await notificationsApi.isSubscribedForDeviceOfflineNotifications(deviceId, userInfo.token)
+})
+
+/* SocketIO subscription for real time property updates */
+type PropertyUpdateDTO = { deviceId: string; propertyId: string; value: unknown }
+const socket = io('/api/devices/property-updates')
+  .on('connect', () => socket.emit('subscribe', { deviceId: deviceId }))
+  .on('device-property-update', (data: PropertyUpdateDTO) => {
+    if (data.deviceId == deviceId) {
+      const property = device.value?.properties.find((p) => p.id == data.propertyId)
+      if (property) {
+        property.value = data.value
+      }
+    }
+  })
+onUnmounted(() => {
+  socket.close()
 })
 </script>
 
