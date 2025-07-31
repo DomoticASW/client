@@ -2,6 +2,10 @@ import { authorizedRequest, deserializeBody } from '@/api/api'
 import type { AutomationId } from '@/model/scripts/Script'
 import { automationDeserializer, automationsDeserializer } from '../dtos/GetAutomationDTO'
 
+export async function deleteAutomation(id: AutomationId, token: string): Promise<void> {
+  await authorizedRequest('/api/automations/' + id, token, { method: 'DELETE' })
+}
+
 export async function toggleAutomation(
   id: AutomationId,
   enabled: boolean,

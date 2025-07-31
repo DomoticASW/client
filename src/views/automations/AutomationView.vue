@@ -4,7 +4,7 @@ import Trigger from '@/components/tasks-automations/TriggerComponent.vue'
 import { useUserInfoStore } from '@/stores/user-info'
 import { onMounted, ref } from 'vue'
 import { AutomationId, type Trigger as AutomationTrigger } from '@/model/scripts/Script'
-import { findAutomation } from '@/api/scripts/requests/automations'
+import { deleteAutomation, findAutomation } from '@/api/scripts/requests/automations'
 import { useInstructionsStore } from '@/stores/instructions'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import Route from '@/router/index'
@@ -14,6 +14,7 @@ const props = defineProps<{ id: string }>()
 const userInfo = useUserInfoStore()
 const instructionsStore = useInstructionsStore()
 const automationName = ref<string>('')
+const automationId = ref<AutomationId>()
 const trigger = ref<AutomationTrigger>()
 const loadingOverlay = useLoadingOverlayStore()
 
@@ -23,6 +24,7 @@ onMounted(async () => {
     const automation = await findAutomation(AutomationId(props.id), userInfo.token)
     instructionsStore.instructions = automation.instructions
     automationName.value = automation.name
+    automationId.value = automation.id
     trigger.value = automation.trigger
   } catch (err: unknown) {
     if (typeof err == 'object' && err != undefined) {
@@ -37,10 +39,28 @@ onMounted(async () => {
     loadingOverlay.stopLoading()
   }
 })
+
+async function removeAutomation() {
+  try {
+    loadingOverlay.startLoading()
+    await deleteAutomation(automationId.value!, userInfo.token)
+    Route.back()
+  } finally {
+    loadingOverlay.stopLoading()
+  }
+}
 </script>
 
 <template>
   <NavbarLayout :title="automationName" :show-back-button="true">
+    <template #actions>
+      <RouterLink
+        :to="{ name: 'edit-automation', params: { id: automationId } }"
+        class="btn btn-ghost"
+        >Edit</RouterLink
+      >
+      <button class="btn btn-ghost text-error" @click="removeAutomation()">Delete</button>
+    </template>
     <h1 class="text-xl">Trigger</h1>
     <Trigger :trigger="trigger" :edit="false" />
     <hr class="m-4" />

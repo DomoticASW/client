@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { findTask } from '@/api/scripts/requests/tasks'
+import { deleteTask, findTask } from '@/api/scripts/requests/tasks'
 import InstructionItem from '@/components/tasks-automations/InstructionItem.vue'
 import { TaskId } from '@/model/scripts/Script'
 import { useInstructionsStore } from '@/stores/instructions'
@@ -42,6 +42,7 @@ onMounted(async () => {
 async function removeTask() {
   try {
     loadingOverlay.startLoading()
+    await deleteTask(taskId.value!, userInfo.token)
     Route.back()
   } finally {
     loadingOverlay.stopLoading()
