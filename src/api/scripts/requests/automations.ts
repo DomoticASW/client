@@ -2,8 +2,12 @@ import { authorizedRequest, deserializeBody } from '@/api/api'
 import type { AutomationId } from '@/model/scripts/Script'
 import { automationDeserializer, automationsDeserializer } from '../dtos/GetAutomationDTO'
 
-export async function toggleAutomation(id: AutomationId, enabled: boolean, token: string) {
-  authorizedRequest('/api/automations/' + id, token, {
+export async function toggleAutomation(
+  id: AutomationId,
+  enabled: boolean,
+  token: string,
+): Promise<void> {
+  await authorizedRequest('/api/automations/' + id, token, {
     method: 'POST',
     body: JSON.stringify({
       enable: enabled,

@@ -20,6 +20,15 @@ onMounted(async () => {
     loadingOverlay.stopLoading()
   }
 })
+
+async function toggle(automation: Automation) {
+  try {
+    loadingOverlay.startLoading()
+    await toggleAutomation(automation.id, automation.enabled, userInfo.token)
+  } finally {
+    loadingOverlay.stopLoading()
+  }
+}
 </script>
 
 <template>
@@ -40,7 +49,7 @@ onMounted(async () => {
             class="toggle toggle-sm"
             :aria-label="'Change ' + automation.name + ' status'"
             @click.stop
-            @change="toggleAutomation(automation.id, automation.enabled, userInfo.token)"
+            @change="toggle(automation)"
           />
         </div>
       </li>

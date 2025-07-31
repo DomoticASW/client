@@ -95,15 +95,10 @@
 </template>
 
 <script setup lang="ts">
-import {
-  InstructionType,
-  type CreateConstantInstruction,
-  type Instruction,
-} from '@/model/scripts/Instruction'
+import { type CreateConstantInstruction, type Instruction } from '@/model/scripts/Instruction'
 import InstructionLayout from './InstructionLayout.vue'
 import { ref, watch } from 'vue'
 import { Type } from '@/model/Type'
-import { useInstructionsStore } from '@/stores/instructions'
 
 const props = defineProps<{
   id: string
@@ -113,8 +108,6 @@ const props = defineProps<{
   colors: string
   edit: boolean
 }>()
-
-const instructionsStore = useInstructionsStore()
 
 const instruction = ref<CreateConstantInstruction>(
   props.instruction.instruction as CreateConstantInstruction,
@@ -181,14 +174,10 @@ function openDialog() {
 }
 
 function handleConfirm() {
-  instructionsStore.changeInstruction(props.instruction, {
-    type: InstructionType.CreateConstantInstruction,
-    instruction: {
-      name: variableForm.value.name,
-      type: variableForm.value.type,
-      value: variableForm.value.value,
-    },
-  })
+  const instruction = props.instruction.instruction as CreateConstantInstruction
+  instruction.name = variableForm.value.name
+  instruction.type = variableForm.value.type
+  instruction.value = variableForm.value.value
   closeDialog()
 }
 
