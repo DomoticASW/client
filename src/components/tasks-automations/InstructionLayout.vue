@@ -7,7 +7,9 @@
           instruction.type === InstructionType.IfInstruction ||
           instruction.type === InstructionType.IfElseInstruction
             ? 'grid-cols-4'
-            : 'grid-cols-2'
+            : instruction.type === InstructionType.WaitInstruction && edit
+              ? 'grid-cols-3'
+              : 'grid-cols-2'
         "
       >
         <template v-if="edit">
@@ -30,7 +32,9 @@
               instruction.type === InstructionType.IfInstruction ||
               instruction.type === InstructionType.IfElseInstruction
                 ? 'ml-4 col-start-6'
-                : 'col-start-3'
+                : instruction.type === InstructionType.WaitInstruction && edit
+                  ? 'col-start-4'
+                  : 'col-start-3'
             "
             @click="instructionsStore.removeInstruction(props.instruction)"
             @click.stop
@@ -43,7 +47,7 @@
 
 <script setup lang="ts">
 import { InstructionType, type Instruction } from '@/model/scripts/Instruction'
-import { useInstructionsStore } from '@/stores/instructions';
+import { useInstructionsStore } from '@/stores/instructions'
 
 const props = defineProps<{
   instruction: Instruction
@@ -53,5 +57,4 @@ const props = defineProps<{
 }>()
 
 const instructionsStore = useInstructionsStore()
-
 </script>

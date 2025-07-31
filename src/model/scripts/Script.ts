@@ -5,8 +5,12 @@ export type ScriptId = TaskId | AutomationId
 
 export type TaskId = Brand<string, 'TaskId'>
 export type AutomationId = Brand<string, 'AutomationId'>
-export function TaskId(id: string): TaskId { return id as TaskId }
-export function AutomationId(id: string): AutomationId { return id as AutomationId }
+export function TaskId(id: string): TaskId {
+  return id as TaskId
+}
+export function AutomationId(id: string): AutomationId {
+  return id as AutomationId
+}
 
 export interface Script<ScriptId> {
   id: ScriptId
@@ -44,12 +48,16 @@ export function formatDate(date: Date): string {
 }
 
 export function formatDuration(seconds: number): string {
-  const hours = Math.floor(seconds / 3600)
+  const days = Math.floor(seconds / 86400)
+  const hours = Math.floor((seconds % 86400) / 3600)
   const minutes = Math.floor((seconds % 3600) / 60)
   const secs = seconds % 60
 
   const parts: string[] = []
 
+  if (days > 0) {
+    parts.push(`${days} day${days !== 1 ? 's' : ''}`)
+  }
   if (hours > 0) {
     parts.push(`${hours} hour${hours !== 1 ? 's' : ''}`)
   }
@@ -62,3 +70,37 @@ export function formatDuration(seconds: number): string {
 
   return parts.join(' ')
 }
+
+export function convertToSeconds(
+  value: number,
+  unit: 'seconds' | 'minutes' | 'hours' | 'days'
+): number {
+  switch (unit) {
+    case 'seconds':
+      return value
+    case 'minutes':
+      return value * 60
+    case 'hours':
+      return value * 3600
+    case 'days':
+      return value * 86400
+    default:
+      throw new Error(`Unsupported time unit: ${unit}`)
+  }
+}
+
+export function decomposeToLargestUnit(seconds: number): {
+  value: number
+  unit: 'seconds' | 'minutes' | 'hours' | 'days'
+} {
+  if (seconds % 86400 === 0) {
+    return { value: seconds / 86400, unit: 'days' }
+  } else if (seconds % 3600 === 0) {
+    return { value: seconds / 3600, unit: 'hours' }
+  } else if (seconds % 60 === 0) {
+    return { value: seconds / 60, unit: 'minutes' }
+  } else {
+    return { value: seconds, unit: 'seconds' }
+  }
+}
+

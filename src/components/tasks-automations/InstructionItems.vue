@@ -76,9 +76,9 @@ function addDevicePropertyConstantInstruction(device: Device) {
     type: InstructionType.CreateDevicePropertyConstantInstruction,
     instruction: {
       deviceId: device.id,
-      devicePropertyId: '', // get random property from device
+      devicePropertyId: '', // get random property from device or leave it blank
       name: '',
-      type: Type.IntType, // Type get from device property
+      type: Type.StringType, // Type get from device property or leave it to a default one
     },
   })
 }
