@@ -98,7 +98,7 @@ function defaultInitialValueForTypeConstraints(tc: TypeConstraints<unknown>) {
   <div v-if="type === Type.BooleanType">
     <input
       type="checkbox"
-      class="toggle"
+      class="toggle toggle-primary"
       :disabled="!isInput"
       v-model="value"
       @change="validateAndEmit(value)"
@@ -107,7 +107,7 @@ function defaultInitialValueForTypeConstraints(tc: TypeConstraints<unknown>) {
   <div v-if="type === Type.StringType">
     <div v-if="isInput">
       <div v-if="isEnumTypeConstraints(typeConstraints)">
-        <select class="select" v-model="value" @change="validateAndEmit(value)">
+        <select class="select select-primary" v-model="value" @change="validateAndEmit(value)">
           <option v-for="v in typeConstraints.values" :key="v">{{ v }}</option>
         </select>
       </div>
@@ -135,7 +135,7 @@ function defaultInitialValueForTypeConstraints(tc: TypeConstraints<unknown>) {
     </div>
     <input
       v-else-if="isInput"
-      class="input validator field-sizing-content min-w-[8rem]"
+      class="input input-primary validator field-sizing-content min-w-[8rem]"
       type="number"
       :step="type == Type.IntType ? 1 : 'any'"
       v-model.number="value"
