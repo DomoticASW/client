@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, useTemplateRef } from 'vue'
-import { DeviceId, type Device, type DeviceAction } from '@/model/devices-management/Device'
+import {
+  DeviceId,
+  type Device,
+  type DeviceAction,
+  type DeviceProperty,
+} from '@/model/devices-management/Device'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import { useUserInfoStore } from '@/stores/user-info'
 import * as api from '@/api/devices-management/requests/devices'
@@ -45,6 +50,13 @@ async function toggleOfflineNotificationsSubscription() {
     }
   }
 }
+
+async function onPropertyInput(property: DeviceProperty<unknown>, value: unknown) {
+  if (property.setter) {
+    await executeAction(property.setter, value)
+  }
+}
+
 async function onAskActionInput(action: DeviceAction<unknown>) {
   executingAction.value = action
   switch (action.inputTypeConstraints.type) {
@@ -140,9 +152,10 @@ onUnmounted(() => {
     <li v-for="p in device.properties" v-bind:key="p.id" class="list-row items-center">
       <span class="list-col-grow"> {{ p.name }} </span>
       <ValueIOControl
-        v-model="p.value"
         :typeConstraints="p.typeConstraints"
         :isInput="p.setter !== undefined"
+        v-model="p.value"
+        @input="(input) => onPropertyInput(p, input)"
       />
     </li>
     <li v-for="a in actionsToShow" v-bind:key="a.id" class="list-row items-center">

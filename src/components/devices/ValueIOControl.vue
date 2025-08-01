@@ -9,31 +9,29 @@ import {
 import { Type } from '@/model/Type'
 import hexRgb from 'hex-rgb'
 import rgbHex from 'rgb-hex'
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 
 const { typeConstraints, isInput } = defineProps<{
   typeConstraints: TypeConstraints<unknown>
   isInput: boolean
 }>()
-const type = computed(() => typeConstraints.type)
+const emit = defineEmits<{ input: [value: unknown] }>()
 const value = defineModel({ required: true })
-const isInputValid = defineModel<boolean>('isInputValid', { required: false })
 
-watch(value, (newValue) => {
-  isInputValid.value = true
-  if (type.value == Type.IntType && !Number.isInteger(newValue)) {
-    isInputValid.value = false
-  }
+function validateAndEmit(input: unknown) {
+  if (isEnumTypeConstraints(typeConstraints) && !typeConstraints.values.has(input as string)) return
+  if (type.value == Type.IntType && !Number.isInteger(input)) return
   if (
+    typeof input == 'number' &&
     isRangeTypeConstraints(typeConstraints) &&
-    ((newValue as number) < typeConstraints.min || (newValue as number) > typeConstraints.max)
+    (input < typeConstraints.min || input > typeConstraints.max)
   ) {
-    isInputValid.value = false
+    return
   }
-  if (isEnumTypeConstraints(typeConstraints) && typeConstraints.values.has(newValue as string)) {
-    isInputValid.value = false
-  }
-})
+  emit('input', input)
+}
+
+const type = computed(() => typeConstraints.type)
 
 function isEnumTypeConstraints(tc: TypeConstraints<unknown>): tc is Enum {
   return tc.__brand == 'Enum'
@@ -47,9 +45,9 @@ function isIntRangeTypeConstraints(tc: TypeConstraints<unknown>): tc is IntRange
 function isDoubleRangeTypeConstraints(tc: TypeConstraints<unknown>): tc is DoubleRange {
   return tc.__brand == 'DoubleRange'
 }
-function setColor(hex: string) {
+function hexToColor(hex: string) {
   const rgb = hexRgb(hex)
-  value.value = Color(rgb.red, rgb.green, rgb.blue)
+  return Color(rgb.red, rgb.green, rgb.blue)
 }
 
 const rangePreview = ref<number | undefined>()
@@ -57,22 +55,27 @@ const rangePreview = ref<number | undefined>()
 
 <template>
   <div v-if="type === Type.BooleanType">
-    <input type="checkbox" v-model="value" class="toggle" :disabled="!isInput" />
+    <input
+      type="checkbox"
+      class="toggle"
+      :disabled="!isInput"
+      v-model="value"
+      @change="validateAndEmit(value)"
+    />
   </div>
   <div v-if="type === Type.StringType">
     <div v-if="isInput">
       <div v-if="isEnumTypeConstraints(typeConstraints)">
-        <select class="select" v-model="value">
+        <select class="select" v-model="value" @change="validateAndEmit(value)">
           <option v-for="v in typeConstraints.values" :key="v">{{ v }}</option>
         </select>
       </div>
-      <input v-else type="text" v-model.lazy="value" />
+      <input v-else type="text" v-model="value" @change="validateAndEmit(value)" />
     </div>
     <span v-else> {{ value }} </span>
   </div>
   <div v-if="type === Type.IntType || type === Type.DoubleType">
     <div v-if="isRangeTypeConstraints(typeConstraints)" class="flex flex-col max-w-xs">
-      <!-- TODO: user can still input non valid values -->
       <span class="self-center">{{ rangePreview ?? value }}</span>
       <input
         type="range"
@@ -81,9 +84,8 @@ const rangePreview = ref<number | undefined>()
         :max="typeConstraints.max"
         :step="type == Type.IntType ? 1 : 'any'"
         :disabled="!isInput"
-        @input="rangePreview = Number.parseFloat(($event.target as HTMLInputElement).value)"
-        @change="((value = rangePreview), (rangePreview = undefined))"
-        :value="rangePreview ?? value"
+        v-model.number="value"
+        @change="validateAndEmit(value)"
       />
       <div class="flex flex-row justify-between">
         <span class="opacity-30">{{ typeConstraints.min }}</span>
@@ -95,16 +97,19 @@ const rangePreview = ref<number | undefined>()
       class="input validator field-sizing-content min-w-[8rem]"
       type="number"
       :step="type == Type.IntType ? 1 : 'any'"
-      v-model.lazy="value"
+      v-model.number="value"
+      @change="validateAndEmit(value)"
     />
     <span v-else> {{ value }} </span>
   </div>
   <div v-if="type === Type.ColorType">
     <input
       type="color"
-      @change="setColor(($event.target! as HTMLInputElement).value)"
-      :value="'#' + rgbHex((value as Color).r, (value as Color).g, (value as Color).b)"
       :disabled="!isInput"
+      :value="'#' + rgbHex((value as Color).r, (value as Color).g, (value as Color).b)"
+      @change="
+        ((value = hexToColor(($event.target as HTMLInputElement).value)), validateAndEmit(value))
+      "
     />
   </div>
 </template>
