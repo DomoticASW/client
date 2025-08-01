@@ -17,13 +17,8 @@ const props = defineProps({ id: { type: String, required: true } })
 const deviceId = DeviceId(props.id)
 const userInfo = useUserInfoStore()
 const loadingOverlay = useLoadingOverlayStore()
-const actionInputModal = useTemplateRef('action-input-modal')
 
 const device = ref<Device | undefined>(undefined)
-const executingAction = ref<DeviceAction<unknown> | undefined>(undefined)
-const executingActionInput = ref<unknown | undefined>(undefined)
-const isExecutingActionInputValid = ref<boolean | undefined>(undefined)
-
 const actionsToShow = computed<DeviceAction<unknown>[] | undefined>(() => {
   const d = device.value
   if (d) {
@@ -31,12 +26,22 @@ const actionsToShow = computed<DeviceAction<unknown>[] | undefined>(() => {
   }
   return undefined
 })
+onMounted(async () => {
+  device.value = await api.findDevice(deviceId, userInfo.token)
+})
 
+/* Property setter actions execution */
 async function onPropertyInput(property: DeviceProperty<unknown>, value: unknown) {
   if (property.setter) {
     await executeAction(property.setter, value)
   }
 }
+
+/* Device actions execution */
+const actionInputModal = useTemplateRef('action-input-modal')
+const executingAction = ref<DeviceAction<unknown> | undefined>(undefined)
+const executingActionInput = ref<unknown | undefined>(undefined)
+const isExecutingActionInputValid = ref<boolean | undefined>(undefined)
 
 async function onAskActionInput(action: DeviceAction<unknown>) {
   executingAction.value = action
@@ -65,9 +70,6 @@ async function executeAction(action: DeviceAction<unknown>, input?: unknown) {
     loadingOverlay.stopLoading()
   }
 }
-onMounted(async () => {
-  device.value = await api.findDevice(deviceId, userInfo.token)
-})
 
 /* Managing the device offline notifications subscription */
 const offlineNotificationsModal = useTemplateRef('offline-notifications-modal')
