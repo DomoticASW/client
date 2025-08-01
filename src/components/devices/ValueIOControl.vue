@@ -81,7 +81,6 @@ const rangePreview = ref<number | undefined>()
         :max="typeConstraints.max"
         :step="type == Type.IntType ? 1 : 'any'"
         :disabled="!isInput"
-        @mouseup="rangePreview = undefined"
         @input="rangePreview = Number.parseFloat(($event.target as HTMLInputElement).value)"
         @change="((value = rangePreview), (rangePreview = undefined))"
         :value="rangePreview ?? value"
