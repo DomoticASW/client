@@ -20,7 +20,6 @@ const loadingOverlay = useLoadingOverlayStore()
 const actionInputModal = useTemplateRef('action-input-modal')
 
 const device = ref<Device | undefined>(undefined)
-const isSubscribedForOfflineNotifications = ref<boolean | undefined>(undefined)
 const executingAction = ref<DeviceAction<unknown> | undefined>(undefined)
 const executingActionInput = ref<unknown | undefined>(undefined)
 const isExecutingActionInputValid = ref<boolean | undefined>(undefined)
@@ -32,23 +31,6 @@ const actionsToShow = computed<DeviceAction<unknown>[] | undefined>(() => {
   }
   return undefined
 })
-
-async function toggleOfflineNotificationsSubscription() {
-  const isSubscribed = isSubscribedForOfflineNotifications.value
-  if (isSubscribed != undefined) {
-    loadingOverlay.startLoading()
-    try {
-      if (isSubscribed) {
-        await notificationsApi.unsubscribeForDeviceOfflineNotifications(deviceId, userInfo.token)
-      } else {
-        await notificationsApi.subscribeForDeviceOfflineNotifications(deviceId, userInfo.token)
-      }
-      isSubscribedForOfflineNotifications.value = !isSubscribed
-    } finally {
-      loadingOverlay.stopLoading()
-    }
-  }
-}
 
 async function onPropertyInput(property: DeviceProperty<unknown>, value: unknown) {
   if (property.setter) {
@@ -86,10 +68,29 @@ async function executeAction(action: DeviceAction<unknown>, input?: unknown) {
 onMounted(async () => {
   device.value = await api.findDevice(deviceId, userInfo.token)
 })
+
+/* Managing the device offline notifications subscription */
+const offlineNotificationsModal = useTemplateRef('offline-notifications-modal')
+const isSubscribedForOfflineNotifications = ref<boolean | undefined>(undefined)
 onMounted(async () => {
   isSubscribedForOfflineNotifications.value =
     await notificationsApi.isSubscribedForDeviceOfflineNotifications(deviceId, userInfo.token)
 })
+async function subscribeForOfflineNotifications(activate: boolean) {
+  if (activate === isSubscribedForOfflineNotifications.value) return
+
+  loadingOverlay.startLoading()
+  try {
+    if (activate) {
+      await notificationsApi.subscribeForDeviceOfflineNotifications(deviceId, userInfo.token)
+    } else {
+      await notificationsApi.unsubscribeForDeviceOfflineNotifications(deviceId, userInfo.token)
+    }
+    isSubscribedForOfflineNotifications.value = activate
+  } finally {
+    loadingOverlay.stopLoading()
+  }
+}
 
 /* SocketIO subscription for real time property updates */
 type PropertyUpdateDTO = { deviceId: string; propertyId: string; value: unknown }
@@ -118,7 +119,7 @@ onUnmounted(() => {
         'fa-bell': isSubscribedForOfflineNotifications,
         'fa-bell-slash': !isSubscribedForOfflineNotifications,
       }"
-      @click="toggleOfflineNotificationsSubscription"
+      @click="offlineNotificationsModal?.showModal()"
       :title="`You are ${isSubscribedForOfflineNotifications ? '' : 'not '}subscribed for notifications about the device going offline`"
     ></button>
     <div v-else class="skeleton h-10 w-10 rounded-full"></div>
@@ -144,6 +145,24 @@ onUnmounted(() => {
       <div class="skeleton h-5 w-18"></div>
     </li>
   </ul>
+
+  <!-- Dialog for offline notifications subscription -->
+  <dialog ref="offline-notifications-modal" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box">
+      <h3 class="text-lg font-bold">Device offline notifications</h3>
+      <p>Do you want to receive a notification when this device goes offline?</p>
+      <form method="dialog">
+        <div class="modal-action">
+          <button class="btn btn-primary" v-on:click="subscribeForOfflineNotifications(true)">
+            Yes
+          </button>
+          <button class="btn btn-primary" v-on:click="subscribeForOfflineNotifications(false)">
+            No
+          </button>
+        </div>
+      </form>
+    </div>
+  </dialog>
 
   <!-- Dialog for action input -->
   <dialog ref="action-input-modal" class="modal modal-bottom sm:modal-middle">
