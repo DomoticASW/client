@@ -32,6 +32,7 @@ import router from '@/router';
 import { defineComponent, ref, onMounted } from 'vue';
 import { useUserInfoStore } from '@/stores/user-info';
 import { type User } from '@/model/users-management/User';
+import * as api from '@/api/api';
 
 export default defineComponent({
   name: 'UsersPermissionsView',
@@ -39,29 +40,17 @@ export default defineComponent({
     const users = ref<User[]>([]);
 
     const loadUsers = async () => {
-      try {
         const userInfoStore = useUserInfoStore();
         userInfoStore.loadFromStorage();
         const adminToken = userInfoStore.token;
-        
-        const getUsersResponse = await fetch('/api/users', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': adminToken
-          }
-        });
 
-        if (getUsersResponse.ok) {
-          const fetchedUsers = await getUsersResponse.json();
-          users.value = fetchedUsers;
-        } else {
-          console.error('Failed to fetch users:', getUsersResponse.status);
-        }
-      } catch (error) {
-        console.error('Error fetching users:', error);
-      } finally {
-      }
+        const getUsersResponse = await api.authorizedRequest(
+          '/api/users',
+          adminToken,
+          { method: 'GET' }
+        );
+
+        users.value = await getUsersResponse.json();
     };
 
     onMounted(() => {
@@ -74,7 +63,13 @@ export default defineComponent({
   },
   methods: {
     goToPermissions(user: User): void {
-      router.push(`./users-permissions/${user.email}`)
+      router.push({
+        path: `./${user.email}`,
+        state: { 
+          nickname: user.nickname,
+          email: user.email
+        }
+      })
     }
   }
 })
