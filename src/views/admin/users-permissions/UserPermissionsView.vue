@@ -13,7 +13,7 @@
               class="btn btn-circle btn-ghost"
               type="button"
               :aria-label="'Remove permission on: ' + device.name"
-              @click="removeUserDevicePermissions(device)"
+              @click="removeUserDevicePermissions(device.id)"
             >
               <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <g
@@ -44,7 +44,7 @@
               class="btn btn-circle btn-ghost"
               type="button"
               :aria-label="'Add permission of: ' + device"
-              @click="addUserDevicePermissions(device)"
+              @click="addUserDevicePermissions(device.id)"
             >
               <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <g
@@ -68,7 +68,7 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue';
 import { useUserInfoStore } from '@/stores/user-info';
-import type { Device } from '@/model/devices-management/Device';
+import type { Device, DeviceId } from '@/model/devices-management/Device';
 import { authorizedRequest, deserializeBody } from '@/api/api';
 import * as devicesApi from '@/api/devices-management/requests/devices'
 import { arrayDeserializer } from '@/api/Deserializer';
@@ -108,19 +108,43 @@ export default defineComponent({
 
     return {
       user,
+      adminToken,
       devicesWithPermissions,
-      devicesWithoutPermissions
+      devicesWithoutPermissions,
+      loadDevices
     };
   },
   methods: {
-     addUserDevicePermissions(deviceId: Device) {
-      // TODO: Implement the logic to add permissions for the device
-      console.log(`Adding permissions for device: ${deviceId}`)
+     async addUserDevicePermissions(deviceId: DeviceId) {
+      await authorizedRequest(
+        `/api/permissions/user-device/${deviceId}`,
+        this.adminToken,
+        {
+          method: 'POST',
+          body: JSON.stringify({ "email": this.user.email })
+        }
+      );
+      const deviceIndex = this.devicesWithoutPermissions.findIndex(device => device.id === deviceId);
+      if (deviceIndex !== -1) {
+        const [movedDevice] = this.devicesWithoutPermissions.splice(deviceIndex, 1);
+        this.devicesWithPermissions.push(movedDevice);
+      }
     },
 
-    removeUserDevicePermissions(deviceId: Device) {
-      // TODO: Implement the logic to remove permissions for the device
-      console.log(`Removing permissions for device: ${deviceId}`)
+    async removeUserDevicePermissions(deviceId: DeviceId) {
+      await authorizedRequest(
+        `/api/permissions/user-device/${deviceId}`,
+        this.adminToken,
+        {
+          method: 'DELETE',
+          body: JSON.stringify({ "email": this.user.email })
+        }
+      );
+      const deviceIndex = this.devicesWithPermissions.findIndex(device => device.id === deviceId);
+      if (deviceIndex !== -1) {
+        const [removedDevice] = this.devicesWithPermissions.splice(deviceIndex, 1);
+        this.devicesWithoutPermissions.push(removedDevice);
+      }
     }
   }
 })
