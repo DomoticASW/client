@@ -9,7 +9,7 @@ import {
 import { Type } from '@/model/Type'
 import hexRgb from 'hex-rgb'
 import rgbHex from 'rgb-hex'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 
 const { typeConstraints, isInput } = defineProps<{
   typeConstraints: TypeConstraints<unknown>
@@ -49,8 +49,6 @@ function hexToColor(hex: string) {
   const rgb = hexRgb(hex)
   return Color(rgb.red, rgb.green, rgb.blue)
 }
-
-const rangePreview = ref<number | undefined>()
 </script>
 
 <template>
@@ -76,7 +74,7 @@ const rangePreview = ref<number | undefined>()
   </div>
   <div v-if="type === Type.IntType || type === Type.DoubleType">
     <div v-if="isRangeTypeConstraints(typeConstraints)" class="flex flex-col max-w-xs">
-      <span class="self-center">{{ rangePreview ?? value }}</span>
+      <span class="self-center">{{ value }}</span>
       <input
         type="range"
         class="range range-primary"
