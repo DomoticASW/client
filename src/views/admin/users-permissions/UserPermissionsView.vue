@@ -13,7 +13,7 @@
               class="btn btn-circle btn-ghost"
               type="button"
               :aria-label="'Remove permission on: ' + device.name"
-              @click="removeUserDevicePermissions(device.id)"
+              @click="removeUserDevicePermission(device.id)"
             >
               <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <g
@@ -44,7 +44,7 @@
               class="btn btn-circle btn-ghost"
               type="button"
               :aria-label="'Add permission of: ' + device"
-              @click="addUserDevicePermissions(device.id)"
+              @click="addUserDevicePermission(device.id)"
             >
               <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <g
@@ -115,7 +115,7 @@ export default defineComponent({
     };
   },
   methods: {
-     async addUserDevicePermissions(deviceId: DeviceId) {
+     async addUserDevicePermission(deviceId: DeviceId) {
       await authorizedRequest(
         `/api/permissions/user-device/${deviceId}`,
         this.adminToken,
@@ -131,7 +131,7 @@ export default defineComponent({
       }
     },
 
-    async removeUserDevicePermissions(deviceId: DeviceId) {
+    async removeUserDevicePermission(deviceId: DeviceId) {
       await authorizedRequest(
         `/api/permissions/user-device/${deviceId}`,
         this.adminToken,
