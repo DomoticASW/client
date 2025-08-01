@@ -74,7 +74,7 @@ async function changeTask() {
 <template>
   <NavbarLayout :title="props.id ? 'Edit task' : 'Create task'" :show-back-button="true">
     <template #actions>
-      <button class="btn btn-ghost text-base" @click="changeTask()">Save</button>
+      <button type="button" class="btn btn-ghost text-base" @click="changeTask()">Save</button>
     </template>
     <div class="mx-6">
       <input type="text" placeholder="Task name" class="input w-full" v-model="taskName" />

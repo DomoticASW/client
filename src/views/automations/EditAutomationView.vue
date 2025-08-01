@@ -4,7 +4,11 @@ import AddButton from '@/components/AddButton.vue'
 import { useUserInfoStore } from '@/stores/user-info'
 import { onMounted, ref } from 'vue'
 import { AutomationId, type Trigger as AutomationTrigger } from '@/model/scripts/Script'
-import { findAutomation } from '@/api/scripts/requests/automations'
+import {
+  createAutomation,
+  editAutomation,
+  findAutomation,
+} from '@/api/scripts/requests/automations'
 import InstructionItems from '@/components/tasks-automations/InstructionItems.vue'
 import { useInstructionsStore } from '@/stores/instructions'
 import InstructionItem from '@/components/tasks-automations/InstructionItem.vue'
@@ -43,6 +47,37 @@ onMounted(async () => {
     instructionsStore.instructions = []
   }
 })
+
+async function changeAutomation() {
+  try {
+    loadingOverlay.startLoading()
+    if (props.id) {
+      // Edit
+      await editAutomation(
+        AutomationId(props.id),
+        {
+          name: automationName.value,
+          trigger: trigger.value!,
+          instructions: instructionsStore.instructions,
+        },
+        userInfo.token,
+      )
+    } else {
+      // Create
+      await createAutomation(
+        {
+          name: automationName.value,
+          trigger: trigger.value!,
+          instructions: instructionsStore.instructions,
+        },
+        userInfo.token,
+      )
+      Route.back()
+    }
+  } finally {
+    loadingOverlay.stopLoading()
+  }
+}
 </script>
 
 <template>
@@ -50,6 +85,11 @@ onMounted(async () => {
     :title="props.id ? 'Edit automation' : 'Create automation'"
     :show-back-button="true"
   >
+    <template #actions>
+      <button type="button" class="btn btn-ghost text-base" @click="changeAutomation()">
+        Save
+      </button>
+    </template>
     <div class="mx-6">
       <input
         type="text"
