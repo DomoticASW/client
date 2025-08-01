@@ -2,7 +2,7 @@
 import { useUserInfoStore } from '@/stores/user-info'
 import { onMounted, ref } from 'vue'
 import AddButton from '@/components/AddButton.vue'
-import { editTask, findTask } from '@/api/scripts/requests/tasks'
+import { createTask, editTask, findTask } from '@/api/scripts/requests/tasks'
 import { TaskId } from '@/model/scripts/Script'
 import InstructionItems from '@/components/tasks-automations/InstructionItems.vue'
 import { useInstructionsStore } from '@/stores/instructions'
@@ -49,7 +49,6 @@ async function changeTask() {
       await editTask(
         TaskId(props.id),
         {
-          id: TaskId(props.id),
           name: taskName.value,
           instructions: instructionsStore.instructions,
         },
@@ -57,6 +56,14 @@ async function changeTask() {
       )
     } else {
       // Create
+      await createTask(
+        {
+          name: taskName.value,
+          instructions: instructionsStore.instructions,
+        },
+        userInfo.token,
+      )
+      Route.back()
     }
   } finally {
     loadingOverlay.stopLoading()

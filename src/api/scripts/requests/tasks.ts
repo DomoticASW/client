@@ -1,10 +1,28 @@
 import { authorizedRequest, deserializeBody } from '@/api/api'
-import type { Task, TaskId } from '@/model/scripts/Script'
+import type { TaskId } from '@/model/scripts/Script'
 import { taskDeserializer, tasksDeserializer } from '../dtos/GetTaskDTO'
+import type { Instruction } from '@/model/scripts/Instruction'
 
-export async function editTask(id: TaskId, task: Task, token: string): Promise<void> {
+export async function editTask(
+  id: TaskId,
+  task: { name: string; instructions: Instruction[] },
+  token: string,
+): Promise<void> {
   await authorizedRequest('/api/tasks/' + id, token, {
     method: 'PATCH',
+    body: JSON.stringify({
+      name: task.name,
+      instructions: task.instructions,
+    }),
+  })
+}
+
+export async function createTask(
+  task: { name: string; instructions: Instruction[] },
+  token: string,
+): Promise<void> {
+  await authorizedRequest('/api/tasks/', token, {
+    method: 'POST',
     body: JSON.stringify({
       name: task.name,
       instructions: task.instructions,

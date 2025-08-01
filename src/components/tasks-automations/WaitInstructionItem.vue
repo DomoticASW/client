@@ -25,13 +25,10 @@
 </template>
 
 <script setup lang="ts">
-import {
-  type Instruction,
-  type WaitInstruction,
-} from '@/model/scripts/Instruction'
+import { type Instruction, type WaitInstruction } from '@/model/scripts/Instruction'
 import InstructionLayout from './InstructionLayout.vue'
 import { ref, watch } from 'vue'
-import { convertToSeconds, decomposeToLargestUnit, formatDuration } from '@/model/scripts/Script'
+import { convertToSeconds, decomposeToLargestUnit, formatDuration } from './timeUtils'
 
 const props = defineProps<{
   instruction: Instruction

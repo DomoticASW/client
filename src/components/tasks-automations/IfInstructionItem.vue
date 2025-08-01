@@ -6,22 +6,22 @@
     :edit="edit"
     :instruction="props.instruction"
   >
-    <p>If</p>
-    <div class="font-bold grid grid-cols-5 col-span-3 row-span-2">
-      <p class="truncate col-span-2" v-if="!edit">{{ instruction.condition.leftConstantName }}</p>
-      <p class="truncate col-span-2" v-if="!edit">{{ operatorSymbol }}</p>
-      <p class="truncate" v-if="!edit">{{ instruction.condition.rightConstantName }}</p>
+  <div class="grid grid-cols-6 col-span-3 row-span-2">
+      <p class="self-center">If</p>
+      <p class="truncate col-span-2 font-bold" v-if="!edit">{{ instruction.condition.leftConstantName }}</p>
+      <p class="truncate col-span-2 font-bold" v-if="!edit">{{ operatorSymbol }}</p>
+      <p class="truncate font-bold" v-if="!edit">{{ instruction.condition.rightConstantName }}</p>
       <input
         v-if="edit"
         type="text"
-        class="input col-span-2 text-base-content"
+        class="input text-base-content w-20 place-self-center"
         placeholder="Constant name"
         v-model="instruction.condition.leftConstantName"
       />
       <select
         v-if="edit"
         v-model="instruction.condition.conditionOperatorType"
-        class="select text-base-content"
+        class="select text-base-content col-span-3 w-20 place-self-center"
       >
         <option v-for="operator in ConditionOperatorType" :key="operator" :value="operator">
           {{ getOperator(operator) }}
@@ -30,7 +30,7 @@
       <input
         v-if="edit"
         type="text"
-        class="input col-span-2 text-base-content"
+        class="input text-base-content w-20 place-self-center"
         placeholder="Constant name"
         v-model="instruction.condition.rightConstantName"
       />
