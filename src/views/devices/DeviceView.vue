@@ -12,9 +12,7 @@ import * as api from '@/api/devices-management/requests/devices'
 import * as notificationsApi from '@/api/notifications-management/requests'
 import { Type } from '@/model/Type'
 import ValueIOControl from '@/components/devices/ValueIOControl.vue'
-import { Color } from '@/model/devices-management/Types'
 import { io } from 'socket.io-client'
-
 const props = defineProps({ id: { type: String, required: true } })
 const deviceId = DeviceId(props.id)
 const userInfo = useUserInfoStore()
@@ -25,6 +23,7 @@ const device = ref<Device | undefined>(undefined)
 const isSubscribedForOfflineNotifications = ref<boolean | undefined>(undefined)
 const executingAction = ref<DeviceAction<unknown> | undefined>(undefined)
 const executingActionInput = ref<unknown | undefined>(undefined)
+const isExecutingActionInputValid = ref<boolean | undefined>(undefined)
 
 const actionsToShow = computed<DeviceAction<unknown>[] | undefined>(() => {
   const d = device.value
@@ -59,35 +58,6 @@ async function onPropertyInput(property: DeviceProperty<unknown>, value: unknown
 
 async function onAskActionInput(action: DeviceAction<unknown>) {
   executingAction.value = action
-  switch (action.inputTypeConstraints.type) {
-    case Type.IntType:
-      executingActionInput.value = 0
-      if (action.inputTypeConstraints.__brand === 'IntRange') {
-        executingActionInput.value = action.inputTypeConstraints.min
-      }
-      break
-    case Type.DoubleType:
-      executingActionInput.value = 0
-      if (action.inputTypeConstraints.__brand === 'DoubleRange') {
-        executingActionInput.value = action.inputTypeConstraints.min
-      }
-      break
-    case Type.BooleanType:
-      executingActionInput.value = true
-      break
-    case Type.ColorType:
-      executingActionInput.value = Color(0, 0, 0)
-      break
-    case Type.StringType:
-      executingActionInput.value = ''
-      if (action.inputTypeConstraints.__brand === 'Enum') {
-        executingActionInput.value = Array.from(action.inputTypeConstraints.values)[0]
-      }
-      break
-    case Type.VoidType:
-      executingActionInput.value = undefined
-      break
-  }
   if (action.inputTypeConstraints.type != Type.VoidType) {
     actionInputModal.value!.showModal()
   } else {
@@ -97,6 +67,11 @@ async function onAskActionInput(action: DeviceAction<unknown>) {
 async function onExecuteAction() {
   actionInputModal.value!.close()
   await executeAction(executingAction.value!, executingActionInput.value)
+  executingAction.value = undefined
+  executingActionInput.value = undefined
+}
+async function onCancelExecuteAction() {
+  actionInputModal.value!.close()
   executingAction.value = undefined
   executingActionInput.value = undefined
 }
@@ -179,12 +154,17 @@ onUnmounted(() => {
         :typeConstraints="executingAction!.inputTypeConstraints"
         :isInput="true"
         v-model="executingActionInput"
+        v-model:isInputValid="isExecutingActionInputValid"
       />
       <div class="modal-action">
-        <button class="btn btn-primary" v-on:click="onExecuteAction">Execute</button>
-        <button class="btn btn-primary btn-soft" v-on:click="actionInputModal!.close()">
-          Cancel
+        <button
+          class="btn btn-primary"
+          v-on:click="onExecuteAction"
+          :disabled="!isExecutingActionInputValid"
+        >
+          Execute
         </button>
+        <button class="btn btn-primary btn-soft" v-on:click="onCancelExecuteAction">Cancel</button>
       </div>
     </div>
   </dialog>

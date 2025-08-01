@@ -1,3 +1,8 @@
+<!--
+ WARNING: note that when binding a v-model to this component it can assume non-valid
+ values, you should instead listen for the "input" event which will trigger only when the
+ v-model has a valid value.
+  -->
 <script setup lang="ts">
 import {
   Color,
@@ -9,26 +14,48 @@ import {
 import { Type } from '@/model/Type'
 import hexRgb from 'hex-rgb'
 import rgbHex from 'rgb-hex'
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 
 const { typeConstraints, isInput } = defineProps<{
   typeConstraints: TypeConstraints<unknown>
+  /**
+   * Tells the control if it should also register user input
+   */
   isInput: boolean
 }>()
-const emit = defineEmits<{ input: [value: unknown] }>()
+const emit = defineEmits<{
+  /**
+   * An event that gets triggered when the user confirmed a valid input
+   */
+  input: [value: unknown]
+}>()
 const value = defineModel({ required: true })
+if (value.value == undefined) {
+  value.value = defaultInitialValueForTypeConstraints(typeConstraints)
+}
+/** This is meant to only be read by the parent and it indicates whether value is valid or not */
+const isInputValid = defineModel<boolean>('isInputValid')
+watch(value, (v) => {
+  isInputValid.value = validateInput(v)
+})
 
-function validateAndEmit(input: unknown) {
-  if (isEnumTypeConstraints(typeConstraints) && !typeConstraints.values.has(input as string)) return
-  if (type.value == Type.IntType && !Number.isInteger(input)) return
+function validateInput(input: unknown): boolean {
+  if (isEnumTypeConstraints(typeConstraints) && !typeConstraints.values.has(input as string))
+    return false
+  if (type.value == Type.IntType && !Number.isInteger(input)) return false
   if (
     typeof input == 'number' &&
     isRangeTypeConstraints(typeConstraints) &&
     (input < typeConstraints.min || input > typeConstraints.max)
   ) {
-    return
+    return false
   }
-  emit('input', input)
+  return true
+}
+function validateAndEmit(input: unknown) {
+  if (validateInput(input)) {
+    emit('input', input)
+  }
 }
 
 const type = computed(() => typeConstraints.type)
@@ -48,6 +75,22 @@ function isDoubleRangeTypeConstraints(tc: TypeConstraints<unknown>): tc is Doubl
 function hexToColor(hex: string) {
   const rgb = hexRgb(hex)
   return Color(rgb.red, rgb.green, rgb.blue)
+}
+function defaultInitialValueForTypeConstraints(tc: TypeConstraints<unknown>) {
+  switch (tc.type) {
+    case Type.IntType:
+      return tc.__brand === 'IntRange' ? tc.min : 0
+    case Type.DoubleType:
+      return tc.__brand === 'DoubleRange' ? tc.min : 0
+    case Type.BooleanType:
+      return true
+    case Type.ColorType:
+      return Color(0, 0, 0)
+    case Type.StringType:
+      return tc.__brand === 'Enum' ? Array.from(tc.values)[0] : ''
+    case Type.VoidType:
+      return undefined
+  }
 }
 </script>
 
