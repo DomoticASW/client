@@ -42,7 +42,7 @@ export function EmptyWaitInstruction(): WaitInstruction {
 
 export function EmptyStartTaskInstruction(): StartTaskInstruction {
   return {
-    taskId: 'Choose a task',
+    taskId: '',
   }
 }
 

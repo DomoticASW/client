@@ -56,10 +56,10 @@ async function removeAutomation() {
     <template #actions>
       <RouterLink
         :to="{ name: 'edit-automation', params: { id: automationId } }"
-        class="btn btn-ghost"
+        class="btn btn-ghost text-base"
         >Edit</RouterLink
       >
-      <button class="btn btn-ghost text-error" @click="removeAutomation()">Delete</button>
+      <button class="btn btn-ghost text-error text-base" @click="removeAutomation()">Delete</button>
     </template>
     <h1 class="text-xl">Trigger</h1>
     <Trigger :trigger="trigger" :edit="false" />

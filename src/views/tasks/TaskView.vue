@@ -53,10 +53,10 @@ async function removeTask() {
 <template>
   <NavbarLayout :title="taskName" :show-back-button="true">
     <template #actions>
-      <RouterLink :to="{ name: 'edit-task', params: { id: taskId } }" class="btn btn-ghost"
+      <RouterLink :to="{ name: 'edit-task', params: { id: taskId } }" class="btn btn-ghost text-base"
         >Edit</RouterLink
       >
-      <button class="btn btn-ghost text-error" @click="removeTask()">Delete</button>
+      <button class="btn btn-ghost text-error text-base" @click="removeTask()">Delete</button>
     </template>
     <InstructionItem
       v-for="(instruction, index) in instructionsStore.instructions"

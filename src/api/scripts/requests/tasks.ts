@@ -1,6 +1,16 @@
 import { authorizedRequest, deserializeBody } from '@/api/api'
-import type { TaskId } from '@/model/scripts/Script'
+import type { Task, TaskId } from '@/model/scripts/Script'
 import { taskDeserializer, tasksDeserializer } from '../dtos/GetTaskDTO'
+
+export async function editTask(id: TaskId, task: Task, token: string): Promise<void> {
+  await authorizedRequest('/api/tasks/' + id, token, {
+    method: 'PATCH',
+    body: JSON.stringify({
+      name: task.name,
+      instructions: task.instructions,
+    }),
+  })
+}
 
 export async function deleteTask(id: TaskId, token: string): Promise<void> {
   await authorizedRequest('/api/tasks/' + id, token, { method: 'DELETE' })

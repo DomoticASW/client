@@ -2,7 +2,7 @@
 import { useUserInfoStore } from '@/stores/user-info'
 import { onMounted, ref } from 'vue'
 import AddButton from '@/components/AddButton.vue'
-import { findTask } from '@/api/scripts/requests/tasks'
+import { editTask, findTask } from '@/api/scripts/requests/tasks'
 import { TaskId } from '@/model/scripts/Script'
 import InstructionItems from '@/components/tasks-automations/InstructionItems.vue'
 import { useInstructionsStore } from '@/stores/instructions'
@@ -40,10 +40,35 @@ onMounted(async () => {
     instructionsStore.instructions = []
   }
 })
+
+async function changeTask() {
+  try {
+    loadingOverlay.startLoading()
+    if (props.id) {
+      // Edit
+      await editTask(
+        TaskId(props.id),
+        {
+          id: TaskId(props.id),
+          name: taskName.value,
+          instructions: instructionsStore.instructions,
+        },
+        userInfo.token,
+      )
+    } else {
+      // Create
+    }
+  } finally {
+    loadingOverlay.stopLoading()
+  }
+}
 </script>
 
 <template>
   <NavbarLayout :title="props.id ? 'Edit task' : 'Create task'" :show-back-button="true">
+    <template #actions>
+      <button class="btn btn-ghost text-base" @click="changeTask()">Save</button>
+    </template>
     <div class="mx-6">
       <input type="text" placeholder="Task name" class="input w-full" v-model="taskName" />
     </div>
