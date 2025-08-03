@@ -23,6 +23,7 @@ watch(
   () => props.trigger,
   (val) => {
     trigger.value = val
+    updateValues()
   },
   { immediate: true },
 )
@@ -34,6 +35,7 @@ watch(
       updateSeconds(val, timeUnit.value!)
     }
   },
+  { immediate: true },
 )
 
 watch(
@@ -43,6 +45,7 @@ watch(
       updateSeconds(time.value, val)
     }
   },
+  { immediate: true },
 )
 
 watch(
@@ -52,15 +55,12 @@ watch(
       ;(props.trigger as PeriodTrigger).start = new Date(val)
     }
   },
+  { immediate: true },
 )
 
 function updateSeconds(first: number, second: 'seconds' | 'minutes' | 'hours' | 'days') {
   ;(props.trigger as PeriodTrigger).periodSeconds = convertToSeconds(first, second)
 }
-
-setTimeout(() => {
-  updateValues()
-}, 100)
 
 function removeTrigger() {
   trigger.value = undefined

@@ -36,7 +36,7 @@ export function EmptyIfElseInstruction(): IfElseInstruction {
 
 export function EmptyWaitInstruction(): WaitInstruction {
   return {
-    seconds: 0,
+    seconds: 1,
   }
 }
 
