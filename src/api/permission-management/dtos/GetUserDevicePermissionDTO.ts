@@ -1,5 +1,5 @@
-import type { UserDevicePermission } from '@/model/permission-management/UserDevicepermission'
-import { Deserializer } from '../Deserializer'
+import type { UserDevicePermission } from '@/model/permission-management/UserDevicePermission'
+import { Deserializer } from '../../Deserializer'
 
 export interface GetUseDevicePermissionDTO {
   email: string
