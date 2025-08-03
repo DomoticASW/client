@@ -1,5 +1,5 @@
 import { Role, type UserInfo } from "@/model/users-management/User"
-import { Deserializer } from "../Deserializer"
+import { Deserializer } from "../../Deserializer"
 import { isRole } from "./GetUserDTO";
 
 export interface GetUserInfoDTO { 

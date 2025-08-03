@@ -1,5 +1,5 @@
 import { type RegistrationRequest } from "@/model/users-management/RegistrationRequest"
-import { Deserializer } from "../Deserializer"
+import { Deserializer } from "../../Deserializer"
 
 export interface GetRegistrationRequestDTO {
   nickname: string;
@@ -20,7 +20,7 @@ export const registrationRequestDeserializer =
     (dto) => ({
       nickname: dto.nickname,
       email: dto.email,
-      passwordHash: dto.passwordHash,
+      password: dto.passwordHash,
     }),
     (obj) => `Unable to deserialize ${obj} into a RegistrationRequest since it was not a GetRegistrationRequestDTO`
   )
