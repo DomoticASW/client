@@ -65,87 +65,64 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { defineComponent, ref, onMounted } from 'vue';
 import { useUserInfoStore } from '@/stores/user-info';
 import type { Device, DeviceId } from '@/model/devices-management/Device';
-import { authorizedRequest, deserializeBody } from '@/api/api';
 import * as devicesApi from '@/api/devices-management/requests/devices'
-import { arrayDeserializer } from '@/api/Deserializer';
-import { userDevicePermissionDeserializer } from '@/api/permission-management/GetUseDevicePermissionDTO';
+import * as api from '@/api/permission-management/requests/Permissions';
+import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 
-export default defineComponent({
-  name: 'UsersPermissionView',
-  setup() {
-    const devicesWithPermissions = ref<Device[]>([]);
-    const devicesWithoutPermissions = ref<Device[]>([]);
-    const userInfoStore = useUserInfoStore();
-    userInfoStore.loadFromStorage();
-    const adminToken = userInfoStore.token;
-    const user = {
-      nickname: history.state?.nickname,
-      email: history.state?.email
-    };
+const loadingOverlay = useLoadingOverlayStore();
+const devicesWithPermissions = ref<Device[]>([]);
+const devicesWithoutPermissions = ref<Device[]>([]);
 
-    const loadDevices = async () => {
-      const getUserDevicePermissionsResponse = await authorizedRequest(
-        `/api/permissions/user-device-all/${user.email}`,
-        adminToken,
-        { method: 'GET' }
-      );
+const userInfoStore = useUserInfoStore();
+userInfoStore.loadFromStorage();
+const adminToken = userInfoStore.token;
 
-      const userDevicePermissions = await deserializeBody(getUserDevicePermissionsResponse, arrayDeserializer(userDevicePermissionDeserializer));
-      const permittedDeviceIds = userDevicePermissions.map(permission => permission.deviceId);
-      const allDevices = await devicesApi.getAllDevices(adminToken);
+const user = {
+  nickname: history.state?.nickname,
+  email: history.state?.email
+};
 
-      devicesWithPermissions.value = allDevices.filter((device: Device) => permittedDeviceIds.includes(device.id));
-      devicesWithoutPermissions.value = allDevices.filter((device: Device) => !permittedDeviceIds.includes(device.id));
-    };
+const loadDevices = async () => {
+  const userDevicePermissions = await api.getUserDevicesPermissions(user.email, adminToken);
+  const permittedDeviceIds = userDevicePermissions.map(permission => permission.deviceId);
+  const allDevices = await devicesApi.getAllDevices(adminToken);
+  devicesWithPermissions.value = allDevices.filter((device: Device) => permittedDeviceIds.includes(device.id));
+  devicesWithoutPermissions.value = allDevices.filter((device: Device) => !permittedDeviceIds.includes(device.id));
+};
 
-    onMounted(() => {
-      loadDevices();
-    });
-
-    return {
-      user,
-      adminToken,
-      devicesWithPermissions,
-      devicesWithoutPermissions,
-      loadDevices
-    };
-  },
-  methods: {
-     async addUserDevicePermission(deviceId: DeviceId) {
-      await authorizedRequest(
-        `/api/permissions/user-device/${deviceId}`,
-        this.adminToken,
-        {
-          method: 'POST',
-          body: JSON.stringify({ "email": this.user.email })
-        }
-      );
-      const deviceIndex = this.devicesWithoutPermissions.findIndex(device => device.id === deviceId);
-      if (deviceIndex !== -1) {
-        const [movedDevice] = this.devicesWithoutPermissions.splice(deviceIndex, 1);
-        this.devicesWithPermissions.push(movedDevice);
-      }
-    },
-
-    async removeUserDevicePermission(deviceId: DeviceId) {
-      await authorizedRequest(
-        `/api/permissions/user-device/${deviceId}`,
-        this.adminToken,
-        {
-          method: 'DELETE',
-          body: JSON.stringify({ "email": this.user.email })
-        }
-      );
-      const deviceIndex = this.devicesWithPermissions.findIndex(device => device.id === deviceId);
-      if (deviceIndex !== -1) {
-        const [removedDevice] = this.devicesWithPermissions.splice(deviceIndex, 1);
-        this.devicesWithoutPermissions.push(removedDevice);
-      }
+const addUserDevicePermission = async (deviceId: DeviceId) => {
+  try {
+    loadingOverlay.startLoading();
+    await api.setUserDevicePermission(user.email, deviceId, adminToken);
+    const deviceIndex = devicesWithoutPermissions.value.findIndex(device => device.id === deviceId);
+    if (deviceIndex !== -1) {
+      const [movedDevice] = devicesWithoutPermissions.value.splice(deviceIndex, 1);
+      devicesWithPermissions.value.push(movedDevice);
     }
+  } finally {
+    loadingOverlay.stopLoading();
   }
-})
+};
+
+const removeUserDevicePermission = async (deviceId: DeviceId) => {
+  try {
+    loadingOverlay.startLoading();
+    await api.deleteUserDevicePermission(user.email, deviceId, adminToken);
+    const deviceIndex = devicesWithPermissions.value.findIndex(device => device.id === deviceId);
+    if (deviceIndex !== -1) {
+      const [removedDevice] = devicesWithPermissions.value.splice(deviceIndex, 1);
+      devicesWithoutPermissions.value.push(removedDevice);
+    }
+  } finally {
+    loadingOverlay.stopLoading();
+  }
+};
+
+onMounted(() => {
+  loadDevices();
+});
 </script>
