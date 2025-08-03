@@ -32,7 +32,7 @@ import router from '@/router';
 import { ref, onMounted } from 'vue';
 import { useUserInfoStore } from '@/stores/user-info';
 import { type User } from '@/model/users-management/User';
-import * as api from '@/api/api';
+import * as api from '@/api/users-management/requests/users';
 
 const users = ref<User[]>([]);
 
@@ -41,13 +41,7 @@ const loadUsers = async () => {
   userInfoStore.loadFromStorage();
   const adminToken = userInfoStore.token;
 
-  const getUsersResponse = await api.authorizedRequest(
-    '/api/users',
-    adminToken,
-    { method: 'GET' }
-  );
-
-  users.value = await getUsersResponse.json();
+  users.value = await api.getAllUsers(adminToken);
 };
 
 const goToPermissions = (user: User): void => {

@@ -66,11 +66,11 @@
 </template>
 
 <script setup lang="ts">
-import { defineComponent, ref, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useUserInfoStore } from '@/stores/user-info';
 import type { Device, DeviceId } from '@/model/devices-management/Device';
 import * as devicesApi from '@/api/devices-management/requests/devices'
-import * as api from '@/api/permission-management/requests/Permissions';
+import * as api from '@/api/permission-management/requests/permissions';
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 
 const loadingOverlay = useLoadingOverlayStore();
