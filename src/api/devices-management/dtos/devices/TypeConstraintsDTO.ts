@@ -23,8 +23,6 @@ export interface DoubleRangeDTO {
 export interface NoneDTO {
   readonly __brand: "None"
   readonly type: TypeDTO
-  readonly min: number
-  readonly max: number
 }
 
 export function isTypeConstraintsDTO(o: unknown): o is TypeConstraintsDTO {
