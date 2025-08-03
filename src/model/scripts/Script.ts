@@ -36,3 +36,20 @@ export interface DeviceEventTrigger {
   deviceId: string
   eventName: string
 }
+
+export function isPeriodTrigger(o: unknown): o is PeriodTrigger {
+  return o != undefined
+    && typeof o === 'object'
+    && 'start' in o
+    && 'periodSeconds' in o
+    && typeof o.periodSeconds === 'number'
+}
+
+export function isDeviceEventTrigger(o: unknown): o is DeviceEventTrigger {
+  return o != undefined
+    && typeof o === 'object'
+    && 'deviceId' in o
+    && typeof o.deviceId === 'string'
+    && 'eventName' in o
+    && typeof o.eventName === 'string'
+}

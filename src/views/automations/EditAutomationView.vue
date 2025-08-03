@@ -78,6 +78,10 @@ async function changeAutomation() {
     loadingOverlay.stopLoading()
   }
 }
+
+function updateTrigger(newTrigger?: AutomationTrigger) {
+  trigger.value = newTrigger
+}
 </script>
 
 <template>
@@ -100,7 +104,7 @@ async function changeAutomation() {
     </div>
     <hr class="m-4" />
     <h1 class="text-xl">Trigger</h1>
-    <Trigger :trigger="trigger" :edit="true" />
+    <Trigger :trigger="trigger" @trigger="updateTrigger" :edit="true" />
     <hr class="m-4" />
     <h1 class="text-xl">Actions</h1>
     <InstructionItem

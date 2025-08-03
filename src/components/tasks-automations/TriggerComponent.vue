@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { type Trigger, type PeriodTrigger } from '@/model/scripts/Script'
-import { ref, watch } from 'vue'
+import { isPeriodTrigger, type Trigger } from '@/model/scripts/Script'
+import { computed } from 'vue'
 import {
   convertToSeconds,
   decomposeToLargestUnit,
-  formatDateForDatetimeLocalInput,
   formatDate,
+  formatDateForDatetimeLocalInput,
   formatDuration,
 } from './timeUtils'
 
@@ -14,52 +14,66 @@ const props = defineProps<{
   edit: boolean
 }>()
 
-const trigger = ref<Trigger | undefined>(props.trigger)
-const timeUnit = ref<'seconds' | 'minutes' | 'hours' | 'days'>()
-const time = ref<number>()
-const dateTime = ref<string>()
+const emit = defineEmits<{
+  trigger: [value?: Trigger]
+}>()
 
-watch(
-  () => props.trigger,
-  (val) => {
-    trigger.value = val
-    updateValues()
+const trigger = computed({
+  get: () => props.trigger,
+  set: (newValue) => {
+    emit('trigger', newValue)
   },
-  { immediate: true },
-)
+})
 
-watch(
-  () => time.value,
-  (val) => {
-    if (val && timeUnit.value) {
-      updateSeconds(val, timeUnit.value!)
+const timeUnit = computed({
+  get: () => {
+    if (isPeriodTrigger(trigger.value)) {
+      return decomposeToLargestUnit(trigger.value.periodSeconds).unit
+    } else {
+      return undefined
     }
   },
-  { immediate: true },
-)
-
-watch(
-  () => timeUnit.value,
-  (val) => {
-    if (val && time.value) {
-      updateSeconds(time.value, val)
+  set: (newValue) => {
+    if (time.value && newValue) {
+      updateSeconds(time.value, newValue)
     }
   },
-  { immediate: true },
-)
+})
 
-watch(
-  () => dateTime.value,
-  (val) => {
-    if (val) {
-      ;(props.trigger as PeriodTrigger).start = new Date(val)
+const time = computed({
+  get: () => {
+    if (isPeriodTrigger(trigger.value)) {
+      return decomposeToLargestUnit(trigger.value.periodSeconds).value
+    } else {
+      return undefined
     }
   },
-  { immediate: true },
-)
+  set: (newValue) => {
+    if (newValue && timeUnit.value) {
+      updateSeconds(newValue, timeUnit.value)
+    }
+  },
+})
+
+const dateTime = computed({
+  get: () => {
+    if (isPeriodTrigger(trigger.value)) {
+      return formatDateForDatetimeLocalInput(trigger.value.start)
+    } else {
+      return undefined
+    }
+  },
+  set: (newValue) => {
+    if (newValue && isPeriodTrigger(trigger.value)) {
+      trigger.value.start = new Date(newValue)
+    }
+  },
+})
 
 function updateSeconds(first: number, second: 'seconds' | 'minutes' | 'hours' | 'days') {
-  ;(props.trigger as PeriodTrigger).periodSeconds = convertToSeconds(first, second)
+  if (isPeriodTrigger(trigger.value)) {
+    trigger.value.periodSeconds = convertToSeconds(first, second)
+  }
 }
 
 function removeTrigger() {
@@ -70,15 +84,6 @@ function addEmptyPeriodTrigger() {
   trigger.value = {
     start: new Date(),
     periodSeconds: 1,
-  }
-  updateValues()
-}
-
-function updateValues() {
-  if (trigger.value && 'start' in trigger.value) {
-    timeUnit.value = decomposeToLargestUnit(trigger.value.periodSeconds).unit
-    time.value = decomposeToLargestUnit(trigger.value.periodSeconds).value
-    dateTime.value = formatDateForDatetimeLocalInput(trigger.value.start)
   }
 }
 </script>
@@ -91,7 +96,7 @@ function updateValues() {
     </button>
   </div>
   <div class="card card-sm bg-secondary/70 text-secondary-content my-2" v-else>
-    <div class="card-body text-base grid grid-cols-6 px-4" v-if="'start' in trigger">
+    <div class="card-body text-base grid grid-cols-6 px-4" v-if="isPeriodTrigger(trigger)">
       <p class="col-span-2">Start</p>
       <p v-if="!edit" class="font-bold justify-self-center truncate col-span-4">
         {{ formatDate(trigger.start) }}
