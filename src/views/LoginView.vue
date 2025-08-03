@@ -91,99 +91,57 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import router from '@/router';
 import { useVuelidate } from '@vuelidate/core';
-import { defineComponent, reactive, ref } from 'vue';
+import {  reactive, ref } from 'vue';
 import { useUserInfoStore } from '@/stores/user-info';
 import { type UserInfo } from '@/model/users-management/User';
 import { required, email, helpers } from '@vuelidate/validators';
+import * as api from '@/api/users-management/requests/users';
+import { useLoadingOverlayStore } from '@/stores/loading-overlay';
 
 type LoginForm = {
   email: string;
   password: string;
 };
 
-export default defineComponent({
-  name: 'LoginView',
-  setup() {
-    const form = reactive<LoginForm>({
-      email: '',
-      password: ''
-    });
-
-    const showPassword = ref(false);
-
-    const rules = {
-      email: { required: helpers.withMessage('Email is required', required), email: helpers.withMessage('Email must be valid', email) },
-      password: { required: helpers.withMessage('Password is required', required) }
-    };
-
-    const v$ = useVuelidate(rules, form);
-
-    return { form, v$, showPassword };
-  },
-  methods: {
-    async handleLogin(): Promise<void> {
-      this.v$.$touch();
-      if (this.v$.$invalid) return;
-
-      try {
-        const loginResponse = await fetch('/api/users/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            email: this.form.email,
-            password: this.form.password
-          })
-        });
-
-        if (!loginResponse.ok) {
-          throw new Error("Login failed: " + await loginResponse.text());
-        }
-
-        const responseData = await loginResponse.json();
-        
-        if (!responseData || !responseData.source) {
-          throw new Error('Invalid response: missing token');
-        }
-
-        const token = responseData.source;
-
-        const userResponse = await fetch('/api/user', {
-          method: 'GET',
-          headers: {
-            Authorization: `${token}`
-          }
-        });
-
-        if (!userResponse.ok) {
-          throw new Error('Failed to fetch user information:' + await userResponse.text());
-        }
-
-        const userData = await userResponse.json();
-
-        if (!userData || !userData.nickname || !userData.role) {
-          throw new Error('Invalid user data received');
-        }
-
-        const userInfo = useUserInfoStore();
-        const userInfoData: UserInfo = {
-          email: this.form.email,
-          nickname: userData.nickname,
-          token: token,
-          role: userData.role
-        };
-        userInfo.setUserInfo(userInfoData);
-
-        router.push('/');
-
-      } catch (error) {
-        throw new Error('Login failed:' + error);
-      }
-    }
-  }
+const form = reactive<LoginForm>({
+  email: '',
+  password: ''
 });
+
+const loadingOverlay = useLoadingOverlayStore();
+const showPassword = ref(false);
+
+const rules = {
+  email: { required: helpers.withMessage('Email is required', required), email: helpers.withMessage('Email must be valid', email) },
+  password: { required: helpers.withMessage('Password is required', required) }
+};
+
+const v$ = useVuelidate(rules, form);
+
+const handleLogin = async (): Promise<void> => {
+  v$.value.$touch();
+  if (v$.value.$invalid) return;
+
+  try {
+    loadingOverlay.startLoading();
+    const token = await api.login(form.email, form.password);
+    const user = await api.getUser(token);
+    
+    const userInfo = useUserInfoStore();
+    const userInfoData: UserInfo = {
+      email: form.email,
+      nickname: user.nickname,
+      token: token,
+      role: user.role
+    };
+    userInfo.setUserInfo(userInfoData);
+    
+  } finally {
+    loadingOverlay.stopLoading();
+  }
+  router.push('/');
+}
 </script>

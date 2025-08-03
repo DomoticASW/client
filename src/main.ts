@@ -6,7 +6,7 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 import { useUserInfoStore } from './stores/user-info'
-import { isGetUserInfoDTO } from '@/api/users-management/GetUserInfoDTO'
+import { isGetUserInfoDTO } from '@/api/users-management/dtos/GetUserInfoDTO'
 import { useErrorPresenterStore } from './stores/error-presenter'
 
 const app = createApp(App)

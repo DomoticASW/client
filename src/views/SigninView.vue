@@ -144,10 +144,13 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, reactive, computed, ref } from 'vue';
+<script setup lang="ts">
+import { reactive, computed, ref } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required, email, minLength, sameAs, helpers } from '@vuelidate/validators';
+import { useRouter } from 'vue-router';
+import * as api from '@/api/users-management/requests/users';
+import { useLoadingOverlayStore } from '@/stores/loading-overlay';
 
 type SigninForm = {
   nickname: string;
@@ -156,66 +159,48 @@ type SigninForm = {
   confirmPassword: string;
 };
 
-export default defineComponent({
-  name: 'SigninView',
-  setup() {
-    const form = reactive<SigninForm>({
-      nickname: '',
-      email: '',
-      password: '',
-      confirmPassword: ''
-    });
+const router = useRouter();
+const loadingOverlay = useLoadingOverlayStore()
 
-    const showPassword = ref(false);
-    const showConfirmPassword = ref(false);
-    const password = computed(() => form.password);
-
-    const rules = {
-      nickname: { required: helpers.withMessage('Nickname is required', required) },
-      email: { required: helpers.withMessage('Email is required', required), email: helpers.withMessage('Email must be valid', email) },
-      password: { required: helpers.withMessage('Password is required', required), minLength: helpers.withMessage('Password must be at least 6 characters', minLength(6)) },
-      confirmPassword: {
-        required: helpers.withMessage('Confirm Password is required', required),
-        sameAsPassword: helpers.withMessage('Passwords must match', sameAs(password))
-      }
-    };
-
-    const v$ = useVuelidate(rules, form);
-
-    return { form, v$, showPassword, showConfirmPassword };
-  },
-  methods: {
-    async handleSignin(): Promise<void> {
-      this.v$.$touch();
-      if (this.v$.$invalid) return;
-
-      try {
-        const response = await fetch('/api/registrationRequests', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            nickname: this.form.nickname,
-            email: this.form.email,
-            password: this.form.password
-          })
-        });
-
-        if (!response.ok) throw new Error(await response.text());
-
-        this.$router.push('/login');
-
-      } catch (error) {
-        console.error('Registration failed:', error);
-      } finally {
-        this.form.nickname = '';
-        this.form.email = '';
-        this.form.password = '';
-        this.form.confirmPassword = '';
-        this.v$.$reset();
-      }
-    }
-  }
+const form = reactive<SigninForm>({
+  nickname: '',
+  email: '',
+  password: '',
+  confirmPassword: ''
 });
+
+const showPassword = ref(false);
+const showConfirmPassword = ref(false);
+const password = computed(() => form.password);
+
+const rules = {
+  nickname: { required: helpers.withMessage('Nickname is required', required) },
+  email: { required: helpers.withMessage('Email is required', required), email: helpers.withMessage('Email must be valid', email) },
+  password: { required: helpers.withMessage('Password is required', required), minLength: helpers.withMessage('Password must be at least 6 characters', minLength(6)) },
+  confirmPassword: {
+    required: helpers.withMessage('Confirm Password is required', required),
+    sameAsPassword: helpers.withMessage('Passwords must match', sameAs(password))
+  }
+};
+
+const v$ = useVuelidate(rules, form);
+
+
+const handleSignin = async (): Promise<void> => {
+  v$.value.$touch();
+  if (v$.value.$invalid) return;
+
+  try {
+    loadingOverlay.startLoading();
+    await api.userRegistrationRequest({
+      nickname: form.nickname,
+      email: form.email,
+      password: form.password
+    });
+  } finally {
+    loadingOverlay.stopLoading();
+  }
+
+  router.push('/login');
+};
 </script>

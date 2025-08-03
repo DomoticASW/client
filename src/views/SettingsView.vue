@@ -133,11 +133,13 @@
 </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, reactive, computed, ref, watch, onMounted } from 'vue';
+<script setup lang="ts">
+import { reactive, computed, ref, watch, onMounted } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required, email, minLength, sameAs, helpers } from '@vuelidate/validators';
 import { useUserInfoStore } from '@/stores/user-info';
+import * as api from '@/api/users-management/requests/users';
+import { useLoadingOverlayStore } from '@/stores/loading-overlay';
 
 type SettingsForm = {
   nickname: string;
@@ -146,83 +148,70 @@ type SettingsForm = {
   confirmPassword: string;
 };
 
-export default defineComponent({
-  name: 'SettingsView',
-  setup() {
-      const userInfoStore = useUserInfoStore();
-      userInfoStore.loadFromStorage();
-      const userNickname = ref(userInfoStore.nickname);
-      const userEmail = ref(userInfoStore.email);
-      
-      onMounted(() => {
-        userNickname.value = userInfoStore.nickname;
-        userEmail.value = userInfoStore.email;
-      });
+const loadingOverlay = useLoadingOverlayStore()
 
-      const initialForm = reactive<SettingsForm>({
-        nickname: userNickname.value,
-        email: userEmail.value,
-        password: '',
-        confirmPassword: ''
-      });
+const userInfoStore = useUserInfoStore();
+userInfoStore.loadFromStorage();
+const userNickname = ref(userInfoStore.nickname);
+const userEmail = ref(userInfoStore.email);
 
-    const form = reactive<SettingsForm>({ ...initialForm });
-    const hasChanges = ref(false);
-    const showPassword = ref(false);
-    const showConfirmPassword = ref(false);
-    const password = computed(() => form.password);
-    
-    watch(form, (newValue) => {
-      hasChanges.value = Object.keys(initialForm).some(
-      key => newValue[key as keyof SettingsForm] !== initialForm[key as keyof SettingsForm]
-      );
-    }, { deep: true });
-    
-    const rules = {
-      nickname: { required: helpers.withMessage('Nickname is required', required) },
-      email: { required: helpers.withMessage('Email is required', required), email: helpers.withMessage('Email must be valid', email) },
-      password: { 
-        minLength: helpers.withMessage('Password must be at least 6 characters', minLength(6)),
-    },
-      confirmPassword: { sameAsPassword: helpers.withMessage('Passwords must match', sameAs(password)) }
-    };
-    
-    const v$ = useVuelidate(rules, form);
-
-    return { form, v$, hasChanges, showPassword, showConfirmPassword };
-  },
-  methods: {
-    async handleSave(): Promise<void> {
-      this.v$.$touch();
-      if (this.v$.$invalid) return;
-
-      const body: Record<string, string> = {};
-
-      const userInfoStore = useUserInfoStore();
-
-      if (this.form.nickname != userInfoStore.nickname) {
-        body.nickname = this.form.nickname;
-      }
-
-      if (this.form.password) {
-        body.password = this.form.password;
-      }
-
-      try {
-        const response = await fetch('/api/users', {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `${userInfoStore.token}`
-          },
-          body: JSON.stringify(body)
-        });
-
-        if (!response.ok) throw new Error(await response.text());
-      } catch (error) {
-        throw new Error('Save failed:' + error);
-      }
-    }
-  }
+onMounted(() => {
+  userNickname.value = userInfoStore.nickname;
+  userEmail.value = userInfoStore.email;
 });
+
+const initialForm = reactive<SettingsForm>({
+  nickname: userNickname.value,
+  email: userEmail.value,
+  password: '',
+  confirmPassword: ''
+});
+
+const form = reactive<SettingsForm>({ ...initialForm });
+const hasChanges = ref(false);
+const showPassword = ref(false);
+const showConfirmPassword = ref(false);
+const password = computed(() => form.password);
+
+watch(form, (newValue) => {
+  hasChanges.value = Object.keys(initialForm).some(
+  key => newValue[key as keyof SettingsForm] !== initialForm[key as keyof SettingsForm]
+  );
+}, { deep: true });
+
+const rules = {
+  nickname: { required: helpers.withMessage('Nickname is required', required) },
+  email: { required: helpers.withMessage('Email is required', required), email: helpers.withMessage('Email must be valid', email) },
+  password: { 
+    minLength: helpers.withMessage('Password must be at least 6 characters', minLength(6)),
+},
+  confirmPassword: { sameAsPassword: helpers.withMessage('Passwords must match', sameAs(password)) }
+};
+
+const v$ = useVuelidate(rules, form);
+
+const handleSave = async (): Promise<void> => {
+  v$.value.$touch();
+  if (v$.value.$invalid) return;
+
+  const body: Record<string, string> = {};
+
+  const userInfoStore = useUserInfoStore();
+
+  if (form.nickname != userInfoStore.nickname) {
+    body.nickname = form.nickname;
+  }
+
+  if (form.password) {
+    body.password = form.password;
+  }
+
+  try {
+    loadingOverlay.startLoading();
+    await api.updateUser(userInfoStore.token, body);
+    userInfoStore.setNickname(form.nickname);
+  } finally {
+    loadingOverlay.stopLoading();
+  }
+}
 </script>

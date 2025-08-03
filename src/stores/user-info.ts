@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { type UserInfo } from '@/model/users-management/User';
-import { isGetUserInfoDTO } from '@/api/users-management/GetUserInfoDTO';
+import { isGetUserInfoDTO } from '@/api/users-management/dtos/GetUserInfoDTO';
 
 export const useUserInfoStore = defineStore('user-info', {
   state: () => ({
@@ -19,6 +19,10 @@ export const useUserInfoStore = defineStore('user-info', {
       }
       this.userInfo = info;
       localStorage.setItem('userInfo', JSON.stringify(info));
+    },
+    setNickname(nickname: string) {
+      this.userInfo.nickname = nickname;
+      localStorage.setItem('userInfo', JSON.stringify(this.userInfo));
     },
     clearUserInfo() {
       this.userInfo = {} as UserInfo;
