@@ -91,73 +91,57 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import router from '@/router';
 import { useVuelidate } from '@vuelidate/core';
-import { defineComponent, reactive, ref } from 'vue';
+import {  reactive, ref } from 'vue';
 import { useUserInfoStore } from '@/stores/user-info';
 import { type UserInfo } from '@/model/users-management/User';
 import { required, email, helpers } from '@vuelidate/validators';
-import * as api from '@/api/api';
-import { userDeserializer } from '@/api/users-management/GetUserDTO';
-import { tokenDeserializer } from '@/api/users-management/GetTokenDTO';
+import * as api from '@/api/users-management/requests/users';
+import { useLoadingOverlayStore } from '@/stores/loading-overlay';
 
 type LoginForm = {
   email: string;
   password: string;
 };
 
-export default defineComponent({
-  name: 'LoginView',
-  setup() {
-    const form = reactive<LoginForm>({
-      email: '',
-      password: ''
-    });
-
-    const showPassword = ref(false);
-
-    const rules = {
-      email: { required: helpers.withMessage('Email is required', required), email: helpers.withMessage('Email must be valid', email) },
-      password: { required: helpers.withMessage('Password is required', required) }
-    };
-
-    const v$ = useVuelidate(rules, form);
-
-    return { form, v$, showPassword };
-  },
-  methods: {
-    async handleLogin(): Promise<void> {
-      this.v$.$touch();
-      if (this.v$.$invalid) return;
-
-      const loginResponse = await api.request('/api/users/login', {
-        method: 'POST',
-        body: JSON.stringify({
-          email: this.form.email,
-          password: this.form.password
-        })
-      });
-
-      const token = await api.deserializeBody(loginResponse, tokenDeserializer);
-
-      const userResponse = await api.authorizedRequest('/api/user', token, {
-        method: 'GET'
-      });
-
-      const userData = await api.deserializeBody(userResponse, userDeserializer);
-
-      const userInfo = useUserInfoStore();
-      const userInfoData: UserInfo = {
-        email: this.form.email,
-        nickname: userData.nickname,
-        token: token,
-        role: userData.role
-      };
-      userInfo.setUserInfo(userInfoData);
-
-      router.push('/');
-    }
-  }
+const form = reactive<LoginForm>({
+  email: '',
+  password: ''
 });
+
+const loadingOverlay = useLoadingOverlayStore();
+const showPassword = ref(false);
+
+const rules = {
+  email: { required: helpers.withMessage('Email is required', required), email: helpers.withMessage('Email must be valid', email) },
+  password: { required: helpers.withMessage('Password is required', required) }
+};
+
+const v$ = useVuelidate(rules, form);
+
+const handleLogin = async (): Promise<void> => {
+  v$.value.$touch();
+  if (v$.value.$invalid) return;
+
+  try {
+    loadingOverlay.startLoading();
+    const token = await api.login(form.email, form.password);
+    const user = await api.getUser(token);
+    
+    const userInfo = useUserInfoStore();
+    const userInfoData: UserInfo = {
+      email: form.email,
+      nickname: user.nickname,
+      token: token,
+      role: user.role
+    };
+    userInfo.setUserInfo(userInfoData);
+    
+  } finally {
+    loadingOverlay.stopLoading();
+  }
+  router.push('/');
+}
 </script>
