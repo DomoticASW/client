@@ -151,7 +151,6 @@ type SettingsForm = {
 const loadingOverlay = useLoadingOverlayStore()
 
 const userInfoStore = useUserInfoStore();
-userInfoStore.loadFromStorage();
 const userNickname = ref(userInfoStore.nickname);
 const userEmail = ref(userInfoStore.email);
 
