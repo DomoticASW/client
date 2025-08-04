@@ -18,6 +18,13 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue'),
     },
     {
+      path: '/devices',
+      children: [
+        { path: '', name: 'devices', component: () => import('../views/devices/DevicesView.vue') },
+        { path: ':id', name: 'device', component: () => import('../views/devices/DeviceView.vue'), props: true }
+      ]
+    },
+    {
       path: '/admin',
       children: [
         {
