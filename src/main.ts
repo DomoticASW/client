@@ -14,6 +14,9 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(router)
 
+const userInfoStore = useUserInfoStore()
+userInfoStore.loadFromStorage()
+
 const errorPresenterStore = useErrorPresenterStore()
 app.config.errorHandler = (err) => {
   if (typeof err == "object" && err != undefined) {
