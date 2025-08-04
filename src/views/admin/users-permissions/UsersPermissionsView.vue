@@ -38,7 +38,6 @@ const users = ref<User[]>([]);
 
 const loadUsers = async () => {
   const userInfoStore = useUserInfoStore();
-  userInfoStore.loadFromStorage();
   const adminToken = userInfoStore.token;
 
   users.value = await api.getAllUsers(adminToken);

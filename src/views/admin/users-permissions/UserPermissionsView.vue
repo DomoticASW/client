@@ -78,7 +78,6 @@ const devicesWithPermissions = ref<Device[]>([]);
 const devicesWithoutPermissions = ref<Device[]>([]);
 
 const userInfoStore = useUserInfoStore();
-userInfoStore.loadFromStorage();
 const adminToken = userInfoStore.token;
 
 const user = {
