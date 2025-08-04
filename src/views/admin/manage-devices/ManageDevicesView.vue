@@ -3,7 +3,7 @@ import DeviceListSkeleton from '@/components/admin/manage-devices/DeviceListSkel
 import type { Device, DeviceId } from '@/model/devices-management/Device'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import { useUserInfoStore } from '@/stores/user-info'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, useTemplateRef } from 'vue'
 import { RouterLink } from 'vue-router'
 import * as api from '@/api/devices-management/requests/devices'
 
@@ -24,18 +24,17 @@ async function removeDevice(id: DeviceId) {
 const deviceEditing = ref<DeviceId | undefined>(undefined)
 const deviceEditingName = ref<string | undefined>(undefined)
 
-const editDeviceModalId = 'edit_device_name_modal'
-const editDeviceNameModal = () => document.getElementById(editDeviceModalId) as HTMLDialogElement
+const editDeviceNameModal = useTemplateRef('edit-device-name-modal')
 function startEditingDevice(id: DeviceId) {
   const device = devices.value!.find((d) => d.id == id)!
   deviceEditing.value = device.id
   deviceEditingName.value = device.name
-  editDeviceNameModal().showModal()
+  editDeviceNameModal.value?.showModal()
 }
 function cancelEditingDevice() {
   deviceEditing.value = undefined
   deviceEditingName.value = undefined
-  editDeviceNameModal().close()
+  editDeviceNameModal.value?.close()
 }
 async function saveEditingDevice() {
   const id = deviceEditing.value
@@ -87,7 +86,7 @@ onMounted(async () => {
     <DeviceListSkeleton v-else />
 
     <!-- Dialog for changing a device name -->
-    <dialog :id="editDeviceModalId" class="modal modal-bottom sm:modal-middle">
+    <dialog ref="edit-device-name-modal" class="modal modal-bottom sm:modal-middle">
       <div class="modal-box">
         <h3 class="text-lg font-bold">Change the device name</h3>
         <input type="text" placeholder="Device name" class="input" v-model="deviceEditingName" />

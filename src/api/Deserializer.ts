@@ -33,6 +33,16 @@ export function arrayDeserializer<T>(itemDeserializer: Deserializer<T>): Deseria
   }
 }
 
+function isBoolean(o: unknown): o is boolean {
+  return o != undefined && typeof o == "boolean"
+}
+export const booleanDeserializer: Deserializer<boolean> =
+  Deserializer(
+    isBoolean,
+    (obj) => obj,
+    (obj) => `Expecting a boolean but ${typeof obj} was found`
+  )
+
 export interface DeserializeError {
   message: string
   cause?: string
