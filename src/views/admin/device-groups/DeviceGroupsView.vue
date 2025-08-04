@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, useTemplateRef } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useUserInfoStore } from '@/stores/user-info'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
@@ -13,11 +13,10 @@ const groups = ref<DeviceGroup[] | undefined>(undefined)
 
 /* Group creation */
 const groupCreatingName = ref<string | undefined>(undefined)
-const createGroupModalId = 'create_group_modal'
-const createGroupModal = () => document.getElementById(createGroupModalId) as HTMLDialogElement
+const createGroupModal = useTemplateRef('create-group-modal')
 function cancelCreatingGroup() {
   groupCreatingName.value = undefined
-  createGroupModal().close()
+  createGroupModal.value!.close()
 }
 async function saveCreatingGroup() {
   const name = groupCreatingName.value
@@ -38,20 +37,19 @@ async function saveCreatingGroup() {
 const groupEditing = ref<DeviceGroupId | undefined>(undefined)
 const groupEditingName = ref<string | undefined>(undefined)
 
-const editGroupModalId = 'edit_group_name_modal'
-const editGroupNameModal = () => document.getElementById(editGroupModalId) as HTMLDialogElement
+const editGroupNameModal = useTemplateRef('edit-group-name-modal')
 function startEditingGroup(id: string) {
   const group = groups.value?.find((g) => g.id == id)
   if (group) {
     groupEditing.value = group.id
     groupEditingName.value = group.name
-    editGroupNameModal().showModal()
+    editGroupNameModal.value!.showModal()
   }
 }
 function cancelEditingGroup() {
   groupEditing.value = undefined
   groupEditingName.value = undefined
-  editGroupNameModal().close()
+  editGroupNameModal.value!.close()
 }
 async function saveEditingGroup() {
   const id = groupEditing.value
@@ -82,10 +80,10 @@ onMounted(async () => {
       <h1 class="text-2xl">Device groups</h1>
       <button
         class="btn btn-ghost fa-solid fa-plus fa-lg"
-        @click="createGroupModal().showModal()"
+        @click="createGroupModal?.showModal()"
       ></button>
       <!-- Dialog for creating a new group -->
-      <dialog :id="createGroupModalId" class="modal modal-bottom sm:modal-middle">
+      <dialog ref="create-group-modal" class="modal modal-bottom sm:modal-middle">
         <div class="modal-box">
           <h3 class="text-lg font-bold">Create a new group</h3>
           <input type="text" placeholder="Group name" class="input" v-model="groupCreatingName" />
@@ -118,7 +116,7 @@ onMounted(async () => {
     <DeviceListSkeleton v-else />
 
     <!-- Dialog for changing a group name -->
-    <dialog :id="editGroupModalId" class="modal modal-bottom sm:modal-middle">
+    <dialog ref="edit-group-name-modal" class="modal modal-bottom sm:modal-middle">
       <div class="modal-box">
         <h3 class="text-lg font-bold">Change the group name</h3>
         <input type="text" placeholder="Group name" class="input" v-model="groupEditingName" />
