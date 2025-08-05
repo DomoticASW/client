@@ -1,5 +1,5 @@
 <template>
-  <h1 class="text-3xl font-bold my-2">Manage user permissions</h1>
+  <h1 class="text-3xl font-bold my-2">Manage users permissions</h1>
   <ul class="list rounded-box">
     <li class="list-row" v-for="user in users" :key="user.email">
       <div class="list-col-grow flex items-center">
@@ -31,7 +31,7 @@
 import router from '@/router';
 import { ref, onMounted } from 'vue';
 import { useUserInfoStore } from '@/stores/user-info';
-import { type User } from '@/model/users-management/User';
+import { Role, type User } from '@/model/users-management/User';
 import * as api from '@/api/users-management/requests/users';
 
 const users = ref<User[]>([]);
@@ -40,7 +40,8 @@ const loadUsers = async () => {
   const userInfoStore = useUserInfoStore();
   const adminToken = userInfoStore.token;
 
-  users.value = await api.getAllUsers(adminToken);
+  const usersList = await api.getAllUsers(adminToken);
+  users.value = usersList.filter(user => user.role !== Role.Admin);
 };
 
 const goToPermissions = (user: User): void => {
