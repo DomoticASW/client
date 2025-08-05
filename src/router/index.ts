@@ -18,6 +18,13 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue'),
     },
     {
+      path: '/devices',
+      children: [
+        { path: '', name: 'devices', component: () => import('../views/devices/DevicesView.vue') },
+        { path: ':id', name: 'device', component: () => import('../views/devices/DeviceView.vue'), props: true }
+      ]
+    },
+    {
       path: '/admin',
       children: [
         {
@@ -57,18 +64,9 @@ const router = createRouter({
         {
           path: 'device-groups',
           children: [
-            {
-              path: '',
-              name: 'device-groups',
-              component: () => import('../views/admin/device-groups/DeviceGroupsView.vue'),
-            },
-            {
-              path: ':id',
-              name: 'device-group',
-              component: () => import('../views/admin/device-groups/DeviceGroupView.vue'),
-              props: true,
-            },
-          ],
+            { path: '', name: 'device-groups', component: () => import('../views/admin/device-groups/DeviceGroupsView.vue') },
+            { path: ':id', name: 'device-group', component: () => import('../views/admin/device-groups/DeviceGroupView.vue'), props: true },
+          ]
         },
         {
           path: 'automations-task-permissions',
