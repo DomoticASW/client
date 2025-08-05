@@ -20,7 +20,7 @@
             tabindex="0"
             class="menu dropdown-content bg-base-300 -ml-2 rounded-box z-1 mt-3 w-52 p-2 shadow"
           >
-            <!-- <li><RouterLink :to="{ name: 'devices' }">Devices</RouterLink></li> -->
+            <li><RouterLink :to="{ name: 'devices' }">Devices</RouterLink></li>
             <li><RouterLink :to="{ name: 'tasks' }">Tasks</RouterLink></li>
             <li><RouterLink :to="{ name: 'automations' }">Automations</RouterLink></li>
             <!-- <li><RouterLink :to="{ name: 'setting' }">Settings</RouterLink></li> -->
@@ -42,7 +42,7 @@
     <template v-if="!showBackButton">
       <div class="navbar-center hidden lg:block">
         <ul class="menu menu-horizontal px-1 text-base">
-          <!-- <li><RouterLink :to="{ name: 'devices' }">Devices</RouterLink></li> -->
+          <li><RouterLink :to="{ name: 'devices' }">Devices</RouterLink></li>
           <li><RouterLink :to="{ name: 'tasks' }">Tasks</RouterLink></li>
           <li><RouterLink :to="{ name: 'automations' }">Automations</RouterLink></li>
           <!-- <li><RouterLink :to="{ name: 'setting' }">Settings</RouterLink></li> -->
