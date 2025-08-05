@@ -66,7 +66,7 @@
 
         <label for="value" class="fieldset-legend text-sm mx-3">Value</label>
         <input
-          v-if="variableType().type === 'number' || variableType().type === 'color'"
+          v-if="variableType().type === 'number'"
           :type="variableType().type"
           :class="['mt-2 mx-2', variableType().class]"
           :step="variableForm.type === Type.DoubleType ? 'any' : '1'"
@@ -76,7 +76,23 @@
           id="value"
         />
         <input
-          v-else
+          v-else-if="variableType().type === 'color'"
+          :type="variableType().type"
+          :class="['mt-2 mx-2', variableType().class]"
+          v-model="variableForm.value"
+          name="value"
+          id="value"
+        />
+        <input
+          v-else-if="variableType().type === 'text'"
+          :type="variableType().type"
+          :class="['mt-2 mx-2', variableType().class]"
+          v-model="variableForm.value"
+          name="value"
+          id="value"
+        />
+        <input
+          v-else-if="variableType().type === 'checkbox'"
           :type="variableType().type"
           :class="['mt-2 mx-2', variableType().class]"
           v-model="variableForm.value"
@@ -181,14 +197,13 @@ function openDialog() {
 }
 
 function handleConfirm() {
-  const instruction = props.instruction.instruction as CreateConstantInstruction
-  instruction.name = variableForm.value.name
-  instruction.type = variableForm.value.type
-  instruction.value = variableForm.value.value
-
   instructionsStore.changeInstruction(props.instruction, {
     type: InstructionType.CreateConstantInstruction,
-    instruction: instruction,
+    instruction: {
+      name: variableForm.value.name,
+      type: variableForm.value.type,
+      value: variableForm.value.value
+    },
   })
   closeDialog()
 }
