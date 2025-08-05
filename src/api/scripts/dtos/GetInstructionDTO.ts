@@ -11,25 +11,26 @@ import type {
   WaitInstruction,
 } from '@/model/scripts/Instruction'
 import { arrayDeserializer, Deserializer } from '../../Deserializer'
-import { isGetTypeDTO, typeDeserializer, type GetTypeDTO } from '../../GetTypeDTO'
 import { conditionDeserializer, isGetConditionDTO, type GetConditionDTO } from './GetConditionDTO'
 import {
   instructionTypeDeserializer,
   isGetInstructionTypeDTO,
   type GetInstructionTypeDTO,
 } from './GetInstructionTypeDTO'
+import { isTypeDTO, typeDeserializer, type TypeDTO } from '@/api/devices-management/dtos/devices/TypeDTO'
+import { DeviceActionId, DeviceId, DevicePropertyId } from '@/model/devices-management/Device'
 
 export interface GetInstructionDTO {
   type: GetInstructionTypeDTO
   instruction:
-    | GetSendNotificationInstructionDTO
-    | GetWaitInstructionDTO
-    | GetStartTaskInstructionDTO
-    | GetDeviceActionInstructionDTO
-    | GetCreateConstantInstructionDTO
-    | GetCreateDevicePropertyConstantInstructionDTO
-    | GetIfInstructionDTO
-    | GetIfElseInstructionDTO
+  | GetSendNotificationInstructionDTO
+  | GetWaitInstructionDTO
+  | GetStartTaskInstructionDTO
+  | GetDeviceActionInstructionDTO
+  | GetCreateConstantInstructionDTO
+  | GetCreateDevicePropertyConstantInstructionDTO
+  | GetIfInstructionDTO
+  | GetIfElseInstructionDTO
 }
 
 interface GetSendNotificationInstructionDTO {
@@ -53,7 +54,7 @@ interface GetDeviceActionInstructionDTO {
 
 interface GetConstantInstructionDTO {
   name: string
-  type: GetTypeDTO
+  type: TypeDTO
 }
 
 interface GetCreateConstantInstructionDTO extends GetConstantInstructionDTO {
@@ -112,7 +113,7 @@ function isGetCreateConstantInstructionDTO(o: unknown): o is GetCreateConstantIn
     'name' in o &&
     typeof o.name === 'string' &&
     'type' in o &&
-    isGetTypeDTO(o.type) &&
+    isTypeDTO(o.type) &&
     'value' in o
   )
 }
@@ -126,7 +127,7 @@ function isGetCreateDevicePropertyConstantInstructionDTO(
     'name' in o &&
     typeof o.name === 'string' &&
     'type' in o &&
-    isGetTypeDTO(o.type) &&
+    isTypeDTO(o.type) &&
     'deviceId' in o &&
     typeof o.deviceId === 'string' &&
     'devicePropertyId' in o &&
@@ -213,8 +214,8 @@ export const deviceActionInstructionDeserializer = Deserializer<
   DeviceActionInstruction
 >(isGetDeviceActionInstructionDTO, (dto) => {
   return {
-    deviceId: dto.deviceId,
-    deviceActionId: dto.deviceActionId,
+    deviceId: DeviceId(dto.deviceId),
+    deviceActionId: DeviceActionId(dto.deviceActionId),
     input: dto.input,
   }
 })
@@ -237,8 +238,8 @@ export const createDevicePropertyConstantInstructionDeserializer = Deserializer<
   return {
     name: dto.name,
     type: typeDeserializer(dto.type),
-    deviceId: dto.deviceId,
-    devicePropertyId: dto.devicePropertyId,
+    deviceId: DeviceId(dto.deviceId),
+    devicePropertyId: DevicePropertyId(dto.devicePropertyId),
   }
 })
 

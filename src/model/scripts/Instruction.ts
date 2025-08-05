@@ -1,3 +1,4 @@
+import type { DeviceActionId, DeviceId, DevicePropertyId } from '../devices-management/Device'
 import type { Type } from '../Type'
 
 export enum InstructionType {
@@ -58,8 +59,8 @@ export interface StartTaskInstruction {
 }
 
 export interface DeviceActionInstruction {
-  deviceId: string
-  deviceActionId: string
+  deviceId: DeviceId
+  deviceActionId: DeviceActionId
   input: unknown
 }
 
@@ -73,8 +74,8 @@ export interface CreateConstantInstruction extends ConstantInstruction {
 }
 
 export interface CreateDevicePropertyConstantInstruction extends ConstantInstruction {
-  deviceId: string
-  devicePropertyId: string
+  deviceId: DeviceId
+  devicePropertyId: DevicePropertyId
 }
 
 export interface IfInstruction {

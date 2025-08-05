@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { getAllDeviceGroups } from '@/api/devices-management/requests/device-groups'
 import { getAllDevices } from '@/api/devices-management/requests/devices'
-import type { Device } from '@/model/devices-management/Device'
+import { type Device } from '@/model/devices-management/Device'
 import type { DeviceGroup } from '@/model/devices-management/DeviceGroup'
 import { InstructionType } from '@/model/scripts/Instruction'
 import { useUserInfoStore } from '@/stores/user-info'
@@ -14,7 +14,6 @@ import {
   EmptyWaitInstruction,
   EmtpyConstantInstruction,
 } from './emptyInstructions'
-import { Type } from '@/model/Type'
 import { useInstructionsStore } from '@/stores/instructions'
 
 const instructionsStore = useInstructionsStore()
@@ -71,14 +70,14 @@ function addSendNotification() {
   })
 }
 
-function addDevicePropertyConstantInstruction(device: Device) {
+async function addDevicePropertyConstantInstruction(device: Device) {
   instructionsStore.instructions.push({
     type: InstructionType.CreateDevicePropertyConstantInstruction,
     instruction: {
       deviceId: device.id,
-      devicePropertyId: '', // get random property from device or leave it blank
-      name: '',
-      type: Type.StringType, // Type get from device property or leave it to a default one
+      devicePropertyId: device.properties[0].id,
+      name: 'Default',
+      type: device.properties[0].typeConstraints.type,
     },
   })
 }
