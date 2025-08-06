@@ -31,15 +31,20 @@
       <form @submit.prevent="handleConfirm">
         <!-- Selection of a property -->
         <label for="value" class="fieldset-legend text-sm mx-3">{{ device.name }} properties</label>
-        <select class="select mt-2 mx-2">>
+        <select v-model="variableForm.devicePropertyId" class="select mt-2 mx-2">
           <option disabled>Pick a property</option>
-          <option v-for="p in device.properties" :key="p.id" :selected="p.id == property.id">
+          <option
+            v-for="p in device.properties"
+            :key="p.id"
+            :selected="p.id == property.id"
+            :value="p.id"
+          >
             {{ p.name }}
           </option>
         </select>
         <!-- Change constant name -->
         <label for="value" class="fieldset-legend text-sm mx-3">Constant name</label>
-        <input type="text" class="input mt-2 mx-2" />
+        <input type="text" class="input mt-2 mx-2" v-model="variableForm.name" />
         <div class="modal-action grid grid-cols-3 w-full">
           <button type="button" class="btn btn-error col-start-1" @click="closeDialog">
             Close
@@ -52,9 +57,10 @@
 </template>
 
 <script setup lang="ts">
-import type {
-  CreateDevicePropertyConstantInstruction,
-  Instruction,
+import {
+  InstructionType,
+  type CreateDevicePropertyConstantInstruction,
+  type Instruction,
 } from '@/model/scripts/Instruction'
 import InstructionLayout from './InstructionLayout.vue'
 import { onMounted, ref, watch } from 'vue'
@@ -62,6 +68,7 @@ import type { Device, DeviceProperty } from '@/model/devices-management/Device'
 import { findDevice } from '@/api/devices-management/requests/devices'
 import { useUserInfoStore } from '@/stores/user-info'
 import { Type } from '@/model/Type'
+import { useInstructionsStore } from '@/stores/instructions'
 
 const props = defineProps<{
   id: string
@@ -72,34 +79,58 @@ const props = defineProps<{
   edit: boolean
 }>()
 
+const instructionsStore = useInstructionsStore()
 const userInfo = useUserInfoStore()
 const instruction = ref(props.instruction.instruction as CreateDevicePropertyConstantInstruction)
 const device = ref<Device>()
 const property = ref<DeviceProperty<unknown>>()
 
+const variableForm = ref<CreateDevicePropertyConstantInstruction>({
+  name: instruction.value.name,
+  type: instruction.value.type,
+  deviceId: instruction.value.deviceId,
+  devicePropertyId: instruction.value.devicePropertyId,
+})
+
 watch(
   () => props.instruction,
-  (val) => {
+  async (val) => {
     instruction.value = val.instruction as CreateDevicePropertyConstantInstruction
+    await updateInstruction()
   },
   { immediate: true },
 )
 
-onMounted(async () => {
+onMounted(async () => await updateInstruction())
+
+async function updateInstruction() {
   device.value = await findDevice(instruction.value.deviceId, userInfo.token)
   property.value = device.value.properties.find(
     (prop) => prop.id === instruction.value.devicePropertyId,
   )
-})
+}
 
 function openDialog() {
   if (props.edit) {
+    variableForm.value.deviceId = instruction.value.deviceId
+    variableForm.value.devicePropertyId = instruction.value.devicePropertyId
+    variableForm.value.name = instruction.value.name
+    variableForm.value.type = instruction.value.type
     const dialog = document.getElementById(props.id.toString()) as HTMLDialogElement
     dialog.showModal()
   }
 }
 
 function handleConfirm() {
+  instructionsStore.changeInstruction(props.instruction, {
+    type: InstructionType.CreateDevicePropertyConstantInstruction,
+    instruction: {
+      name: variableForm.value.name,
+      type: variableForm.value.type,
+      deviceId: variableForm.value.deviceId,
+      devicePropertyId: variableForm.value.devicePropertyId,
+    },
+  })
   closeDialog()
 }
 
