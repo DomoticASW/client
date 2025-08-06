@@ -13,9 +13,11 @@ import { taskDeserializer } from '@/api/scripts/GetTaskDTO'
 import { automationDeserializer } from '@/api/scripts/GetAutomationDTO'
 import { useRoute } from 'vue-router'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
+import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
 
 const route = useRoute()
 const loadingOverlay = useLoadingOverlayStore()
+const successPresenter = useSuccessPresenterStore()
 const script = ref<Task | Automation>()
 const userInfo = useUserInfoStore()
 const taskList = ref<TaskList>()
@@ -104,6 +106,7 @@ function addUser(user: User) {
         } else if (listSelectedName.value === 'Blacklist' && taskList.value) {
           taskList.value.blacklist.push(user.email)
         }
+        showToastMessage(`Request for ${user.nickname} added successfully.`)
       })
       .catch((error) => {
         console.error('Error adding user:', error)
@@ -138,6 +141,7 @@ function removeUser(userEmail: string) {
             taskList.value.blacklist.splice(index, 1)
           }
         }
+        showToastMessage(`Request for ${userEmail} removed successfully.`)
       })
       .catch((error) => {
         console.error('Error removing user:', error)
@@ -154,6 +158,10 @@ function select(option: string) {
 
 function calculateUsersNotInList(list: string[], users: User[]): User[] {
   return users.filter((user) => !list.some((email) => email === user.email))
+}
+
+function showToastMessage(msg: string) {
+  successPresenter.showSuccess(presentSuccess(msg, "", 5000))
 }
 </script>
 
