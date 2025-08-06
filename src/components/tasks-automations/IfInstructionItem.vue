@@ -40,8 +40,8 @@
   <!-- Then instructions -->
   <InstructionItem
     v-for="(ins, i) in instruction.thenInstructions"
-    :key="id + 'then-' + i"
-    :id="id + 'then' + i.toString()"
+    :key="id + '-then-' + i.toString()"
+    :id="id + '-then' + i.toString()"
     :instruction="ins"
     :depth="depth + 1"
     :edit="edit"
@@ -56,8 +56,8 @@
     </div>
     <InstructionItem
       v-for="(ins, i) in instruction.elseInstructions"
-      :key="id + 'else-' + i"
-      :id="id + 'else' + i.toString()"
+      :key="id + '-else-' + i.toString()"
+      :id="id + '-else' + i.toString()"
       :instruction="ins"
       :depth="depth + 1"
       :edit="edit"

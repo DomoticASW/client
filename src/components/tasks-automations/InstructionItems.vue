@@ -23,6 +23,11 @@ const groups = ref<DeviceGroup[]>()
 const devices = ref<Device[]>()
 const selectedGroup = ref<DeviceGroup | undefined>(undefined)
 
+defineProps<{
+  openDialog: (device:Device) => void
+  closeDialog: () => void
+}>()
+
 onMounted(async () => {
   groups.value = await getAllDeviceGroups(userInfo.token)
   devices.value = await getAllDevices(userInfo.token)
@@ -70,17 +75,6 @@ function addSendNotification() {
   })
 }
 
-async function addDevicePropertyConstantInstruction(device: Device) {
-  instructionsStore.instructions.push({
-    type: InstructionType.CreateDevicePropertyConstantInstruction,
-    instruction: {
-      deviceId: device.id,
-      devicePropertyId: device.properties[0].id,
-      name: 'Default',
-      type: device.properties[0].typeConstraints.type,
-    },
-  })
-}
 </script>
 
 <template>
@@ -96,7 +90,7 @@ async function addDevicePropertyConstantInstruction(device: Device) {
       v-for="device in selectedGroup ? selectedGroup.devices : devices"
       :key="device.id"
       class="btn justify-start my-1 sm:col-span-2 col-span-3 ml-4"
-      @click="addDevicePropertyConstantInstruction(device)"
+      @click="openDialog(device)"
     >
       {{ device.name }}
     </button>

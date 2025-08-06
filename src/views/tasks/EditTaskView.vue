@@ -10,12 +10,15 @@ import InstructionItem from '@/components/tasks-automations/InstructionItem.vue'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import Route from '@/router/index'
 import NavbarLayout from '@/components/NavbarLayout.vue'
+import type { Device } from '@/model/devices-management/Device'
+import DeviceActionPropertyDialog from '@/components/tasks-automations/DeviceActionPropertyDialog.vue'
 
 const props = defineProps<{ id?: string }>()
 const userInfo = useUserInfoStore()
 const instructionsStore = useInstructionsStore()
 const taskName = ref<string>('')
 const loadingOverlay = useLoadingOverlayStore()
+const selectedDevice = ref<Device | undefined>(undefined)
 
 onMounted(async () => {
   if (props.id) {
@@ -69,6 +72,18 @@ async function changeTask() {
     loadingOverlay.stopLoading()
   }
 }
+
+function openDialog(device: Device) {
+  selectedDevice.value = device
+  const dialog = document.getElementById('device_action_property') as HTMLDialogElement
+  dialog.showModal()
+}
+
+function closeDialog() {
+  const dialog = document.getElementById('device_action_property') as HTMLDialogElement
+  dialog.close()
+}
+
 </script>
 
 <template>
@@ -89,7 +104,8 @@ async function changeTask() {
     />
     <div class="pb-4"></div>
     <AddButton>
-      <InstructionItems />
+      <InstructionItems :openDialog="openDialog" :closeDialog="closeDialog" />
     </AddButton>
+    <DeviceActionPropertyDialog :selected-device="selectedDevice" :close-dialog="closeDialog" />
   </NavbarLayout>
 </template>

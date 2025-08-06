@@ -10,22 +10,9 @@
     <p>Constant</p>
     <p class="font-bold truncate text-center">{{ instruction.name }}</p>
 
-    <template
-      v-if="
-        instruction.type === Type.DoubleType ||
-        instruction.type === Type.IntType ||
-        instruction.type === Type.StringType
-      "
-    >
+    <template v-if="instruction.type !== Type.ColorType">
       <p class="col-start-2 truncate text-center">
         {{ instruction.value }}
-      </p>
-    </template>
-    <template v-else-if="instruction.type === Type.BooleanType">
-      <p class="col-start-2 truncate text-center">
-        {{
-          typeof instruction.value === 'boolean' ? instruction.value.toString() : 'not a boolean'
-        }}
       </p>
     </template>
     <template v-else>
@@ -38,7 +25,7 @@
     </template>
   </InstructionLayout>
 
-  <dialog :id="id.toString()" class="modal">
+  <dialog :id="id" class="modal">
     <div class="modal-box max-w-sm">
       <h3 class="card-title mx-2 mb-2">Set constant</h3>
       <form @submit.prevent="handleConfirm">
@@ -202,7 +189,7 @@ function handleConfirm() {
     instruction: {
       name: variableForm.value.name,
       type: variableForm.value.type,
-      value: variableForm.value.value
+      value: variableForm.value.value,
     },
   })
   closeDialog()

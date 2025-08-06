@@ -22,6 +22,7 @@
   />
   <CreateDevicePropertyConstantInstructionItem
     v-else-if="instruction.type === InstructionType.CreateDevicePropertyConstantInstruction"
+    :id
     :instruction="instruction"
     :depth="depthLevel"
     :indent="indentClass"
@@ -75,7 +76,7 @@ import WaitInstructionItem from './WaitInstructionItem.vue'
 import StartTaskInstructionItem from './StartTaskInstructionItem.vue'
 
 const props = defineProps<{
-  id: string,
+  id: string
   instruction: Instruction
   depth?: number // Depth for indentation
   edit: boolean
@@ -89,4 +90,5 @@ const colors =
 const marginByDepth = ['ml-0', 'ml-4', 'ml-8', 'ml-12', 'ml-16', 'ml-20', 'ml-24']
 
 const indentClass = marginByDepth[depthLevel]
+
 </script>
