@@ -39,9 +39,9 @@
           v-model="variableForm.name"
         />
 
-        <label for="type" class="fieldset-legend text-sm mx-3">Type</label>
+        <label for="type" class="fieldset-legend text-sm mx-3">Types</label>
         <select name="type" id="type" v-model="variableForm.type" class="select mt-2 mx-2">
-          <option selected disabled>Type</option>
+          <option selected disabled>Pick a Type</option>
           <option
             v-for="type in Object.values(Type).filter((type) => type !== Type.VoidType)"
             :value="type"

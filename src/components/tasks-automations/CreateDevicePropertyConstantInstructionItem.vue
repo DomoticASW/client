@@ -25,13 +25,21 @@
     />
   </InstructionLayout>
 
-  <dialog :id="id" class="modal">
+  <dialog :id="id" class="modal" v-if="device && property">
     <div class="modal-box max-w-sm">
-      <h3 class="card-title mx-2 mb-2">Choose a device property</h3>
+      <h3 class="card-title mx-2 mb-2">Device property</h3>
       <form @submit.prevent="handleConfirm">
-        <select class="select my-2 col-span-3 text-lg">
-          <option :value="undefined" disabled>Properties</option>
+        <!-- Selection of a property -->
+        <label for="value" class="fieldset-legend text-sm mx-3">{{ device.name }} properties</label>
+        <select class="select mt-2 mx-2">>
+          <option disabled>Pick a property</option>
+          <option v-for="p in device.properties" :key="p.id" :selected="p.id == property.id">
+            {{ p.name }}
+          </option>
         </select>
+        <!-- Change constant name -->
+        <label for="value" class="fieldset-legend text-sm mx-3">Constant name</label>
+        <input type="text" class="input mt-2 mx-2" />
         <div class="modal-action grid grid-cols-3 w-full">
           <button type="button" class="btn btn-error col-start-1" @click="closeDialog">
             Close
