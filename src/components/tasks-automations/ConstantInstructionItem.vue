@@ -57,7 +57,6 @@
           :type="variableType().type"
           :class="['mt-2 mx-2', variableType().class]"
           :step="variableForm.type === Type.DoubleType ? 'any' : '1'"
-          placeholder="Value"
           v-model="variableForm.value"
           name="value"
           id="value"

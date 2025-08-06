@@ -30,8 +30,15 @@
       <h3 class="card-title mx-2 mb-2">Device property</h3>
       <form @submit.prevent="handleConfirm">
         <!-- Selection of a property -->
-        <label for="value" class="fieldset-legend text-sm mx-3">{{ device.name }} properties</label>
-        <select v-model="variableForm.devicePropertyId" class="select mt-2 mx-2">
+        <label for="properties" class="fieldset-legend text-sm mx-3"
+          >{{ device.name }} properties</label
+        >
+        <select
+          v-model="variableForm.devicePropertyId"
+          class="select mt-2 mx-2"
+          name="properties"
+          id="properties"
+        >
           <option disabled>Pick a property</option>
           <option
             v-for="p in device.properties"
@@ -43,8 +50,14 @@
           </option>
         </select>
         <!-- Change constant name -->
-        <label for="value" class="fieldset-legend text-sm mx-3">Constant name</label>
-        <input type="text" class="input mt-2 mx-2" v-model="variableForm.name" />
+        <label for="constant_name" class="fieldset-legend text-sm mx-3">Constant name</label>
+        <input
+          type="text"
+          class="input mt-2 mx-2"
+          v-model="variableForm.name"
+          name="constant_name"
+          id="constant_name"
+        />
         <div class="modal-action grid grid-cols-3 w-full">
           <button type="button" class="btn btn-error col-start-1" @click="closeDialog">
             Close
@@ -63,12 +76,13 @@ import {
   type Instruction,
 } from '@/model/scripts/Instruction'
 import InstructionLayout from './InstructionLayout.vue'
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
 import type { Device, DeviceProperty } from '@/model/devices-management/Device'
 import { findDevice } from '@/api/devices-management/requests/devices'
 import { useUserInfoStore } from '@/stores/user-info'
 import { Type } from '@/model/Type'
 import { useInstructionsStore } from '@/stores/instructions'
+import { io } from 'socket.io-client'
 
 const props = defineProps<{
   id: string
@@ -138,4 +152,19 @@ function closeDialog() {
   const dialog = document.getElementById(props.id.toString()) as HTMLDialogElement
   dialog.close()
 }
+
+type PropertyUpdateDTO = { deviceId: string; propertyId: string; value: unknown }
+const socket = io('/api/devices/property-updates')
+  .on('connect', () => socket.emit('subscribe', { deviceId: device.value?.id }))
+  .on('device-property-update', (data: PropertyUpdateDTO) => {
+    if (data.deviceId == device.value?.id) {
+      const property = device.value?.properties.find((p) => p.id == data.propertyId)
+      if (property) {
+        property.value = data.value
+      }
+    }
+  })
+onUnmounted(() => {
+  socket.close()
+})
 </script>

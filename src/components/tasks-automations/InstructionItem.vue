@@ -31,6 +31,7 @@
   />
   <DeviceActionInstructionItem
     v-else-if="instruction.type === InstructionType.DeviceActionInstruction"
+    :id="id"
     :instruction="instruction"
     :depth="depthLevel"
     :indent="indentClass"
@@ -90,5 +91,4 @@ const colors =
 const marginByDepth = ['ml-0', 'ml-4', 'ml-8', 'ml-12', 'ml-16', 'ml-20', 'ml-24']
 
 const indentClass = marginByDepth[depthLevel]
-
 </script>

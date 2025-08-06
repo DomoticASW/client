@@ -1,16 +1,9 @@
 <script lang="ts" setup>
 import type { Device } from '@/model/devices-management/Device'
-import {
-  Color,
-  Enum,
-  IntRange,
-  DoubleRange,
-  type TypeConstraints,
-} from '@/model/devices-management/Types'
 import { InstructionType } from '@/model/scripts/Instruction'
-import { Type } from '@/model/Type'
 import { useInstructionsStore } from '@/stores/instructions'
 import { ref } from 'vue'
+import { getDefaultInput } from './emptyInstructions'
 
 const props = defineProps<{
   selectedDevice?: Device
@@ -41,34 +34,6 @@ async function addDeviceActionInstruction(device: Device) {
       input: getDefaultInput(device.actions[0].inputTypeConstraints),
     },
   })
-}
-
-function getDefaultInput<T>(type: TypeConstraints<T>) {
-  if (type.__brand === 'IntRange') {
-    return (type as IntRange).min
-  }
-
-  if (type.__brand === 'DoubleRange') {
-    return (type as DoubleRange).min
-  }
-
-  if (type.__brand === 'Enum') {
-    return (type as Enum).values.values().next().value
-  }
-
-  switch (type.type) {
-    case Type.BooleanType:
-      return false
-    case Type.ColorType:
-      return Color(0, 0, 0)
-    case Type.VoidType:
-      return undefined
-    case Type.IntType:
-    case Type.DoubleType:
-      return 0
-    case Type.StringType:
-      return ''
-  }
 }
 
 function handleConfirm() {

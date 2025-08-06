@@ -4,7 +4,9 @@
     :indent="indent"
     :edit="edit"
     :instruction="props.instruction"
+    @click="openDialog"
     v-if="device && action"
+    :class="[edit ? 'cursor-pointer transition-all hover:bg-secondary' : '']"
   >
     <p class="truncate">{{ device.name }}</p>
 
@@ -23,10 +25,128 @@
       <p class="text-center truncate col-start-2" v-else>{{ instruction.input }}</p>
     </template>
   </InstructionLayout>
+
+  <dialog :id="id" class="modal" v-if="device && action">
+    <div class="modal-box max-w-sm">
+      <h3 class="card-title mx-2 mb-2">Device action</h3>
+      <form @submit.prevent="handleConfirm">
+        <!-- Selection of an action -->
+        <label for="actions" class="fieldset-legend text-sm mx-3">{{ device.name }} actions</label>
+        <select
+          v-model="variableForm.deviceActionId"
+          class="select mt-2 mx-2"
+          name="actions"
+          id="actions"
+        >
+          <option disabled>Pick an action</option>
+          <option
+            v-for="a in device.actions"
+            :key="a.id"
+            :selected="a.id == action.id"
+            :value="a.id"
+          >
+            {{ a.name }}
+          </option>
+        </select>
+        <!-- Change of the action input -->
+        <label
+          for="input"
+          class="fieldset-legend text-sm mx-3"
+          v-if="variableType().type !== 'null'"
+          >Input</label
+        >
+        <template v-if="variableType().type === 'range'">
+          <div class="flex justify-center px-2.5 mt-2 text-xs">
+            {{ variableForm.input }}
+          </div>
+          <input
+            :type="variableType().type"
+            :class="['mt-2 mx-2', variableType().class]"
+            step="1"
+            :min="variableType().constraints.min"
+            :max="variableType().constraints.max"
+            v-model="variableForm.input"
+            name="input"
+            id="input"
+          />
+          <div class="flex justify-between px-2.5 mt-2 text-xs">
+            <span>{{ variableType().constraints.min }}</span>
+            <span>{{ variableType().constraints.max }}</span>
+          </div>
+        </template>
+
+        <input
+          v-else-if="variableType().type === 'number'"
+          :type="variableType().type"
+          :class="['mt-2 mx-2', variableType().class]"
+          v-model="variableForm.input"
+          :min="variableType().constraints.min"
+          :max="variableType().constraints.max"
+          :step="selectedAction?.inputTypeConstraints.type === Type.DoubleType ? 'any' : '1'"
+          name="input"
+          id="input"
+        />
+
+        <select
+          v-else-if="variableType().type === 'select'"
+          :class="['mt-2 mx-2', variableType().class]"
+          v-model="variableForm.input"
+          name="input"
+          id="input"
+        >
+          <option
+            v-for="value in variableType().constraints.values"
+            :key="value"
+            :value="value"
+            :selected="value === variableForm.input"
+          >
+            {{ value }}
+          </option>
+        </select>
+
+        <input
+          v-else-if="variableType().type === 'checkbox'"
+          :class="['mt-2 mx-2', variableType().class]"
+          :type="variableType().type"
+          v-model="variableForm.input"
+          name="input"
+          id="input"
+        />
+
+        <input
+          v-else-if="variableType().type === 'color'"
+          :class="['mt-2 mx-2', variableType().class]"
+          :type="variableType().type"
+          v-model="variableForm.input"
+          name="input"
+          id="input"
+        />
+
+        <input
+          v-else-if="variableType().type === 'text'"
+          :class="['mt-2 mx-2', variableType().class]"
+          :type="variableType().type"
+          v-model="variableForm.input"
+          name="input"
+          id="input"
+        />
+        <div class="modal-action grid grid-cols-3 w-full">
+          <button type="button" class="btn btn-error col-start-1" @click="closeDialog">
+            Close
+          </button>
+          <button type="submit" class="btn col-start-3">Confirm</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
 </template>
 
 <script setup lang="ts">
-import type { DeviceActionInstruction, Instruction } from '@/model/scripts/Instruction'
+import {
+  InstructionType,
+  type DeviceActionInstruction,
+  type Instruction,
+} from '@/model/scripts/Instruction'
 import InstructionLayout from './InstructionLayout.vue'
 import { onMounted, ref, watch } from 'vue'
 import type { Device, DeviceAction } from '@/model/devices-management/Device'
@@ -34,6 +154,7 @@ import { useUserInfoStore } from '@/stores/user-info'
 import { useInstructionsStore } from '@/stores/instructions'
 import { findDevice } from '@/api/devices-management/requests/devices'
 import { Type } from '@/model/Type'
+import { getDefaultInput } from './emptyInstructions'
 
 const props = defineProps<{
   id: string
@@ -50,6 +171,8 @@ const instruction = ref(props.instruction.instruction as DeviceActionInstruction
 const device = ref<Device>()
 const action = ref<DeviceAction<unknown>>()
 
+const selectedAction = ref<DeviceAction<unknown>>()
+
 const variableForm = ref<DeviceActionInstruction>({
   deviceId: instruction.value.deviceId,
   deviceActionId: instruction.value.deviceActionId,
@@ -65,10 +188,137 @@ watch(
   { immediate: true },
 )
 
+watch(
+  () => variableForm.value.deviceActionId,
+  async (val) => {
+    if (device.value && val != selectedAction.value?.id) {
+      selectedAction.value = device.value.actions.find((act) => act.id === val)
+      if (selectedAction.value) {
+        variableForm.value.input = getDefaultInput(selectedAction.value.inputTypeConstraints)
+      }
+    }
+  },
+)
+
+type TypeDTO = {
+  type: string
+  class: string
+  constraints: {
+    min?: number
+    max?: number
+    values?: Set<string>
+  }
+}
+function variableType(): TypeDTO {
+  console.log(selectedAction.value)
+  if (selectedAction.value) {
+    const typeC = selectedAction.value.inputTypeConstraints
+    if (typeC.__brand === 'IntRange') {
+      return {
+        type: 'range',
+        class: 'range',
+        constraints: {
+          min: typeC.min,
+          max: typeC.max,
+        },
+      }
+    }
+
+    if (typeC.__brand === 'DoubleRange') {
+      return {
+        type: 'number',
+        class: 'input',
+        constraints: {
+          min: typeC.min,
+          max: typeC.max,
+        },
+      }
+    }
+
+    if (typeC.__brand === 'Enum') {
+      return {
+        type: 'select',
+        class: 'select',
+        constraints: {
+          values: typeC.values,
+        },
+      }
+    }
+
+    switch (typeC.type) {
+      case Type.BooleanType:
+        return {
+          type: 'checkbox',
+          class: 'toggle',
+          constraints: {},
+        }
+      case Type.ColorType:
+        return {
+          type: 'color',
+          class: '',
+          constraints: {},
+        }
+      case Type.DoubleType:
+      case Type.IntType:
+        return {
+          type: 'number',
+          class: 'input',
+          constraints: {},
+        }
+      case Type.StringType:
+        return {
+          type: 'text',
+          class: 'input',
+          constraints: {},
+        }
+      case Type.VoidType:
+        return {
+          type: 'null',
+          class: 'null',
+          constraints: {},
+        }
+    }
+  } else {
+    return {
+      type: 'null',
+      class: 'null',
+      constraints: {},
+    }
+  }
+}
+
 onMounted(async () => await updateInstruction())
 
 async function updateInstruction() {
   device.value = await findDevice(instruction.value.deviceId, userInfo.token)
-  action.value = device.value.actions.find((prop) => prop.id === instruction.value.deviceActionId)
+  action.value = device.value.actions.find((act) => act.id === instruction.value.deviceActionId)
+  selectedAction.value = action.value
+}
+
+function openDialog() {
+  if (props.edit) {
+    variableForm.value.deviceId = instruction.value.deviceId
+    variableForm.value.deviceActionId = instruction.value.deviceActionId
+    variableForm.value.input = instruction.value.input
+    const dialog = document.getElementById(props.id.toString()) as HTMLDialogElement
+    dialog.showModal()
+  }
+}
+
+function handleConfirm() {
+  instructionsStore.changeInstruction(props.instruction, {
+    type: InstructionType.DeviceActionInstruction,
+    instruction: {
+      deviceId: variableForm.value.deviceId,
+      deviceActionId: variableForm.value.deviceActionId,
+      input: variableForm.value.input,
+    },
+  })
+  closeDialog()
+}
+
+function closeDialog() {
+  const dialog = document.getElementById(props.id.toString()) as HTMLDialogElement
+  dialog.close()
 }
 </script>
