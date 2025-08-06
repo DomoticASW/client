@@ -72,6 +72,7 @@ import type { Device, DeviceId } from '@/model/devices-management/Device';
 import * as devicesApi from '@/api/devices-management/requests/devices'
 import * as api from '@/api/permission-management/requests/permissions';
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
+import router from '@/router';
 
 const loadingOverlay = useLoadingOverlayStore();
 const devicesWithPermissions = ref<Device[]>([]);
@@ -122,6 +123,10 @@ const removeUserDevicePermission = async (deviceId: DeviceId) => {
 };
 
 onMounted(() => {
+  if (!user.email || !user.nickname) {
+    router.push('./');
+    throw new Error('This user does not exist!');
+  }
   loadDevices();
 });
 </script>

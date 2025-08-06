@@ -20,9 +20,10 @@ export function isGetUserDevicePermissionDTO(o: unknown): o is GetUseDevicePermi
 export const userDevicePermissionDeserializer = Deserializer<
   GetUseDevicePermissionDTO,
   UserDevicePermission
->(isGetUserDevicePermissionDTO, (dto) => {
-  return {
-    email: dto.email,
-    deviceId: dto.deviceId,
-  }
-})
+>(isGetUserDevicePermissionDTO,
+  (dto) => ({
+      email: dto.email,
+      deviceId: dto.deviceId,
+    }),
+  (obj) => `Unable to deserialize ${obj} into a UserDevicePermission since it was not a GetUseDevicePermissionDTO`
+)
