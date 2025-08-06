@@ -1,6 +1,12 @@
 <script lang="ts" setup>
 import type { Device } from '@/model/devices-management/Device'
-import { Color } from '@/model/devices-management/Types'
+import {
+  Color,
+  Enum,
+  IntRange,
+  DoubleRange,
+  type TypeConstraints,
+} from '@/model/devices-management/Types'
 import { InstructionType } from '@/model/scripts/Instruction'
 import { Type } from '@/model/Type'
 import { useInstructionsStore } from '@/stores/instructions'
@@ -20,7 +26,7 @@ async function addDevicePropertyConstantInstruction(device: Device) {
     instruction: {
       deviceId: device.id,
       devicePropertyId: device.properties[0].id,
-      name: 'Default',
+      name: '',
       type: device.properties[0].typeConstraints.type,
     },
   })
@@ -32,24 +38,36 @@ async function addDeviceActionInstruction(device: Device) {
     instruction: {
       deviceId: device.id,
       deviceActionId: device.actions[0].id,
-      input: getDefaultInput(device.actions[0].inputTypeConstraints.type),
+      input: getDefaultInput(device.actions[0].inputTypeConstraints),
     },
   })
 }
 
-function getDefaultInput(type: Type) {
-  switch (type) {
-    case Type.IntType:
-    case Type.DoubleType:
-      return 0
+function getDefaultInput<T>(type: TypeConstraints<T>) {
+  if (type.__brand === 'IntRange') {
+    return (type as IntRange).min
+  }
+
+  if (type.__brand === 'DoubleRange') {
+    return (type as DoubleRange).min
+  }
+
+  if (type.__brand === 'Enum') {
+    return (type as Enum).values.values().next().value
+  }
+
+  switch (type.type) {
     case Type.BooleanType:
       return false
     case Type.ColorType:
       return Color(0, 0, 0)
-    case Type.StringType:
-      return ''
     case Type.VoidType:
       return undefined
+    case Type.IntType:
+    case Type.DoubleType:
+      return 0
+    case Type.StringType:
+      return ''
   }
 }
 
