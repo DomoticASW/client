@@ -84,7 +84,7 @@ function approveRequest(user: RegistrationRequest) {
 }
 
 function showToastMessage(msg: string) {
-  successPresenter.showSuccess(presentSuccess(msg, "", "", 5000))
+  successPresenter.showSuccess(presentSuccess(msg, "Skibidi Poppi", 5000))
 }
 </script>
 

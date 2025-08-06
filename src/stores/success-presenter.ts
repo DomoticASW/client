@@ -1,16 +1,21 @@
 import { defineStore } from "pinia"
 
 const DEFAULT_CLOSING_ANIMATION_MS = 2000
+export interface SuccessPresenterInterface {
+  title: string,
+  msg: string,
+  duration: number
+}
 
 export const useSuccessPresenterStore = defineStore('success-presenter', {
   state: () => ({
-    successQueue: [] as object[]
+    successQueue: [] as SuccessPresenterInterface[]
   }),
   getters: {
     successShown: (state) => state.successQueue.length > 0 ? state.successQueue[0] : undefined
   },
   actions: {
-    showSuccess(succ: object) {
+    showSuccess(succ: SuccessPresenterInterface) {
       this.successQueue.push(succ)
     },
     /** This function is expected to be called by the SuccessPresenter component */
@@ -21,6 +26,6 @@ export const useSuccessPresenterStore = defineStore('success-presenter', {
 })
 
 
-export function presentSuccess(title: string, msg: string = "", text: string = "", duration: number = DEFAULT_CLOSING_ANIMATION_MS) {
-  return {title: title, message: msg, text: text, duration: duration}
+export function presentSuccess(title: string, msg: string = "", duration: number = DEFAULT_CLOSING_ANIMATION_MS) {
+  return {title: title, msg: msg, duration: duration} as SuccessPresenterInterface
 }
