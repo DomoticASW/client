@@ -209,6 +209,7 @@ type TypeDTO = {
     values?: Set<string>
   }
 }
+
 function variableType(): TypeDTO {
   console.log(selectedAction.value)
   if (selectedAction.value) {

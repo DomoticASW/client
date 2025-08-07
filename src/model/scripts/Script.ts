@@ -1,5 +1,6 @@
 import type { Brand } from '@/utils'
 import type { Instruction } from './Instruction'
+import type { DeviceId } from '../devices-management/Device'
 
 export type ScriptId = TaskId | AutomationId
 
@@ -33,7 +34,7 @@ export interface PeriodTrigger {
 }
 
 export interface DeviceEventTrigger {
-  deviceId: string
+  deviceId: DeviceId
   eventName: string
 }
 

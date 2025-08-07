@@ -2,6 +2,7 @@ import { AutomationId, type Automation, type DeviceEventTrigger, type PeriodTrig
 import { arrayDeserializer, Deserializer } from '../../Deserializer'
 import type { GetTaskDTO } from './GetTaskDTO'
 import { instructionsDeserializer, isGetInstructionDTO } from './GetInstructionDTO'
+import { DeviceId } from '@/model/devices-management/Device'
 
 interface GetPeriodTriggerDTO {
   start: string
@@ -56,7 +57,7 @@ const deviceEventTriggerDeserializer = Deserializer<GetDeviceEventTriggerDTO, De
   isGetDeviceEventTriggerDTO,
   (dto) => {
     return {
-      deviceId: dto.deviceId,
+      deviceId: DeviceId(dto.deviceId),
       eventName: dto.eventName,
     }
   },
