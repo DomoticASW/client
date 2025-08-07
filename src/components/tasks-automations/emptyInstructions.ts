@@ -1,3 +1,4 @@
+import type { Device } from '@/model/devices-management/Device'
 import { Color, type TypeConstraints } from '@/model/devices-management/Types'
 import type {
   IfInstruction,
@@ -6,6 +7,8 @@ import type {
   StartTaskInstruction,
   CreateConstantInstruction,
   SendNotificationInstruction,
+  CreateDevicePropertyConstantInstruction,
+  DeviceActionInstruction,
 } from '@/model/scripts/Instruction'
 import { ConditionOperatorType } from '@/model/scripts/Instruction'
 import { Type } from '@/model/Type'
@@ -59,6 +62,23 @@ export function EmptySendNotification(): SendNotificationInstruction {
   return {
     email: '',
     message: '',
+  }
+}
+
+export function defaultDevicePropertyConstantInstruction(device: Device): CreateDevicePropertyConstantInstruction {
+  return {
+    deviceId: device.id,
+    devicePropertyId: device.properties[0].id,
+    name: '',
+    type: device.properties[0].typeConstraints.type,
+  }
+}
+
+export function defaultDeviceActionInstruction(device: Device): DeviceActionInstruction {
+  return {
+    deviceId: device.id,
+    deviceActionId: device.actions[0].id,
+    input: getDefaultInput(device.actions[0].inputTypeConstraints),
   }
 }
 

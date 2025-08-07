@@ -3,7 +3,10 @@ import type { Device } from '@/model/devices-management/Device'
 import { InstructionType } from '@/model/scripts/Instruction'
 import { useInstructionsStore } from '@/stores/instructions'
 import { ref } from 'vue'
-import { getDefaultInput } from './emptyInstructions'
+import {
+  defaultDeviceActionInstruction,
+  defaultDevicePropertyConstantInstruction,
+} from './emptyInstructions'
 
 const props = defineProps<{
   selectedDevice?: Device
@@ -13,26 +16,17 @@ const props = defineProps<{
 const instructionsStore = useInstructionsStore()
 const isActionSelected = ref(false)
 
-async function addDevicePropertyConstantInstruction(device: Device) {
+function addDevicePropertyConstantInstruction(device: Device) {
   instructionsStore.instructions.push({
     type: InstructionType.CreateDevicePropertyConstantInstruction,
-    instruction: {
-      deviceId: device.id,
-      devicePropertyId: device.properties[0].id,
-      name: '',
-      type: device.properties[0].typeConstraints.type,
-    },
+    instruction: defaultDevicePropertyConstantInstruction(device),
   })
 }
 
-async function addDeviceActionInstruction(device: Device) {
+function addDeviceActionInstruction(device: Device) {
   instructionsStore.instructions.push({
     type: InstructionType.DeviceActionInstruction,
-    instruction: {
-      deviceId: device.id,
-      deviceActionId: device.actions[0].id,
-      input: getDefaultInput(device.actions[0].inputTypeConstraints),
-    },
+    instruction: defaultDeviceActionInstruction(device),
   })
 }
 
