@@ -211,7 +211,6 @@ type TypeDTO = {
 }
 
 function variableType(): TypeDTO {
-  console.log(selectedAction.value)
   if (selectedAction.value) {
     const typeC = selectedAction.value.inputTypeConstraints
     if (typeC.__brand === 'IntRange') {
@@ -312,7 +311,7 @@ function handleConfirm() {
     instruction: {
       deviceId: variableForm.value.deviceId,
       deviceActionId: variableForm.value.deviceActionId,
-      input: variableForm.value.input,
+      input: variableType().type === 'null' ? null : variableForm.value.input,
     },
   })
   closeDialog()
