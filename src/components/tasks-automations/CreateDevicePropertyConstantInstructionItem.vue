@@ -139,7 +139,7 @@ async function handleConfirm() {
   const device = await findDevice(variableForm.value.deviceId, userInfo.token)
   const property = device.properties.find((prop) => prop.id === variableForm.value.devicePropertyId)
   if (property) {
-    variableForm.value.type = property?.typeConstraints.type
+    variableForm.value.type = property.typeConstraints.type
     instructionsStore.changeInstruction(props.instruction, {
       type: InstructionType.CreateDevicePropertyConstantInstruction,
       instruction: {

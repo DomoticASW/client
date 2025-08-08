@@ -4,3 +4,9 @@
 @plugin "daisyui" {
   themes: lofi --default, business --prefersdark;
 }
+
+@layer base {
+  html {
+    scrollbar-gutter: stable;
+  }
+}
