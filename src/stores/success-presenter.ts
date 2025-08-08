@@ -17,6 +17,9 @@ export const useSuccessPresenterStore = defineStore('success-presenter', {
   actions: {
     showSuccess(succ: SuccessPresenterInterface) {
       this.successQueue.push(succ)
+      setTimeout(() => {
+        this.successWasViewed()
+      }, succ.duration)
     },
     /** This function is expected to be called by the SuccessPresenter component */
     successWasViewed() {
