@@ -1,4 +1,4 @@
-<script async setup lang="ts">
+<script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import AddButton from '@/components/AddButton.vue'
@@ -47,7 +47,7 @@ async function startTask(taskId: TaskId) {
           type="button"
           class="btn btn-circle btn-ghost fa-solid fa-play fa-lg !flex"
           @click="startTask(task.id)"
-          :aria-label="'Start task: ' + task"
+          :aria-label="'Start task: ' + task.name"
         ></button>
       </li>
     </ul>

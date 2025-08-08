@@ -50,7 +50,7 @@ export function EmptyStartTaskInstruction(): StartTaskInstruction {
   }
 }
 
-export function EmtpyConstantInstruction(): CreateConstantInstruction {
+export function EmptyConstantInstruction(): CreateConstantInstruction {
   return {
     name: '',
     type: Type.StringType,

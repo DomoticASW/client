@@ -12,7 +12,7 @@ import {
   EmptySendNotification,
   EmptyStartTaskInstruction,
   EmptyWaitInstruction,
-  EmtpyConstantInstruction,
+  EmptyConstantInstruction,
 } from './emptyInstructions'
 import { useInstructionsStore } from '@/stores/instructions'
 
@@ -24,7 +24,7 @@ const devices = ref<Device[]>()
 const selectedGroup = ref<DeviceGroup | undefined>(undefined)
 
 defineProps<{
-  openDialog: (device:Device) => void
+  openDialog: (device: Device) => void
   closeDialog: () => void
 }>()
 
@@ -64,7 +64,7 @@ function addStartTaskInstruction() {
 function addConstantInstruction() {
   instructionsStore.instructions.push({
     type: InstructionType.CreateConstantInstruction,
-    instruction: EmtpyConstantInstruction(),
+    instruction: EmptyConstantInstruction(),
   })
 }
 
@@ -74,7 +74,6 @@ function addSendNotification() {
     instruction: EmptySendNotification(),
   })
 }
-
 </script>
 
 <template>

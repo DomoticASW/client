@@ -35,7 +35,7 @@ export async function deleteTask(id: TaskId, token: string): Promise<void> {
 }
 
 export async function executeTask(id: TaskId, token: string): Promise<void> {
-  await authorizedRequest('api/tasks/' + id + '/execute', token, { method: 'POST' })
+  await authorizedRequest('/api/tasks/' + id + '/execute', token, { method: 'POST' })
 }
 
 export async function findTask(id: TaskId, token: string) {
