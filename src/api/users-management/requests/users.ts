@@ -1,11 +1,11 @@
 import * as api from '@/api/api';
-import type { RegistrationRequest } from '@/model/users-management/RegistrationRequest';
+import type { CompleteRegistrationRequest } from '@/model/users-management/RegistrationRequest';
 import type { User } from '@/model/users-management/User';
 import { tokenDeserializer } from '../dtos/GetTokenDTO';
 import { userDeserializer } from '../dtos/GetUserDTO';
 import { arrayDeserializer } from '@/api/Deserializer';
 
-export async function userRegistrationRequest(registrationRequest: RegistrationRequest): Promise<void> {
+export async function userRegistrationRequest(registrationRequest: CompleteRegistrationRequest): Promise<void> {
     await api.request('/api/registrationRequests', {
       method: 'POST',
       body: JSON.stringify(registrationRequest)
