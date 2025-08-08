@@ -16,8 +16,9 @@ import hexRgb from 'hex-rgb'
 import rgbHex from 'rgb-hex'
 import { computed, watch } from 'vue'
 
-const { typeConstraints, isInput } = defineProps<{
+const { typeConstraints, val, isInput } = defineProps<{
   typeConstraints: TypeConstraints<unknown>
+  val: unknown
   /**
    * Tells the control if it should also register user input
    */
@@ -29,10 +30,20 @@ const emit = defineEmits<{
    */
   input: [value: unknown]
 }>()
-const value = defineModel({ required: true })
-if (value.value == undefined) {
-  value.value = defaultInitialValueForTypeConstraints(typeConstraints)
-}
+
+const value = computed({
+  get: () => {
+    if (val) {
+      return val
+    } else {
+      return defaultInitialValueForTypeConstraints(typeConstraints)
+    }
+  },
+  set: (newValue) => {
+    validateAndEmit(newValue)
+  },
+})
+
 /** This is meant to only be read by the parent and it indicates whether value is valid or not */
 const isInputValid = defineModel<boolean>('isInputValid')
 watch(value, (v) => {
@@ -101,17 +112,16 @@ function defaultInitialValueForTypeConstraints(tc: TypeConstraints<unknown>) {
       class="toggle toggle-primary"
       :disabled="!isInput"
       v-model="value"
-      @change="validateAndEmit(value)"
     />
   </div>
   <div v-if="type === Type.StringType">
     <div v-if="isInput">
       <div v-if="isEnumTypeConstraints(typeConstraints)">
-        <select class="select select-primary" v-model="value" @change="validateAndEmit(value)">
-          <option v-for="v in typeConstraints.values" :key="v">{{ v }}</option>
+        <select class="select select-primary" v-model="value">
+          <option v-for="v in typeConstraints.values" :key="v" :value="v">{{ v }}</option>
         </select>
       </div>
-      <input v-else type="text" v-model="value" @change="validateAndEmit(value)" />
+      <input v-else type="text" v-model="value" />
     </div>
     <span v-else> {{ value }} </span>
   </div>
@@ -126,7 +136,6 @@ function defaultInitialValueForTypeConstraints(tc: TypeConstraints<unknown>) {
         :step="type == Type.IntType ? 1 : 'any'"
         :disabled="!isInput"
         v-model.number="value"
-        @change="validateAndEmit(value)"
       />
       <div class="flex flex-row justify-between">
         <span class="opacity-30">{{ typeConstraints.min }}</span>
@@ -139,7 +148,6 @@ function defaultInitialValueForTypeConstraints(tc: TypeConstraints<unknown>) {
       type="number"
       :step="type == Type.IntType ? 1 : 'any'"
       v-model.number="value"
-      @change="validateAndEmit(value)"
     />
     <span v-else> {{ value }} </span>
   </div>
@@ -148,9 +156,7 @@ function defaultInitialValueForTypeConstraints(tc: TypeConstraints<unknown>) {
       type="color"
       :disabled="!isInput"
       :value="'#' + rgbHex((value as Color).r, (value as Color).g, (value as Color).b)"
-      @change="
-        ((value = hexToColor(($event.target as HTMLInputElement).value)), validateAndEmit(value))
-      "
+      @change="value = hexToColor(($event.target as HTMLInputElement).value)"
     />
   </div>
 </template>

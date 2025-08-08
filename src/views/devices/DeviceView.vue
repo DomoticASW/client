@@ -132,7 +132,7 @@ onUnmounted(() => {
       <ValueIOControl
         :typeConstraints="p.typeConstraints"
         :isInput="p.setter !== undefined"
-        v-model="p.value"
+        :val="p.value"
         @input="(input) => onPropertyInput(p, input)"
       />
     </li>
@@ -177,7 +177,7 @@ onUnmounted(() => {
         v-if="executingAction"
         :typeConstraints="executingAction!.inputTypeConstraints"
         :isInput="true"
-        v-model="executingActionInput"
+        :val="executingActionInput"
         v-model:isInputValid="isExecutingActionInputValid"
       />
       <div class="modal-action">
