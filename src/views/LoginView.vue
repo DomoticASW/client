@@ -1,12 +1,11 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-base-200">
-    <div class="card w-full max-w-md bg-base-100 shadow-xl">
       <div class="card-body">
         <div class="flex justify-center min-h-[4rem] mb-4">
-          <h1 class="card-title text-3xl font-bold">Welcome back!</h1>
+          <h1 class="card-title text-4xl font-bold">Welcome back!</h1>
         </div>
 
-      <form @submit.prevent="handleLogin" class="w-full">
+      <form @submit.prevent="handleLogin" class="w-full px-4">
 
         <div class="form-control">
           <span class="label-text">Email</span><br>
@@ -88,7 +87,6 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script setup lang="ts">
