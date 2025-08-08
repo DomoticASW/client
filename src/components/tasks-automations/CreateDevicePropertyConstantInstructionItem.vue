@@ -13,17 +13,50 @@
     <p class="text-xs truncate">
       {{ property.name }}
     </p>
-    <p class="text-center truncate" v-if="property.typeConstraints.type !== Type.ColorType">
-      {{ property.value }}
-    </p>
-    <input
-      v-else
-      class="col-start-2 place-self-center"
-      type="color"
-      disabled
-      :value="property.value"
-    />
+    <div class="text-center truncate">
+      {{ property.typeConstraints.type.slice(0, -4) }}
+      <button
+        class="fa-circle-info fa-solid fa-lg btn btn-ghost btn-xs btn-circle"
+        v-if="property.typeConstraints.__brand !== 'None'"
+        @click.stop="openInfoDialog"
+      ></button>
+    </div>
   </InstructionLayout>
+
+  <dialog :id="id + '_info'" class="modal modal-sm">
+    <div class="modal-box max-w-sm" v-if="property">
+      <h3 class="card-title mb-2">{{ property.name }} type constraints info</h3>
+      <div v-if="property.typeConstraints.__brand === 'Enum'">
+        <p>Possible values for {{ property.name }} property:</p>
+        <p class="font-bold" v-for="value in property.typeConstraints.values" :key="value">
+          {{ value }}
+        </p>
+      </div>
+      <p v-else-if="property.typeConstraints.__brand !== 'None'">
+        The {{ property.name }} property has a minimum value of
+        <span class="font-bold">{{
+          property.typeConstraints.min.toFixed(
+            property.typeConstraints.__brand === 'DoubleRange' ? 2 : 0,
+          )
+        }}</span>
+        and a maximum value of
+        <span class="font-bold">{{
+          property.typeConstraints.max.toFixed(
+            property.typeConstraints.__brand === 'DoubleRange' ? 2 : 0,
+          )
+        }}</span
+        >.
+      </p>
+      <div class="modal-action mt-2">
+        <form method="dialog">
+          <button class="btn">Ok</button>
+        </form>
+      </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+      <button>Ok</button>
+    </form>
+  </dialog>
 
   <dialog :id="id" class="modal" v-if="device && property">
     <div class="modal-box max-w-sm">
@@ -76,13 +109,11 @@ import {
   type Instruction,
 } from '@/model/scripts/Instruction'
 import InstructionLayout from './InstructionLayout.vue'
-import { onMounted, onUnmounted, ref, watch } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import type { Device, DeviceProperty } from '@/model/devices-management/Device'
 import { findDevice } from '@/api/devices-management/requests/devices'
 import { useUserInfoStore } from '@/stores/user-info'
-import { Type } from '@/model/Type'
 import { useInstructionsStore } from '@/stores/instructions'
-import { io } from 'socket.io-client'
 
 const props = defineProps<{
   id: string
@@ -158,18 +189,8 @@ function closeDialog() {
   dialog.close()
 }
 
-type PropertyUpdateDTO = { deviceId: string; propertyId: string; value: unknown }
-const socket = io('/api/devices/property-updates')
-  .on('connect', () => socket.emit('subscribe', { deviceId: device.value?.id }))
-  .on('device-property-update', (data: PropertyUpdateDTO) => {
-    if (data.deviceId == device.value?.id) {
-      const property = device.value?.properties.find((p) => p.id == data.propertyId)
-      if (property) {
-        property.value = data.value
-      }
-    }
-  })
-onUnmounted(() => {
-  socket.close()
-})
+function openInfoDialog() {
+  const dialog = document.getElementById(props.id.toString() + '_info') as HTMLDialogElement
+  dialog.showModal()
+}
 </script>
