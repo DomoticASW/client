@@ -23,7 +23,7 @@
             <li><RouterLink :to="{ name: 'devices' }">Devices</RouterLink></li>
             <li><RouterLink :to="{ name: 'tasks' }">Tasks</RouterLink></li>
             <li><RouterLink :to="{ name: 'automations' }">Automations</RouterLink></li>
-            <!-- <li><RouterLink :to="{ name: 'setting' }">Settings</RouterLink></li> -->
+            <li><RouterLink :to="{ name: 'settings' }">Settings</RouterLink></li>
             <li v-if="userInfo.role === Role.Admin">
               <p>Admin</p>
               <ul class="p-2">
@@ -45,7 +45,7 @@
           <li><RouterLink :to="{ name: 'devices' }">Devices</RouterLink></li>
           <li><RouterLink :to="{ name: 'tasks' }">Tasks</RouterLink></li>
           <li><RouterLink :to="{ name: 'automations' }">Automations</RouterLink></li>
-          <!-- <li><RouterLink :to="{ name: 'setting' }">Settings</RouterLink></li> -->
+          <li><RouterLink :to="{ name: 'settings' }">Settings</RouterLink></li>
           <li v-if="userInfo.role === Role.Admin">
             <details>
               <summary>Admin</summary>
