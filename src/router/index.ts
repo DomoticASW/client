@@ -49,9 +49,17 @@ const router = createRouter({
         {
           path: 'manage-devices',
           children: [
-            { path: '', name: 'manage-devices', component: () => import('../views/admin/manage-devices/ManageDevicesView.vue') },
-            { path: 'add-device', name: 'add-device', component: () => import('../views/admin/manage-devices/AddDeviceView.vue') }
-          ]
+            {
+              path: '',
+              name: 'manage-devices',
+              component: () => import('../views/admin/manage-devices/ManageDevicesView.vue'),
+            },
+            {
+              path: 'add-device',
+              name: 'add-device',
+              component: () => import('../views/admin/manage-devices/AddDeviceView.vue'),
+            },
+          ],
         },
         {
           path: 'device-groups',
@@ -78,28 +86,37 @@ const router = createRouter({
                   '../views/admin/automations-task-permissions/AutomationAndTaskPermissionsView.vue'
                 ),
             },
-          ]
+          ],
         },
       ],
     },
     {
       path: '/tasks',
-      name: 'tasks',
       children: [
         {
           path: '',
+          name: 'tasks',
           component: () => import('../views/tasks/TasksView.vue'),
+        },
+        {
+          path: 'add-task',
+          name: 'add-task',
+          component: () => import('../views/tasks/EditTaskView.vue'),
         },
         {
           path: ':id',
           children: [
             {
               path: '',
+              name: 'task',
               component: () => import('../views/tasks/TaskView.vue'),
+              props: true,
             },
             {
               path: 'edit',
+              name: 'edit-task',
               component: () => import('../views/tasks/EditTaskView.vue'),
+              props: true,
             },
           ],
         },
@@ -107,22 +124,31 @@ const router = createRouter({
     },
     {
       path: '/automations',
-      name: 'automations',
       children: [
         {
           path: '',
+          name: 'automations',
           component: () => import('../views/automations/AutomationsView.vue'),
+        },
+        {
+          path: 'add-automation',
+          name: 'add-automation',
+          component: () => import('../views/automations/EditAutomationView.vue'),
         },
         {
           path: ':id',
           children: [
             {
               path: '',
+              name: 'automation',
               component: () => import('../views/automations/AutomationView.vue'),
+              props: true,
             },
             {
               path: 'edit',
+              name: 'edit-automation',
               component: () => import('../views/automations/EditAutomationView.vue'),
+              props: true,
             },
           ],
         },
@@ -142,7 +168,7 @@ const router = createRouter({
       path: '/settings',
       name: 'settings',
       component: () => import('../views/SettingsView.vue'),
-    }
+    },
   ],
 })
 
