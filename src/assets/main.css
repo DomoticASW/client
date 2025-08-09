@@ -1,4 +1,12 @@
 @import './fonts/all.css';
 @import "tailwindcss";
 
-@plugin "daisyui";
+@plugin "daisyui" {
+  themes: lofi --default, business --prefersdark;
+}
+
+@layer base {
+  html {
+    scrollbar-gutter: stable;
+  }
+}
