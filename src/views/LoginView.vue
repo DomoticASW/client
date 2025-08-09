@@ -1,12 +1,11 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center">
-      <div class="card-body">
-        <div class="flex justify-center min-h-[4rem] mb-4">
-          <h1 class="card-title text-4xl font-bold">Welcome back!</h1>
-        </div>
+  <div class="min-h-screen flex items-center justify-center max-w-md mx-auto">
+    <div class="card-body">
+      <div class="flex justify-center min-h-[4rem] mb-4">
+        <h1 class="card-title text-4xl font-bold">Welcome back!</h1>
+      </div>
 
-      <form @submit.prevent="handleLogin" class="w-full px-4">
-
+      <form @submit.prevent="handleLogin" class="w-full px-5">
         <div class="form-control">
           <span class="label-text">Email</span><br>
           <label class="input validator w-full">
@@ -75,18 +74,18 @@
               </button>
             </div>
           </div>
-        </form>
-        
-        <div class="divider">OR</div>
-        
-        <div class="text-center">
-          <p class="text-sm">Don't have an account?</p>
-          <router-link to="/signin" class="link link-primary text-sm">
-            Sign in
-          </router-link>
-        </div>
+      </form>
+      
+      <div class="divider">OR</div>
+      
+      <div class="text-center">
+        <p class="text-sm">Don't have an account?</p>
+        <router-link to="/signin" class="link link-primary text-sm">
+          Sign in
+        </router-link>
       </div>
     </div>
+  </div>
 </template>
 
 <script setup lang="ts">
