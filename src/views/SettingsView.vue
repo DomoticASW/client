@@ -1,7 +1,7 @@
 <template>
-  <NavbarLayout title="Settings" :show-back-button="true">
-    
-    <form @submit.prevent="handleSave" class="w-full">
+  <NavbarLayout title="Settings" :show-back-button="true" :show-logout-button="true">
+
+    <form @submit.prevent="handleSave" class="w-full px-6">
       <div class="form-control">
         <span class="label-text">Nickname</span>
         <label class="input validator w-full">
