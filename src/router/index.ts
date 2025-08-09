@@ -38,10 +38,12 @@ const router = createRouter({
           children: [
             {
               path: '',
+              name: 'manage-users-permissions',
               component: () => import('../views/admin/users-permissions/UsersPermissionsView.vue'),
             },
             {
               path: ':id',
+              name: 'user-permissions',
               component: () => import('../views/admin/users-permissions/UserPermissionsView.vue'),
             },
           ],
