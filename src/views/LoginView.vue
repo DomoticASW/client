@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-base-200">
+  <div class="min-h-screen flex items-center justify-center">
       <div class="card-body">
         <div class="flex justify-center min-h-[4rem] mb-4">
           <h1 class="card-title text-4xl font-bold">Welcome back!</h1>

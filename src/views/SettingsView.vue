@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen flex justify-center bg-base-200">
+  <div class="min-h-screen flex justify-center">
     <div class="card-body">
       <div class="flex min-h-[4rem]">
         <h1 class="card-title text-3xl font-bold mb-2">Settings</h1>
