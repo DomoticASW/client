@@ -1,8 +1,7 @@
 <template>
-  <div>
-    <h1 class="text-3xl font-bold my-2">{{ user.nickname }}</h1>
-    <div>
-      <h1 class="text-2xl font-bold dark:text-white">Can use these devices</h1>
+  <NavbarLayout :title="user.nickname" :show-back-button="true">
+    <div class="px-4">
+      <h2 class="text-2xl font-bold dark:text-white">Can use these devices</h2>
       <div>
         <ul class="list rounded-box">
           <li class="list-row" v-for="device in devicesWithPermissions" :key="device.id">
@@ -30,10 +29,8 @@
           </li>
         </ul>
       </div>
-    </div>
-    <div>
       <hr class="my-4 border-gray-300" />
-      <h1 class="text-2xl font-bold dark:text-white">Cannot use these devices</h1>
+      <h2 class="text-2xl font-bold dark:text-white">Cannot use these devices</h2>
       <div>
         <ul class="list rounded-box">
           <li class="list-row" v-for="device in devicesWithoutPermissions" :key="device.id">
@@ -62,7 +59,7 @@
         </ul>
       </div>
     </div>
-  </div>
+  </NavbarLayout>
 </template>
 
 <script setup lang="ts">
@@ -73,6 +70,7 @@ import * as devicesApi from '@/api/devices-management/requests/devices'
 import * as api from '@/api/permission-management/requests/permissions';
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import router from '@/router';
+import NavbarLayout from '@/components/NavbarLayout.vue';
 
 const loadingOverlay = useLoadingOverlayStore();
 const devicesWithPermissions = ref<Device[]>([]);
@@ -124,7 +122,7 @@ const removeUserDevicePermission = async (deviceId: DeviceId) => {
 
 onMounted(() => {
   if (!user.email || !user.nickname) {
-    router.push('./');
+    router.back();
     throw new Error('This user does not exist!');
   }
   loadDevices();
