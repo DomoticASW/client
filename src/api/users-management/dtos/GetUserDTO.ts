@@ -4,6 +4,7 @@ import { Deserializer } from "../../Deserializer"
 
 export interface GetUserDTO extends GetRegistrationRequestDTO {
   role: Role;
+  passwordHash: string;
 }
 
 export function isGetUserDTO(o: unknown): o is GetUserDTO {
