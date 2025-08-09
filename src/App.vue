@@ -8,7 +8,7 @@ import ErrorPresenter from './components/ErrorPresenter.vue'
   <div class="flex justify-center">
     <ErrorPresenter>
       <LoadingOverlay>
-        <div class="px-4 h-screen lg:w-full w-xl max-w-5xl">
+        <div class="h-screen lg:w-full w-xl max-w-5xl">
           <RouterView />
         </div>
       </LoadingOverlay>
