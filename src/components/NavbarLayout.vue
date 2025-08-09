@@ -24,7 +24,7 @@
             <li><RouterLink :to="{ name: 'tasks' }">Tasks</RouterLink></li>
             <li><RouterLink :to="{ name: 'automations' }">Automations</RouterLink></li>
             <!-- <li><RouterLink :to="{ name: 'setting' }">Settings</RouterLink></li> -->
-            <li v-if="userInfo.role === UserRole.Admin">
+            <li v-if="userInfo.role === Role.Admin">
               <p>Admin</p>
               <ul class="p-2">
                 <!-- <li><RouterLink :to="{ name: 'users' }">Users</RouterLink></li> -->
@@ -46,7 +46,7 @@
           <li><RouterLink :to="{ name: 'tasks' }">Tasks</RouterLink></li>
           <li><RouterLink :to="{ name: 'automations' }">Automations</RouterLink></li>
           <!-- <li><RouterLink :to="{ name: 'setting' }">Settings</RouterLink></li> -->
-          <li v-if="userInfo.role === UserRole.Admin">
+          <li v-if="userInfo.role === Role.Admin">
             <details>
               <summary>Admin</summary>
               <ul class="p-2 bg-base-300 w-40 z-1">
@@ -71,7 +71,8 @@
 </template>
 
 <script setup lang="ts">
-import { UserRole, useUserInfoStore } from '@/stores/user-info'
+import { useUserInfoStore } from '@/stores/user-info'
+import { Role } from '@/model/users-management/User'
 import { useRouter } from 'vue-router'
 
 defineProps({
