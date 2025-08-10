@@ -4,10 +4,6 @@ export interface User {
   role: Role
 }
 
-export interface CompleteUser extends User {
-  passwordHash: string;
-}
-
 export interface UserInfo extends User {
   token: string
 }
