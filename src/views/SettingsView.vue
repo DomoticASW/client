@@ -1,5 +1,5 @@
 <template>
-  <NavbarLayout title="Settings" :show-back-button="true" :show-logout-button="true">
+  <NavbarLayout title="Settings" :show-logout-button="true">
 
     <form @submit.prevent="handleSave" class="w-full px-6">
       <div class="form-control">
@@ -135,6 +135,7 @@ import { useUserInfoStore } from '@/stores/user-info';
 import * as api from '@/api/users-management/requests/users';
 import { useLoadingOverlayStore } from '@/stores/loading-overlay';
 import NavbarLayout from '@/components/NavbarLayout.vue'
+import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
 
 type SettingsForm = {
   nickname: string;
@@ -144,6 +145,7 @@ type SettingsForm = {
 };
 
 const loadingOverlay = useLoadingOverlayStore()
+const successPresenter = useSuccessPresenterStore();
 
 const userInfoStore = useUserInfoStore();
 const userNickname = ref(userInfoStore.nickname);
@@ -204,6 +206,13 @@ const handleSave = async (): Promise<void> => {
     loadingOverlay.startLoading();
     await api.updateUser(userInfoStore.token, body);
     userInfoStore.setNickname(form.nickname);
+    successPresenter.showSuccess(presentSuccess('Settings saved successfully', '', 5000));
+    initialForm.nickname = form.nickname;
+    initialForm.password = '';
+    initialForm.confirmPassword = '';
+    form.password = '';
+    form.confirmPassword = '';
+    hasChanges.value = false;
   } finally {
     loadingOverlay.stopLoading();
   }

@@ -9,12 +9,14 @@ import Route from '@/router/index.ts'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import NavbarLayout from '@/components/NavbarLayout.vue'
 import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
+import { useErrorPresenterStore } from '@/stores/error-presenter'
 
 const props = defineProps<{ id: string }>()
 const userInfo = useUserInfoStore()
 
 const instructionsStore = useInstructionsStore()
 const loadingOverlay = useLoadingOverlayStore()
+const errorPresenter = useErrorPresenterStore()
 
 const taskName = ref<string>('')
 const taskId = ref<TaskId>()
@@ -26,14 +28,9 @@ onMounted(async () => {
     instructionsStore.instructions = task.instructions
     taskName.value = task.name
     taskId.value = task.id
-  } catch (err: unknown) {
-    if (typeof err == 'object' && err != undefined) {
-      if (err && '__brand' in err) {
-        if (err.__brand === 'ScriptNotFoundError') {
-          Route.back()
-        }
-      }
-      throw err
+  } catch (err) {
+    if (typeof err == 'object' && err) {
+      errorPresenter.showError(err, Route.back)
     }
   } finally {
     loadingOverlay.stopLoading()

@@ -1,5 +1,5 @@
 <template>
-  <NavbarLayout title="Manage users permissions" :show-back-button="true">
+  <NavbarLayout title="Manage users permissions">
     <div v-if="users.length === 0" class="flex text-center text-gray-500 justify-center items-center min-h-[50vh]">
       <p class="text-2xl">No users yet...</p>
     </div>
