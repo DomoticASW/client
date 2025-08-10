@@ -1,5 +1,5 @@
 <template>
-  <NavbarLayout title="Settings" :show-back-button="true" :show-logout-button="true">
+  <NavbarLayout title="Settings" :show-logout-button="true">
 
     <form @submit.prevent="handleSave" class="w-full px-6">
       <div class="form-control">
