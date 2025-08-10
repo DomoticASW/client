@@ -6,7 +6,6 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
       redirect: { name: 'devices' },
     },
     {
