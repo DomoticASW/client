@@ -9,6 +9,7 @@ import { useInstructionsStore } from '@/stores/instructions'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import Route from '@/router/index'
 import NavbarLayout from '@/components/NavbarLayout.vue'
+import { useErrorPresenterStore } from '@/stores/error-presenter'
 
 const props = defineProps<{ id: string }>()
 const userInfo = useUserInfoStore()
@@ -17,6 +18,7 @@ const automationName = ref<string>('')
 const automationId = ref<AutomationId>()
 const trigger = ref<AutomationTrigger>()
 const loadingOverlay = useLoadingOverlayStore()
+const errorPresenter = useErrorPresenterStore()
 
 onMounted(async () => {
   try {
@@ -26,14 +28,9 @@ onMounted(async () => {
     automationName.value = automation.name
     automationId.value = automation.id
     trigger.value = automation.trigger
-  } catch (err: unknown) {
-    if (typeof err == 'object' && err != undefined) {
-      if (err && '__brand' in err) {
-        if (err.__brand === 'ScriptNotFoundError') {
-          Route.back()
-        }
-      }
-      throw err
+  } catch (err) {
+    if (typeof err == 'object' && err) {
+      errorPresenter.showError(err, Route.back)
     }
   } finally {
     loadingOverlay.stopLoading()

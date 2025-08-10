@@ -17,6 +17,7 @@ import Route from '@/router/index'
 import NavbarLayout from '@/components/NavbarLayout.vue'
 import type { Device } from '@/model/devices-management/Device'
 import DeviceActionPropertyDialog from '@/components/tasks-automations/DeviceActionPropertyDialog.vue'
+import { useErrorPresenterStore } from '@/stores/error-presenter'
 
 const props = defineProps<{ id?: string }>()
 const userInfo = useUserInfoStore()
@@ -25,6 +26,7 @@ const automationName = ref<string>('')
 const trigger = ref<AutomationTrigger | undefined>()
 const loadingOverlay = useLoadingOverlayStore()
 const selectedDevice = ref<Device | undefined>(undefined)
+const errorPresenter = useErrorPresenterStore()
 
 onMounted(async () => {
   if (props.id) {
@@ -34,14 +36,9 @@ onMounted(async () => {
       instructionsStore.instructions = automation.instructions
       automationName.value = automation.name
       trigger.value = automation.trigger
-    } catch (err: unknown) {
-      if (typeof err == 'object' && err != undefined) {
-        if (err && '__brand' in err) {
-          if (err.__brand === 'ScriptNotFoundError') {
-            Route.back()
-          }
-        }
-        throw err
+    } catch (err) {
+      if (typeof err == 'object' && err) {
+        errorPresenter.showError(err, Route.back)
       }
     } finally {
       loadingOverlay.stopLoading()

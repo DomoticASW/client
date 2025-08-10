@@ -12,6 +12,7 @@ import Route from '@/router/index'
 import NavbarLayout from '@/components/NavbarLayout.vue'
 import type { Device } from '@/model/devices-management/Device'
 import DeviceActionPropertyDialog from '@/components/tasks-automations/DeviceActionPropertyDialog.vue'
+import { useErrorPresenterStore } from '@/stores/error-presenter'
 
 const props = defineProps<{ id?: string }>()
 const userInfo = useUserInfoStore()
@@ -19,6 +20,7 @@ const instructionsStore = useInstructionsStore()
 const taskName = ref<string>('')
 const loadingOverlay = useLoadingOverlayStore()
 const selectedDevice = ref<Device | undefined>(undefined)
+const errorPresenter = useErrorPresenterStore()
 
 onMounted(async () => {
   if (props.id) {
@@ -27,14 +29,9 @@ onMounted(async () => {
       const task = await findTask(TaskId(props.id), userInfo.token)
       instructionsStore.instructions = task.instructions
       taskName.value = task.name
-    } catch (err: unknown) {
-      if (typeof err == 'object' && err != undefined) {
-        if (err && '__brand' in err) {
-          if (err.__brand === 'ScriptNotFoundError') {
-            Route.back()
-          }
-        }
-        throw err
+    } catch (err) {
+      if (typeof err == 'object' && err) {
+        errorPresenter.showError(err, Route.back)
       }
     } finally {
       loadingOverlay.stopLoading()
@@ -83,7 +80,6 @@ function closeDialog() {
   const dialog = document.getElementById('device_action_property') as HTMLDialogElement
   dialog.close()
 }
-
 </script>
 
 <template>
