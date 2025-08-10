@@ -156,7 +156,7 @@ onMounted(() => {
   userEmail.value = userInfoStore.email;
 });
 
-let initialForm = reactive<SettingsForm>({
+const initialForm = reactive<SettingsForm>({
   nickname: userNickname.value,
   email: userEmail.value,
   password: '',
