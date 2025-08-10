@@ -170,12 +170,9 @@ router.beforeEach((to) => {
   const userInfo = inject('userInfo')
   if (typeof userInfo === 'object' && userInfo && 'token' in userInfo && typeof userInfo.token === 'string') {
     // Token needs to be validated because it could be expired
-    if (userInfo.token.length > 0) {
-      if (to.name?.toString() === "login" ||
-        to.name?.toString() === "signin") {
-        return {
-          name: 'devices'
-        }
+    if (to.name?.toString() === "login" || to.name?.toString() === "signin") {
+      return {
+        name: 'devices'
       }
     }
   } else {
