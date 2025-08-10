@@ -7,13 +7,13 @@ import { useUserInfoStore } from '@/stores/user-info'
 import { taskListDeserializer } from '@/api/permissions-management/GetTaskListDTO'
 import { editListDeserializer } from '@/api/permissions-management/GetEditListDTO'
 import { Role, type User } from '@/model/users-management/User'
-import { usersDeserializer } from '@/api/users-management/GetUserDTO'
 import type { Automation, Task } from '@/model/scripts/Script'
-import { taskDeserializer } from '@/api/scripts/GetTaskDTO'
-import { automationDeserializer } from '@/api/scripts/GetAutomationDTO'
 import { useRoute } from 'vue-router'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
+import { automationDeserializer } from '@/api/scripts/dtos/GetAutomationDTO'
+import { usersDeserializer } from '@/api/users-management/dtos/GetUserDTO'
+import { taskDeserializer } from '@/api/scripts/dtos/GetTaskDTO'
 
 const route = useRoute()
 const loadingOverlay = useLoadingOverlayStore()

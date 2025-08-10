@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { authorizedRequest, deserializeBody } from '@/api/api'
-import { automationDeserializer } from '@/api/scripts/GetAutomationDTO'
-import { tasksDeserializer } from '@/api/scripts/GetTaskDTO'
+import { automationDeserializer } from '@/api/scripts/dtos/GetAutomationDTO'
+import { tasksDeserializer } from '@/api/scripts/dtos/GetTaskDTO'
 import type { Automation, Task } from '@/model/scripts/Script'
 import { useUserInfoStore } from '@/stores/user-info'
 import { onMounted, ref } from 'vue'

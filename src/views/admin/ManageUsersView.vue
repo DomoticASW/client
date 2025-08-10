@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { authorizedRequest, deserializeBody } from '@/api/api'
-import { registrationRequestsDeserializer } from '@/api/users-management/GetRegistrationRequestDTO'
-import { usersDeserializer } from '@/api/users-management/GetUserDTO'
+import { arrayDeserializer } from '@/api/Deserializer'
+import { registrationRequestDeserializer } from '@/api/users-management/dtos/GetRegistrationRequestDTO'
+import { usersDeserializer } from '@/api/users-management/dtos/GetUserDTO'
 import type { RegistrationRequest } from '@/model/users-management/RegistrationRequest'
 import { Role, type User } from '@/model/users-management/User'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
@@ -20,7 +21,7 @@ onMounted(async () => {
 })
 onMounted(async () => {
   const res = await authorizedRequest(`/api/registrationRequests`, userInfo.token)
-  unregisteredUsers.value = await deserializeBody(res, registrationRequestsDeserializer)
+  unregisteredUsers.value = await deserializeBody(res, arrayDeserializer(registrationRequestDeserializer))
 })
 
 function removeUser(user: User) {
@@ -69,7 +70,7 @@ function approveRequest(user: RegistrationRequest) {
         const newUser: User = {
           email: user.email,
           nickname: user.nickname,
-          passwordHash: user.passwordHash,
+          passwordHash: "",
           role: Role.User,
         }
         registeredUsers.value?.push(newUser)
