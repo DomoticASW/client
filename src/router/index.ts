@@ -1,3 +1,4 @@
+import { inject } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -5,6 +6,7 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      name: 'home',
       redirect: { name: 'devices' },
     },
     {
@@ -162,6 +164,27 @@ const router = createRouter({
       component: () => import('../views/SettingsView.vue'),
     },
   ],
+})
+
+router.beforeEach((to) => {
+  const userInfo = inject('userInfo')
+  if (typeof userInfo === 'object' && userInfo && 'token' in userInfo && typeof userInfo.token === 'string') {
+    // Token needs to be validated because it could be expired
+    if (userInfo.token.length > 0) {
+      if (to.name?.toString() === "login" ||
+        to.name?.toString() === "signin") {
+        return {
+          name: 'devices'
+        }
+      }
+    }
+  } else {
+    if (to.name !== 'login' && to.name !== 'signin') {
+      return {
+        name: 'login'
+      }
+    }
+  }
 })
 
 export default router
