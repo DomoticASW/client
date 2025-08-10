@@ -149,6 +149,7 @@ import { required, email, minLength, sameAs, helpers } from '@vuelidate/validato
 import { useRouter } from 'vue-router';
 import * as api from '@/api/users-management/requests/users';
 import { useLoadingOverlayStore } from '@/stores/loading-overlay';
+import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
 
 type SigninForm = {
   nickname: string;
@@ -159,6 +160,7 @@ type SigninForm = {
 
 const router = useRouter();
 const loadingOverlay = useLoadingOverlayStore()
+const successPresenter = useSuccessPresenterStore();
 
 const form = reactive<SigninForm>({
   nickname: '',
@@ -198,7 +200,7 @@ const handleSignin = async (): Promise<void> => {
   } finally {
     loadingOverlay.stopLoading();
   }
-
+  successPresenter.showSuccess(presentSuccess('You have successfully registered', 'Now you have to wait for admin approval', 7000));
   router.push('/login');
 };
 </script>
