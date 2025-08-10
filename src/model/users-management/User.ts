@@ -1,14 +1,14 @@
-export interface BasicUser {
+export interface User {
   nickname: string
   email: string
   role: Role
 }
 
-export interface User extends BasicUser {
+export interface CompleteUser extends User {
   passwordHash: string;
 }
 
-export interface UserInfo extends BasicUser {
+export interface UserInfo extends User {
   token: string
 }
 

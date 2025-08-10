@@ -1,11 +1,8 @@
-import { Role, type UserInfo } from "@/model/users-management/User"
+import { type UserInfo } from "@/model/users-management/User"
 import { Deserializer } from "../../Deserializer"
-import { isRole } from "./GetUserDTO";
+import { isRole, type GetUserDTO } from "./GetUserDTO";
 
-export interface GetUserInfoDTO { 
-  nickname: string;
-  email: string;
-  role: Role;
+export interface GetUserInfoDTO extends GetUserDTO { 
   token: string;
 }
 
