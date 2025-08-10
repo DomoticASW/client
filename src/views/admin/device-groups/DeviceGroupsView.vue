@@ -6,28 +6,29 @@ import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import DeviceListSkeleton from '@/components/admin/manage-devices/DeviceListSkeleton.vue'
 import type { DeviceGroup, DeviceGroupId } from '@/model/devices-management/DeviceGroup'
 import * as api from '@/api/devices-management/requests/device-groups'
+import { useErrorPresenterStore } from '@/stores/error-presenter'
 
 const userInfo = useUserInfoStore()
 const loadingOverlay = useLoadingOverlayStore()
+const errorPresenter = useErrorPresenterStore()
 const groups = ref<DeviceGroup[] | undefined>(undefined)
 
 /* Group creation */
 const groupCreatingName = ref<string | undefined>(undefined)
 const createGroupModal = useTemplateRef('create-group-modal')
-function cancelCreatingGroup() {
-  groupCreatingName.value = undefined
-  createGroupModal.value!.close()
-}
 async function saveCreatingGroup() {
   const name = groupCreatingName.value
+  createGroupModal.value!.close()
   if (name) {
     try {
       loadingOverlay.startLoading()
       const id = await api.createDeviceGroup(name, userInfo.token)
       const group = await api.findDeviceGroup(id, userInfo.token)
       groups.value?.push(group)
+    } catch (e) {
+      if (typeof e == 'object' && e != null)
+        errorPresenter.showError(e, () => createGroupModal.value!.showModal())
     } finally {
-      cancelCreatingGroup()
       loadingOverlay.stopLoading()
     }
   }
@@ -46,14 +47,10 @@ function startEditingGroup(id: string) {
     editGroupNameModal.value!.showModal()
   }
 }
-function cancelEditingGroup() {
-  groupEditing.value = undefined
-  groupEditingName.value = undefined
-  editGroupNameModal.value!.close()
-}
 async function saveEditingGroup() {
   const id = groupEditing.value
   const newName = groupEditingName.value
+  editGroupNameModal.value!.close()
   if (groups.value && id && newName != undefined) {
     try {
       loadingOverlay.startLoading()
@@ -62,8 +59,10 @@ async function saveEditingGroup() {
       if (group) {
         group.name = newName
       }
+    } catch (e) {
+      if (typeof e == 'object' && e != null)
+        errorPresenter.showError(e, () => editGroupNameModal.value!.showModal())
     } finally {
-      cancelEditingGroup()
       loadingOverlay.stopLoading()
     }
   }
@@ -89,7 +88,7 @@ onMounted(async () => {
           <input type="text" placeholder="Group name" class="input" v-model="groupCreatingName" />
           <div class="modal-action">
             <button class="btn btn-primary" v-on:click="saveCreatingGroup()">Save</button>
-            <button class="btn btn-primary btn-soft" v-on:click="cancelCreatingGroup()">
+            <button class="btn btn-primary btn-soft" v-on:click="createGroupModal!.close()">
               Cancel
             </button>
           </div>
@@ -122,7 +121,9 @@ onMounted(async () => {
         <input type="text" placeholder="Group name" class="input" v-model="groupEditingName" />
         <div class="modal-action">
           <button class="btn btn-primary" v-on:click="saveEditingGroup()">Save</button>
-          <button class="btn btn-primary btn-soft" v-on:click="cancelEditingGroup()">Cancel</button>
+          <button class="btn btn-primary btn-soft" v-on:click="editGroupNameModal!.close()">
+            Cancel
+          </button>
         </div>
       </div>
     </dialog>

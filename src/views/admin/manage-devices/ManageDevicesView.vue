@@ -6,9 +6,11 @@ import { useUserInfoStore } from '@/stores/user-info'
 import { onMounted, ref, useTemplateRef } from 'vue'
 import { RouterLink } from 'vue-router'
 import * as api from '@/api/devices-management/requests/devices'
+import { useErrorPresenterStore } from '@/stores/error-presenter'
 
 const userInfo = useUserInfoStore()
 const loadingOverlay = useLoadingOverlayStore()
+const errorPresenter = useErrorPresenterStore()
 const devices = ref<Device[] | undefined>()
 
 async function removeDevice(id: DeviceId) {
@@ -31,14 +33,10 @@ function startEditingDevice(id: DeviceId) {
   deviceEditingName.value = device.name
   editDeviceNameModal.value?.showModal()
 }
-function cancelEditingDevice() {
-  deviceEditing.value = undefined
-  deviceEditingName.value = undefined
-  editDeviceNameModal.value?.close()
-}
 async function saveEditingDevice() {
   const id = deviceEditing.value
   const newName = deviceEditingName.value
+  editDeviceNameModal.value?.close()
   if (devices.value && id && newName != undefined) {
     try {
       loadingOverlay.startLoading()
@@ -47,12 +45,13 @@ async function saveEditingDevice() {
       if (device) {
         device.name = newName
       }
+    } catch (e) {
+      if (typeof e == 'object' && e != null)
+        errorPresenter.showError(e, () => editDeviceNameModal.value!.showModal())
     } finally {
-      cancelEditingDevice()
       loadingOverlay.stopLoading()
     }
   }
-  cancelEditingDevice()
 }
 
 onMounted(async () => {
@@ -92,7 +91,7 @@ onMounted(async () => {
         <input type="text" placeholder="Device name" class="input" v-model="deviceEditingName" />
         <div class="modal-action">
           <button class="btn btn-primary" v-on:click="saveEditingDevice()">Save</button>
-          <button class="btn btn-primary btn-soft" v-on:click="cancelEditingDevice()">
+          <button class="btn btn-primary btn-soft" v-on:click="editDeviceNameModal?.close()">
             Cancel
           </button>
         </div>
