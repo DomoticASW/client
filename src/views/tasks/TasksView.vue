@@ -1,44 +1,59 @@
-<script async setup lang="ts">
+<script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import AddButton from '@/components/AddButton.vue'
-import { authorizedRequest, deserializeBody } from '@/api/api'
 import { useUserInfoStore } from '@/stores/user-info'
-import type { Task } from '@/model/scripts/Script'
-import { tasksDeserializer } from '@/api/scripts/GetTaskDTO'
+import type { Task, TaskId } from '@/model/scripts/Script'
+import { executeTask, getAllTasks } from '@/api/scripts/requests/tasks'
+import { useLoadingOverlayStore } from '@/stores/loading-overlay'
+import NavbarLayout from '@/components/NavbarLayout.vue'
 
 const userInfo = useUserInfoStore()
+const tasks = ref<Task[]>([])
 
-const tasks = ref<Task[]>()
+const loadingOverlay = useLoadingOverlayStore()
 
 onMounted(async () => {
-  const res = await authorizedRequest('/api/tasks', userInfo.token)
-
-  tasks.value = await deserializeBody(res, tasksDeserializer)
+  try {
+    loadingOverlay.startLoading()
+    tasks.value = await getAllTasks(userInfo.token)
+  } finally {
+    loadingOverlay.stopLoading()
+  }
 })
+
+async function startTask(taskId: TaskId) {
+  try {
+    loadingOverlay.startLoading()
+    await executeTask(taskId, userInfo.token)
+  } finally {
+    loadingOverlay.stopLoading()
+  }
+}
 </script>
 
 <template>
-  <ul class="list rounded-box" v-if="tasks">
-    <RouterLink
-      v-for="task in tasks"
-      :key="task.id"
-      :to="{ name: 'task', params: { id: task.id } }"
-    >
-      <li class="list-row">
-        <div class="list-col-grow flex items-center">
+  <NavbarLayout title="Tasks" :show-back-button="false">
+    <ul class="list rounded-box" v-if="tasks">
+      <li class="list-row" v-for="task in tasks" :key="task.id">
+        <RouterLink
+          class="list-col-grow flex items-center"
+          :to="{ name: 'task', params: { id: task.id } }"
+        >
           {{ task.name }}
-        </div>
-        <a
+        </RouterLink>
+
+        <button
           type="button"
           class="btn btn-circle btn-ghost fa-solid fa-play fa-lg !flex"
-          :aria-label="'Start task: ' + task"
-        ></a>
+          @click="startTask(task.id)"
+          :aria-label="'Start task: ' + task.name"
+        ></button>
       </li>
-    </RouterLink>
-  </ul>
+    </ul>
 
-  <AddButton name="add-task" />
+    <AddButton name="add-task" />
+  </NavbarLayout>
 </template>
 
 <style></style>

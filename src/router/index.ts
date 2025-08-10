@@ -18,6 +18,13 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue'),
     },
     {
+      path: '/devices',
+      children: [
+        { path: '', name: 'devices', component: () => import('../views/devices/DevicesView.vue') },
+        { path: ':id', name: 'device', component: () => import('../views/devices/DeviceView.vue'), props: true }
+      ]
+    },
+    {
       path: '/admin',
       children: [
         {
@@ -103,13 +110,15 @@ const router = createRouter({
           children: [
             {
               path: '',
-              name: "task",
+              name: 'task',
               component: () => import('../views/tasks/TaskView.vue'),
+              props: true,
             },
             {
               path: 'edit',
-              name: "edit-task",
+              name: 'edit-task',
               component: () => import('../views/tasks/EditTaskView.vue'),
+              props: true,
             },
           ],
         },
@@ -135,11 +144,13 @@ const router = createRouter({
               path: '',
               name: 'automation',
               component: () => import('../views/automations/AutomationView.vue'),
+              props: true,
             },
             {
               path: 'edit',
               name: 'edit-automation',
               component: () => import('../views/automations/EditAutomationView.vue'),
+              props: true,
             },
           ],
         },

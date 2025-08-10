@@ -1,5 +1,5 @@
-import type { Task } from '@/model/scripts/Script.js'
-import { arrayDeserializer, Deserializer } from '../Deserializer.js'
+import { TaskId, type Task } from '@/model/scripts/Script.js'
+import { arrayDeserializer, Deserializer } from '../../Deserializer.js'
 import {
   instructionsDeserializer,
   isGetInstructionDTO,
@@ -28,7 +28,7 @@ function isGetTaskDTO(o: unknown): o is GetTaskDTO {
 
 export const taskDeserializer = Deserializer<GetTaskDTO, Task>(isGetTaskDTO, (dto) => {
   return {
-    id: dto.id,
+    id: TaskId(dto.id),
     name: dto.name,
     instructions: instructionsDeserializer(dto.instructions),
   }

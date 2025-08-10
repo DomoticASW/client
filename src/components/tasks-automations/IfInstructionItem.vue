@@ -1,43 +1,50 @@
 <template>
   <!-- If card -->
-
-  <div :class="indent">
-    <div :class="['card card-sm my-2', colors]">
-      <div class="card-body text-base grid grid-cols-4 px-4">
-        <template v-if="moveInstruction !== undefined">
-          <button
-            class="btn btn-xs btn-square fa-solid fa-angle-up col-end-1"
-            @click="moveInstruction(props.instruction, 'up')"
-          ></button>
-          <button
-            class="btn btn-xs btn-square fa-solid fa-angle-down row-start-2"
-            @click="moveInstruction(props.instruction, 'down')"
-          ></button>
-        </template>
-        <p>If</p>
-        <div class="font-bold grid grid-cols-5 col-span-3 row-span-2">
-          <p class="truncate col-span-2">{{ instruction.condition.leftConstantName }}</p>
-          <p class="truncate">{{ operatorSymbol }}</p>
-          <p class="truncate col-span-2">{{ instruction.condition.rightConstantName }}</p>
-          <template v-if="removeInstruction !== undefined">
-            <button
-              class="btn btn-square fa-solid fa-xmark ml-4 row-start-1 col-start-6 place-self-center"
-              @click="removeInstruction(props.instruction)"
-            ></button>
-          </template>
-        </div>
-      </div>
+  <InstructionLayout
+    :colors="colors"
+    :indent="indent"
+    :edit="edit"
+    :instruction="props.instruction"
+  >
+  <div class="grid grid-cols-6 col-span-3 row-span-2">
+      <p class="self-center">If</p>
+      <p class="truncate col-span-2 font-bold" v-if="!edit">{{ instruction.condition.leftConstantName }}</p>
+      <p class="truncate col-span-2 font-bold" v-if="!edit">{{ operatorSymbol }}</p>
+      <p class="truncate font-bold" v-if="!edit">{{ instruction.condition.rightConstantName }}</p>
+      <input
+        v-if="edit"
+        type="text"
+        class="input text-base-content w-20 place-self-center"
+        placeholder="Constant name"
+        v-model="instruction.condition.leftConstantName"
+      />
+      <select
+        v-if="edit"
+        v-model="instruction.condition.conditionOperatorType"
+        class="select text-base-content col-span-3 w-20 place-self-center"
+      >
+        <option v-for="operator in ConditionOperatorType" :key="operator" :value="operator">
+          {{ getOperator(operator) }}
+        </option>
+      </select>
+      <input
+        v-if="edit"
+        type="text"
+        class="input text-base-content w-20 place-self-center"
+        placeholder="Constant name"
+        v-model="instruction.condition.rightConstantName"
+      />
     </div>
-  </div>
+  </InstructionLayout>
 
   <!-- Then instructions -->
   <InstructionItem
     v-for="(ins, i) in instruction.thenInstructions"
-    :key="'then-' + i"
+    :key="id + '-then-' + i.toString()"
+    :id="id + '-then' + i.toString()"
     :instruction="ins"
     :depth="depth + 1"
-    :moveInstruction="moveInstruction"
-    :removeInstruction="removeInstruction"
+    :edit="edit"
   />
 
   <!-- Else block -->
@@ -49,11 +56,11 @@
     </div>
     <InstructionItem
       v-for="(ins, i) in instruction.elseInstructions"
-      :key="'else-' + i"
+      :key="id + '-else-' + i.toString()"
+      :id="id + '-else' + i.toString()"
       :instruction="ins"
       :depth="depth + 1"
-      :moveInstruction="moveInstruction"
-      :removeInstruction="removeInstruction"
+      :edit="edit"
     />
   </template>
 
@@ -66,36 +73,55 @@
 </template>
 
 <script setup lang="ts">
-import { type IfInstruction, type IfElseInstruction, ConditionOperatorType, type Instruction } from '@/model/scripts/Instruction';
+import {
+  type IfInstruction,
+  type IfElseInstruction,
+  ConditionOperatorType,
+  type Instruction,
+} from '@/model/scripts/Instruction'
 import InstructionItem from './InstructionItem.vue'
+import InstructionLayout from './InstructionLayout.vue'
+import { ref, watch } from 'vue'
 
 const props = defineProps<{
+  id: string
   instruction: Instruction
   indent: string
   depth: number
   colors: string
-  moveInstruction?: (instr: Instruction, dir: 'up' | 'down') => void
-  removeInstruction?: (instr: Instruction) => void
+  edit: boolean
 }>()
 
-const instruction = props.instruction.instruction as IfInstruction | IfElseInstruction
-const operatorSymbol = getOperator()
+const instruction = ref(props.instruction.instruction as IfInstruction | IfElseInstruction)
 
-function getOperator() {
-  switch(instruction.condition.conditionOperatorType) {
+watch(
+  () => props.instruction,
+  (val) => {
+    instruction.value = val.instruction as IfInstruction | IfElseInstruction
+  },
+  { immediate: true },
+)
+
+const operatorSymbol = getOperator(instruction.value.condition.conditionOperatorType)
+
+function getOperator(operator: ConditionOperatorType) {
+  switch (operator) {
     case ConditionOperatorType.BooleanEOperator:
+      return 'bool eq'
     case ConditionOperatorType.ColorEOperator:
+      return 'color eq'
     case ConditionOperatorType.StringEOperator:
+      return 'is'
     case ConditionOperatorType.NumberEOperator:
-      return "=="
+      return '=='
     case ConditionOperatorType.NumberGEOperator:
-      return ">="
+      return '>='
     case ConditionOperatorType.NumberGOperator:
-      return ">"
+      return '>'
     case ConditionOperatorType.NumberLEOperator:
-      return "<="
+      return '<='
     case ConditionOperatorType.NumberLOperator:
-      return "<"
+      return '<'
   }
 }
 </script>

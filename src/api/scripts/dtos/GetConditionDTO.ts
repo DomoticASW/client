@@ -1,5 +1,5 @@
 import { ConditionOperatorType, type Condition } from '@/model/scripts/Instruction'
-import { Deserializer } from '../Deserializer'
+import { Deserializer } from '../../Deserializer'
 
 export interface GetConditionDTO {
   leftConstantName: string

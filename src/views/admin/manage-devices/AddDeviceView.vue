@@ -3,15 +3,14 @@ import DeviceListSkeleton from '@/components/admin/manage-devices/DeviceListSkel
 import type { DiscoveredDevice } from '@/model/devices-management/DiscoveredDevice'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import { useUserInfoStore } from '@/stores/user-info'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, useTemplateRef } from 'vue'
 import * as api from '@/api/devices-management/requests/devices'
 
 const userInfo = useUserInfoStore()
 const loadingOverlay = useLoadingOverlayStore()
 const devices = ref<DiscoveredDevice[] | undefined>()
 
-const successAlertId = 'success_alert_id'
-const successAlert = () => document.getElementById(successAlertId)!
+const successAlert = useTemplateRef('success-alert-id')
 async function addDevice(id: string) {
   const deviceToAdd = devices.value!.find((d) => d.id == id)!
   const host = deviceToAdd.address.host
@@ -20,8 +19,8 @@ async function addDevice(id: string) {
     loadingOverlay.startLoading()
     await api.registerDevice({ host, port }, userInfo.token)
     devices.value = devices.value!.filter((d) => d.id != id)
-    successAlert().classList.remove('opacity-0')
-    setTimeout(() => successAlert().classList.add('opacity-0'), 2000)
+    successAlert.value?.classList.remove('opacity-0')
+    setTimeout(() => successAlert.value?.classList.add('opacity-0'), 2000)
   } finally {
     loadingOverlay.stopLoading()
   }
@@ -50,7 +49,7 @@ onMounted(async () => {
     </ul>
     <DeviceListSkeleton v-else />
     <div
-      :id="successAlertId"
+      ref="success-alert-id"
       role="alert"
       class="alert alert-success fixed bottom-1 inset-x-1 opacity-0 transition-all duration-300"
     >

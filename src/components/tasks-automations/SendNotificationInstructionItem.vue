@@ -1,51 +1,49 @@
 <template>
-  <div :class="indent">
-    <div :class="['card card-sm my-2', colors]">
-      <div class="card-body text-base grid grid-cols-2 px-4">
-        <template v-if="moveInstruction !== undefined">
-          <button
-            class="btn btn-xs btn-square fa-solid fa-angle-up col-end-1"
-            @click="moveInstruction(props.instruction, 'up')"
-          ></button>
-          <button
-            class="btn btn-xs btn-square fa-solid fa-angle-down row-start-2"
-            @click="moveInstruction(props.instruction, 'down')"
-          ></button>
-        </template>
-        <p class="truncate">Send notification to</p>
-        <p class="font-bold text-center truncate">{{ instruction.email }}</p>
+  <InstructionLayout
+    :colors="colors"
+    :indent="indent"
+    :edit="edit"
+    :instruction="props.instruction"
+  >
+    <p class="truncate">Send notification to</p>
+    <p v-if="!edit" class="font-bold text-center truncate">{{ instruction.email }}</p>
+    <select v-model="instruction.email" v-else class="select text-center truncate h-7 text-base-content"> <!-- Show all the users -->
+      <option :value="instruction.email" selected>{{ instruction.email }}</option>
+    </select>
+    <!-- To see if it is possible to retrieve the name of a user just by using its email -->
 
-        <label class="label mb-2 text-secondary-content col-span-2">Message sent</label>
-        <div class="row-start-3 col-span-full">
-          <textarea
-            placeholder="Message sent"
-            class="w-full textarea"
-            :disabled="moveInstruction === undefined"
-            :value="instruction.message"
-          />
-        </div>
-        <template v-if="removeInstruction !== undefined">
-          <button
-            class="btn btn-square fa-solid fa-xmark row-start-1 col-start-3 row-span-2 place-self-center"
-            @click="removeInstruction(props.instruction)"
-          ></button>
-        </template>
-      </div>
+    <label class="label mb-2 text-secondary-content col-span-2">Message sent</label>
+    <div class="row-start-3 col-span-full">
+      <textarea
+        placeholder="Message sent"
+        class="w-full textarea text-base-content"
+        :disabled="!edit"
+        v-model="instruction.message"
+      />
     </div>
-  </div>
+  </InstructionLayout>
 </template>
 
 <script setup lang="ts">
 import type { Instruction, SendNotificationInstruction } from '@/model/scripts/Instruction'
+import InstructionLayout from './InstructionLayout.vue'
+import { ref, watch } from 'vue'
 
 const props = defineProps<{
   instruction: Instruction
   indent: string
   depth: number
   colors: string
-  moveInstruction?: (instr: Instruction, dir: 'up' | 'down') => void
-  removeInstruction?: (instr: Instruction) => void
+  edit: boolean
 }>()
 
-const instruction = props.instruction.instruction as SendNotificationInstruction
+const instruction = ref(props.instruction.instruction as SendNotificationInstruction)
+
+watch(
+  () => props.instruction,
+  (val) => {
+    instruction.value = val.instruction as SendNotificationInstruction
+  },
+  { immediate: true },
+)
 </script>

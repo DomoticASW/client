@@ -4,39 +4,39 @@
       instruction.type === InstructionType.IfInstruction ||
       instruction.type === InstructionType.IfElseInstruction
     "
+    :id="id"
     :instruction="instruction"
     :depth="depthLevel"
     :indent="indentClass"
     :colors="colors"
-    :moveInstruction="moveInstruction"
-    :removeInstruction="removeInstruction"
+    :edit="edit"
   />
   <ConstantInstructionItem
     v-else-if="instruction.type === InstructionType.CreateConstantInstruction"
+    :id="id"
     :instruction="instruction"
     :depth="depthLevel"
     :indent="indentClass"
     :colors="colors"
-    :moveInstruction="moveInstruction"
-    :removeInstruction="removeInstruction"
+    :edit="edit"
   />
   <CreateDevicePropertyConstantInstructionItem
     v-else-if="instruction.type === InstructionType.CreateDevicePropertyConstantInstruction"
+    :id
     :instruction="instruction"
     :depth="depthLevel"
     :indent="indentClass"
     :colors="colors"
-    :moveInstruction="moveInstruction"
-    :removeInstruction="removeInstruction"
+    :edit="edit"
   />
   <DeviceActionInstructionItem
     v-else-if="instruction.type === InstructionType.DeviceActionInstruction"
+    :id="id"
     :instruction="instruction"
     :depth="depthLevel"
     :indent="indentClass"
     :colors="colors"
-    :moveInstruction="moveInstruction"
-    :removeInstruction="removeInstruction"
+    :edit="edit"
   />
   <SendNotificationInstructionItem
     v-else-if="instruction.type === InstructionType.SendNotificationInstruction"
@@ -44,8 +44,23 @@
     :depth="depthLevel"
     :indent="indentClass"
     :colors="colors"
-    :moveInstruction="moveInstruction"
-    :removeInstruction="removeInstruction"
+    :edit="edit"
+  />
+  <WaitInstructionItem
+    v-else-if="instruction.type === InstructionType.WaitInstruction"
+    :instruction="instruction"
+    :depth="depthLevel"
+    :indent="indentClass"
+    :colors="colors"
+    :edit="edit"
+  />
+  <StartTaskInstructionItem
+    v-else-if="instruction.type === InstructionType.StartTaskInstruction"
+    :instruction="instruction"
+    :depth="depthLevel"
+    :indent="indentClass"
+    :colors="colors"
+    :edit="edit"
   />
 </template>
 
@@ -57,16 +72,15 @@ import CreateDevicePropertyConstantInstructionItem from '@/components/tasks-auto
 
 import DeviceActionInstructionItem from '@/components/tasks-automations/DeviceActionInstructionItem.vue'
 import SendNotificationInstructionItem from '@/components/tasks-automations/SendNotificationInstructionItem.vue'
-import {
-  InstructionType,
-  type Instruction,
-} from '@/model/scripts/Instruction'
+import { InstructionType, type Instruction } from '@/model/scripts/Instruction'
+import WaitInstructionItem from './WaitInstructionItem.vue'
+import StartTaskInstructionItem from './StartTaskInstructionItem.vue'
 
 const props = defineProps<{
+  id: string
   instruction: Instruction
   depth?: number // Depth for indentation
-  moveInstruction?: (instr: Instruction, dir: 'up' | 'down') => void
-  removeInstruction?: (instr: Instruction) => void
+  edit: boolean
 }>()
 
 const depthLevel = props.depth ?? 0

@@ -2,10 +2,11 @@ import { authorizedRequest, deserializeBody } from "@/api/api"
 import { deviceDeserializer } from "../dtos/devices/DeviceDTO"
 import { discoveredDeviceDeserializer } from "../dtos/devices/DiscoveredDeviceDTO"
 import { arrayDeserializer } from "@/api/Deserializer"
-import type { Device, DeviceAddress, DeviceId } from "@/model/devices-management/Device"
+import type { Device, DeviceActionId, DeviceAddress, DeviceId } from "@/model/devices-management/Device"
 import type { DiscoveredDevice } from "@/model/devices-management/DiscoveredDevice"
 import type { RenameDeviceDTO } from "../dtos/devices/RenameDeviceDTO"
 import type { RegisterDeviceDTO } from "../dtos/devices/RegisterDeviceDTO"
+import type { ExecuteDeviceActionDTO } from "../dtos/devices/ExecuteDeviceActionDTO"
 
 export async function renameDevice(id: DeviceId, newName: string, token: string): Promise<void> {
   const body: RenameDeviceDTO = { name: newName }
@@ -40,4 +41,12 @@ export async function getAllDevices(token: string): Promise<Device[]> {
 export async function getAllDiscoveredDevices(token: string): Promise<DiscoveredDevice[]> {
   const res = await authorizedRequest(`/api/discovered-devices`, token)
   return await deserializeBody(res, arrayDeserializer(discoveredDeviceDeserializer))
+}
+
+export async function executeAction(deviceId: DeviceId, actionId: DeviceActionId, input: unknown | undefined, token: string): Promise<void> {
+  const body: ExecuteDeviceActionDTO = { input }
+  await authorizedRequest(`/api/devices/${deviceId}/actions/${actionId}/execute`, token, {
+    method: 'POST',
+    body: JSON.stringify(body),
+  })
 }
