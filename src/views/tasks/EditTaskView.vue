@@ -12,6 +12,7 @@ import Route from '@/router/index'
 import NavbarLayout from '@/components/NavbarLayout.vue'
 import type { Device } from '@/model/devices-management/Device'
 import DeviceActionPropertyDialog from '@/components/tasks-automations/DeviceActionPropertyDialog.vue'
+import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
 
 const props = defineProps<{ id?: string }>()
 const userInfo = useUserInfoStore()
@@ -19,6 +20,7 @@ const instructionsStore = useInstructionsStore()
 const taskName = ref<string>('')
 const loadingOverlay = useLoadingOverlayStore()
 const selectedDevice = ref<Device | undefined>(undefined)
+const successPresenter = useSuccessPresenterStore()
 
 onMounted(async () => {
   if (props.id) {
@@ -57,6 +59,7 @@ async function changeTask() {
         },
         userInfo.token,
       )
+      showToastMessage('The changes of the ' + taskName.value + ' task have been saved')
     } else {
       // Create
       await createTask(
@@ -66,6 +69,7 @@ async function changeTask() {
         },
         userInfo.token,
       )
+      showToastMessage('The ' + taskName.value + ' task has been created')
       Route.back()
     }
   } finally {
@@ -84,6 +88,9 @@ function closeDialog() {
   dialog.close()
 }
 
+function showToastMessage(msg: string) {
+  successPresenter.showSuccess(presentSuccess(msg, '', 3000))
+}
 </script>
 
 <template>

@@ -4,9 +4,10 @@ import { RouterLink } from 'vue-router'
 import AddButton from '@/components/AddButton.vue'
 import { useUserInfoStore } from '@/stores/user-info'
 import type { Task, TaskId } from '@/model/scripts/Script'
-import { executeTask, getAllTasks } from '@/api/scripts/requests/tasks'
+import { executeTask, findTask, getAllTasks } from '@/api/scripts/requests/tasks'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import NavbarLayout from '@/components/NavbarLayout.vue'
+import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
 
 const userInfo = useUserInfoStore()
 const tasks = ref<Task[]>([])
@@ -26,6 +27,10 @@ async function startTask(taskId: TaskId) {
   try {
     loadingOverlay.startLoading()
     await executeTask(taskId, userInfo.token)
+    const task = await findTask(taskId, userInfo.token)
+    useSuccessPresenterStore().showSuccess(
+      presentSuccess('The ' + task.name + ' task started', '', 3000),
+    )
   } finally {
     loadingOverlay.stopLoading()
   }

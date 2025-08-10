@@ -9,6 +9,7 @@ import { useInstructionsStore } from '@/stores/instructions'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import Route from '@/router/index'
 import NavbarLayout from '@/components/NavbarLayout.vue'
+import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
 
 const props = defineProps<{ id: string }>()
 const userInfo = useUserInfoStore()
@@ -44,6 +45,9 @@ async function removeAutomation() {
   try {
     loadingOverlay.startLoading()
     await deleteAutomation(automationId.value!, userInfo.token)
+    useSuccessPresenterStore().showSuccess(
+      presentSuccess('The ' + automationName.value + ' automation has been deleted', '', 3000),
+    )
     Route.back()
   } finally {
     loadingOverlay.stopLoading()

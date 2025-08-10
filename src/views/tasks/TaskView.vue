@@ -8,6 +8,7 @@ import { onMounted, ref } from 'vue'
 import Route from '@/router/index.ts'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import NavbarLayout from '@/components/NavbarLayout.vue'
+import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
 
 const props = defineProps<{ id: string }>()
 const userInfo = useUserInfoStore()
@@ -43,6 +44,9 @@ async function removeTask() {
   try {
     loadingOverlay.startLoading()
     await deleteTask(taskId.value!, userInfo.token)
+    useSuccessPresenterStore().showSuccess(
+      presentSuccess('The ' + taskName.value + ' task has been deleted', '', 3000),
+    )
     Route.back()
   } finally {
     loadingOverlay.stopLoading()
@@ -53,7 +57,9 @@ async function removeTask() {
 <template>
   <NavbarLayout :title="taskName" :show-back-button="true">
     <template #actions>
-      <RouterLink :to="{ name: 'edit-task', params: { id: taskId } }" class="btn btn-ghost text-base"
+      <RouterLink
+        :to="{ name: 'edit-task', params: { id: taskId } }"
+        class="btn btn-ghost text-base"
         >Edit</RouterLink
       >
       <button class="btn btn-ghost text-error text-base" @click="removeTask()">Delete</button>
