@@ -4,14 +4,12 @@ import { arrayDeserializer, Deserializer } from "../../Deserializer"
 
 export interface GetUserDTO extends GetRegistrationRequestDTO {
   role: Role;
-  passwordHash: string;
 }
 
 export function isGetUserDTO(o: unknown): o is GetUserDTO {
   return o != undefined && typeof o == "object" &&
     "nickname" in o && typeof o.nickname == "string" &&
     "email" in o && typeof o.email == "string" &&
-    "passwordHash" in o && typeof o.passwordHash == "string" &&
     "role" in o && isRole(o.role)
 }
 
@@ -25,7 +23,6 @@ export const userDeserializer =
     (dto) => ({
       nickname: dto.nickname,
       email: dto.email,
-      passwordHash: dto.passwordHash,
       role: dto.role
     }),
     (obj) => `Unable to deserialize ${obj} into a User since it was not a GetUserDTO`

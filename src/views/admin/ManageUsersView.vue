@@ -70,7 +70,6 @@ function approveRequest(user: RegistrationRequest) {
         const newUser: User = {
           email: user.email,
           nickname: user.nickname,
-          passwordHash: "",
           role: Role.User,
         }
         registeredUsers.value?.push(newUser)
