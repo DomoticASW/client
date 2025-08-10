@@ -8,11 +8,13 @@ import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import { useUserInfoStore } from '@/stores/user-info'
 import * as api from '@/api/devices-management/requests/device-groups'
 import * as devicesApi from '@/api/devices-management/requests/devices'
+import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
 
 const props = defineProps({ id: { type: String, required: true } })
 const groupId = DeviceGroupId(props.id)
 const userInfo = useUserInfoStore()
 const loadingOverlay = useLoadingOverlayStore()
+const successPresenter = useSuccessPresenterStore()
 
 const group = ref<DeviceGroup | undefined>(undefined)
 const devices = ref<Device[] | undefined>(undefined)
@@ -29,6 +31,9 @@ async function removeDeviceFromGroup(deviceId: DeviceId) {
     loadingOverlay.startLoading()
     await api.removeDeviceFromDeviceGroup(groupId, deviceId, userInfo.token)
     group.value!.devices = group.value!.devices.filter((d) => d.id != deviceId)
+    const deviceName = devices.value?.find((d) => d.id == deviceId)?.name ?? 'Device'
+    const groupName = group.value?.name ?? 'group'
+    successPresenter.showSuccess(presentSuccess(`${deviceName} removed from ${groupName}!`))
   } finally {
     loadingOverlay.stopLoading()
   }
@@ -38,6 +43,9 @@ async function addDeviceToGroup(deviceId: DeviceId) {
     loadingOverlay.startLoading()
     await api.addDeviceToDeviceGroup(groupId, deviceId, userInfo.token)
     const device = devices.value!.find((d) => d.id == deviceId)
+    const deviceName = devices.value?.find((d) => d.id == deviceId)?.name ?? 'Device'
+    const groupName = group.value?.name ?? 'group'
+    successPresenter.showSuccess(presentSuccess(`${deviceName} added to ${groupName}!`))
     if (device) {
       group.value!.devices.push(device)
     }
@@ -49,6 +57,8 @@ async function deleteGroup() {
   try {
     loadingOverlay.startLoading()
     await api.deleteDeviceGroup(groupId, userInfo.token)
+    const groupName = group.value?.name ?? ''
+    successPresenter.showSuccess(presentSuccess(`Group ${groupName} deleted!`))
     router.back()
   } finally {
     loadingOverlay.stopLoading()

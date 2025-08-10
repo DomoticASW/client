@@ -17,12 +17,7 @@ function camelToSentence(str: string): string {
 const errorTitle = computed(() => {
   const error = state.errorShown
   if (error && '__brand' in error) {
-    const sentence = camelToSentence(error.__brand as string)
-    const words = sentence.split(' ')
-    if (words.length && words[words.length - 1].toLowerCase() === 'error') {
-      words.pop()
-    }
-    return words.join(' ')
+    return camelToSentence(error.__brand as string)
   } else {
     return 'Error'
   }

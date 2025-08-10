@@ -52,10 +52,15 @@ function validateInput(input: unknown): boolean {
   }
   return true
 }
-function validateAndEmit(input: unknown) {
+function processInput(input: unknown) {
+  value.value = input
   if (validateInput(input)) {
     emit('input', input)
   }
+}
+
+function htmlInputValue(element: EventTarget | null): string {
+  return (element as HTMLInputElement).value
 }
 
 const type = computed(() => typeConstraints.type)
@@ -100,18 +105,28 @@ function defaultInitialValueForTypeConstraints(tc: TypeConstraints<unknown>) {
       type="checkbox"
       class="toggle toggle-primary"
       :disabled="!isInput"
-      v-model="value"
-      @change="validateAndEmit(value)"
+      :checked="(value as boolean) == true"
+      @change="processInput(($event.target as HTMLInputElement).checked)"
     />
   </div>
   <div v-if="type === Type.StringType">
     <div v-if="isInput">
       <div v-if="isEnumTypeConstraints(typeConstraints)">
-        <select class="select select-primary" v-model="value" @change="validateAndEmit(value)">
-          <option v-for="v in typeConstraints.values" :key="v">{{ v }}</option>
+        <select
+          class="select select-primary"
+          @change="processInput(($event.target as HTMLSelectElement).selectedOptions[0].value)"
+        >
+          <option v-for="v in typeConstraints.values" :key="v" :selected="v === value">
+            {{ v }}
+          </option>
         </select>
       </div>
-      <input v-else type="text" v-model="value" @change="validateAndEmit(value)" />
+      <input
+        v-else
+        type="text"
+        v-model="value"
+        @change="processInput(htmlInputValue($event.target))"
+      />
     </div>
     <span v-else> {{ value }} </span>
   </div>
@@ -123,10 +138,10 @@ function defaultInitialValueForTypeConstraints(tc: TypeConstraints<unknown>) {
         class="range range-primary"
         :min="typeConstraints.min"
         :max="typeConstraints.max"
-        :step="type == Type.IntType ? 1 : 'any'"
+        :step="type == Type.IntType ? 1 : '0.01'"
         :disabled="!isInput"
         v-model.number="value"
-        @change="validateAndEmit(value)"
+        @change="processInput(Number.parseFloat(htmlInputValue($event.target)))"
       />
       <div class="flex flex-row justify-between">
         <span class="opacity-30">{{ typeConstraints.min }}</span>
@@ -137,9 +152,9 @@ function defaultInitialValueForTypeConstraints(tc: TypeConstraints<unknown>) {
       v-else-if="isInput"
       class="input input-primary validator field-sizing-content min-w-[8rem]"
       type="number"
-      :step="type == Type.IntType ? 1 : 'any'"
+      :step="type == Type.IntType ? 1 : '0.01'"
       v-model.number="value"
-      @change="validateAndEmit(value)"
+      @change="processInput(Number.parseFloat(htmlInputValue($event.target)))"
     />
     <span v-else> {{ value }} </span>
   </div>
@@ -148,9 +163,7 @@ function defaultInitialValueForTypeConstraints(tc: TypeConstraints<unknown>) {
       type="color"
       :disabled="!isInput"
       :value="'#' + rgbHex((value as Color).r, (value as Color).g, (value as Color).b)"
-      @change="
-        ((value = hexToColor(($event.target as HTMLInputElement).value)), validateAndEmit(value))
-      "
+      @change="processInput(hexToColor(htmlInputValue($event.target)))"
     />
   </div>
 </template>
