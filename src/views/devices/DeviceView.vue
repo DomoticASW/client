@@ -13,10 +13,12 @@ import * as notificationsApi from '@/api/notifications-management/requests'
 import { Type } from '@/model/Type'
 import ValueIOControl from '@/components/devices/ValueIOControl.vue'
 import { io } from 'socket.io-client'
+import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
 const props = defineProps({ id: { type: String, required: true } })
 const deviceId = DeviceId(props.id)
 const userInfo = useUserInfoStore()
 const loadingOverlay = useLoadingOverlayStore()
+const successPresenter = useSuccessPresenterStore()
 
 const device = ref<Device | undefined>(undefined)
 const actionsToShow = computed<DeviceAction<unknown>[] | undefined>(() => {
@@ -66,6 +68,7 @@ async function executeAction(action: DeviceAction<unknown>, input?: unknown) {
   loadingOverlay.startLoading()
   try {
     await api.executeAction(deviceId, action.id, input, userInfo.token)
+    successPresenter.showSuccess(presentSuccess(`Fatto!`))
   } finally {
     loadingOverlay.stopLoading()
   }
@@ -89,6 +92,11 @@ async function subscribeForOfflineNotifications(activate: boolean) {
       await notificationsApi.unsubscribeForDeviceOfflineNotifications(deviceId, userInfo.token)
     }
     isSubscribedForOfflineNotifications.value = activate
+    successPresenter.showSuccess(
+      presentSuccess(
+        `You've ${activate ? 'subscribed' : 'unsubscribed'} for offline notifications from ${device.value?.name ?? 'this device'}!`,
+      ),
+    )
   } finally {
     loadingOverlay.stopLoading()
   }

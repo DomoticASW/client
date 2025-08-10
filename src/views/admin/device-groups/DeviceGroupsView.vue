@@ -7,10 +7,12 @@ import DeviceListSkeleton from '@/components/admin/manage-devices/DeviceListSkel
 import type { DeviceGroup, DeviceGroupId } from '@/model/devices-management/DeviceGroup'
 import * as api from '@/api/devices-management/requests/device-groups'
 import { useErrorPresenterStore } from '@/stores/error-presenter'
+import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
 
 const userInfo = useUserInfoStore()
 const loadingOverlay = useLoadingOverlayStore()
 const errorPresenter = useErrorPresenterStore()
+const successPresenter = useSuccessPresenterStore()
 const groups = ref<DeviceGroup[] | undefined>(undefined)
 
 /* Group creation */
@@ -25,6 +27,7 @@ async function saveCreatingGroup() {
       const id = await api.createDeviceGroup(name, userInfo.token)
       const group = await api.findDeviceGroup(id, userInfo.token)
       groups.value?.push(group)
+      successPresenter.showSuccess(presentSuccess(`Group ${name} created!`))
     } catch (e) {
       if (typeof e == 'object' && e != null)
         errorPresenter.showError(e, () => createGroupModal.value!.showModal())
@@ -58,6 +61,7 @@ async function saveEditingGroup() {
       const group = groups.value.find((g) => g.id === id)
       if (group) {
         group.name = newName
+        successPresenter.showSuccess(presentSuccess(`Group renamed!`))
       }
     } catch (e) {
       if (typeof e == 'object' && e != null)

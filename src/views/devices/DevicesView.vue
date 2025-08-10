@@ -7,8 +7,10 @@ import type { DeviceGroup, DeviceGroupId } from '@/model/devices-management/Devi
 import type { Device } from '@/model/devices-management/Device'
 import { getAllDeviceGroups } from '@/api/devices-management/requests/device-groups'
 import { getAllDevices } from '@/api/devices-management/requests/devices'
+import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 
 const userInfo = useUserInfoStore()
+const loadingOverlay = useLoadingOverlayStore()
 const groups = ref<DeviceGroup[] | undefined>(undefined)
 const selectedGroup = ref<DeviceGroup | undefined>(undefined)
 const devices = ref<Device[] | undefined>(undefined)
@@ -30,11 +32,21 @@ function closeDropdown() {
 }
 
 onMounted(async () => {
-  groups.value = await getAllDeviceGroups(userInfo.token)
+  loadingOverlay.startLoading()
+  try {
+    groups.value = await getAllDeviceGroups(userInfo.token)
+  } finally {
+    loadingOverlay.stopLoading()
+  }
   selectedGroup.value = groups.value[0]
 })
 onMounted(async () => {
-  devices.value = await getAllDevices(userInfo.token)
+  loadingOverlay.startLoading()
+  try {
+    devices.value = await getAllDevices(userInfo.token)
+  } finally {
+    loadingOverlay.stopLoading()
+  }
 })
 </script>
 

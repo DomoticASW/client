@@ -7,10 +7,12 @@ import { onMounted, ref, useTemplateRef } from 'vue'
 import { RouterLink } from 'vue-router'
 import * as api from '@/api/devices-management/requests/devices'
 import { useErrorPresenterStore } from '@/stores/error-presenter'
+import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
 
 const userInfo = useUserInfoStore()
 const loadingOverlay = useLoadingOverlayStore()
 const errorPresenter = useErrorPresenterStore()
+const successPresenter = useSuccessPresenterStore()
 const devices = ref<Device[] | undefined>()
 
 async function removeDevice(id: DeviceId) {
@@ -18,6 +20,7 @@ async function removeDevice(id: DeviceId) {
     loadingOverlay.startLoading()
     await api.deleteDevice(id, userInfo.token)
     devices.value = devices.value?.filter((d) => d.id != id)
+    successPresenter.showSuccess(presentSuccess(`Device removed!`))
   } finally {
     loadingOverlay.stopLoading()
   }
@@ -44,6 +47,7 @@ async function saveEditingDevice() {
       const device = devices.value.find((g) => g.id === id)
       if (device) {
         device.name = newName
+        successPresenter.showSuccess(presentSuccess(`Device renamed!`))
       }
     } catch (e) {
       if (typeof e == 'object' && e != null)
