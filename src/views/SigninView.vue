@@ -1,67 +1,65 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-base-200">
-    <div class="card w-full max-w-md bg-base-100 shadow-xl">
-      <div class="card-body">
-        <div class="flex justify-center min-h-[4rem] mb-4">
-          <h1 class="card-title text-3xl font-bold mb-2">Welcome!</h1>
+  <div class="min-h-screen flex items-center justify-center max-w-md mx-auto">
+    <div class="card-body">
+      <div class="flex justify-center min-h-[4rem] mb-4">
+        <h1 class="card-title text-4xl font-bold mb-2">Welcome!</h1>
+      </div>
+
+      <form @submit.prevent="handleSignin" class="w-full px-5">
+
+        <div class="form-control">
+          <span class="label-text">Nickname</span>
+          <label class="input validator w-full">
+            <i class="fa-regular fa-user opacity-50"></i>
+            <input 
+              v-model="form.nickname" 
+              type="text" 
+              placeholder="Your nickname" 
+              :class="{ 'input-error': v$.nickname.$error }"
+              @blur="v$.nickname.$touch()"
+            />
+          </label>
+          <div class="min-h-[1.5rem]">
+            <label class="label py-0" v-if="v$.nickname.$error">
+              <span class="label-text-alt text-error">
+                {{ v$.nickname.$errors[0].$message }}
+              </span>
+            </label>
+          </div>
+        </div>
+      
+        <div class="form-control">
+          <span class="label-text">Email</span><br>
+          <label class="input validator w-full">
+            <i class="fa-regular fa-envelope opacity-50"></i>
+            <input 
+              v-model="form.email" 
+              type="email" 
+              placeholder="your@email.com" 
+              :class="{ 'input-error': v$.email.$error }"
+              @blur="v$.email.$touch()"
+            />
+          </label>
+            <div class="min-h-[1.5rem]">
+            <label class="label py-0" v-if="v$.email.$error">
+              <span class="label-text-alt text-error">
+                {{ v$.email.$errors[0].$message }}
+              </span>
+            </label>
+          </div>
         </div>
         
-        <form @submit.prevent="handleRegister" class="w-full">
-
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">Nickname</span>
-            </label>
-            <input 
-            v-model="form.nickname" 
-            type="text" 
-            placeholder="Your nickname" 
-            class="input input-bordered w-full"
-            :class="{ 'input-error': v$.nickname.$error }"
-            @blur="v$.nickname.$touch()"
-            />
-            <div class="min-h-[1.5rem]">
-              <label class="label py-0" v-if="v$.nickname.$error">
-                <span class="label-text-alt text-error">
-                  {{ v$.nickname.$errors[0].$message }}
-                </span>
-              </label>
-            </div>
-          </div>
-          
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">Email</span>
-            </label>
-            <input 
-            v-model="form.email" 
-            type="email" 
-            placeholder="your@email.com" 
-            class="input input-bordered w-full"
-            :class="{ 'input-error': v$.email.$error }"
-            @blur="v$.email.$touch()"
-            />
-            <div class="min-h-[1.5rem]">
-              <label class="label py-0" v-if="v$.email.$error">
-                <span class="label-text-alt text-error">
-                  {{ v$.email.$errors[0].$message }}
-                </span>
-              </label>
-            </div>
-          </div>
-          
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">Password</span>
-            </label>
-            <div class="relative">
+        <div class="form-control">
+          <span class="label-text">Password</span>
+          <div class="relative">
+            <label class="input validator w-full">
+              <i class="fa-solid fa-key opacity-50"></i>
               <input 
-              v-model="form.password"
-              :type="showPassword ? 'text' : 'password'" 
-              placeholder="••••••••" 
-              class="input input-bordered w-full"
-              :class="{ 'input-error': v$.password.$error }"
-              @blur="v$.password.$touch()"
+                v-model="form.password" 
+                :type="showPassword ? 'text' : 'password'" 
+                placeholder="••••••••" 
+                :class="{ 'input-error': v$.password.$error }"
+                @blur="v$.password.$touch()"
               />
               <button 
                 type="button" 
@@ -73,28 +71,28 @@
                   class="fas"
                 ></i>              
               </button>
-            </div>
-            <div class="min-h-[1.5rem]">
-              <label class="label py-0" v-if="v$.password.$error">
-                <span class="label-text-alt text-error">
-                  {{ v$.password.$errors[0].$message }}
-                </span>
-              </label>
-            </div>
-          </div>
-          
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">Confirm Password</span>
             </label>
-            <div class="relative">
+          </div>
+          <div class="min-h-[1.5rem]">
+            <label class="label py-0" v-if="v$.password.$error">
+              <span class="label-text-alt text-error">
+                {{ v$.password.$errors[0].$message }}
+              </span>
+            </label>
+          </div>
+        </div>
+      
+        <div class="form-control">
+          <span class="label-text">Confirm password</span>
+          <div class="relative">
+            <label class="input validator w-full">
+              <i class="fa-solid fa-key opacity-50"></i>
               <input 
-              v-model="form.confirmPassword" 
-              :type="showConfirmPassword ? 'text' : 'password'" 
-              placeholder="••••••••" 
-              class="input input-bordered w-full"
-              :class="{ 'input-error': v$.confirmPassword.$error }"
-              @blur="v$.confirmPassword.$touch()"
+                v-model="form.confirmPassword" 
+                :type="showConfirmPassword ? 'text' : 'password'" 
+                placeholder="••••••••" 
+                :class="{ 'input-error': v$.confirmPassword.$error }"
+                @blur="v$.confirmPassword.$touch()"
               />
               <button 
                   type="button" 
@@ -106,91 +104,101 @@
                   class="fas"
                 ></i>              
               </button>
-            </div>
-            <div class="min-h-[1.5rem]">
-              <label class="label py-0" v-if="v$.confirmPassword.$error">
-                <span class="label-text-alt text-error">
-                  {{ v$.confirmPassword.$errors[0].$message }}
-                </span>
-              </label>
-            </div>
+            </label>
           </div>
-
-          <p class="text-sm italic text-center">You'll need admin approval after registration</p>
-          <div class="flex justify-center">
-            <div class="form-control m-6">
-              <button 
-                type="submit" 
-                class="btn btn-primary"
-                :disabled="v$.$invalid"
-                :class="{ 'btn-disabled': v$.$invalid }"
-              >
-                Sign up
-              </button>
-            </div>
+          <div class="min-h-[1.5rem]">
+            <label class="label py-0" v-if="v$.confirmPassword.$error">
+              <span class="label-text-alt text-error">
+                {{ v$.confirmPassword.$errors[0].$message }}
+              </span>
+            </label>
           </div>
-        </form>
-        
-        <div class="divider">OR</div>
-        
-        <div class="text-center">
-          <p class="text-sm">Already have an account?</p>
-          <router-link to="/login" class="link link-primary text-sm">
-            Log in
-          </router-link>
         </div>
+
+        <p class="text-sm italic text-center">You'll need admin approval after registration</p>
+        <div class="flex justify-center">
+          <div class="form-control m-6">
+            <button 
+              type="submit" 
+              class="btn btn-primary"
+              :disabled="v$.$invalid"
+              :class="{ 'btn-disabled': v$.$invalid }"
+            >
+              Sign in
+            </button>
+          </div>
+        </div>
+      </form>
+      
+      <div class="divider">OR</div>
+      
+      <div class="text-center">
+        <p class="text-sm">Already have an account?</p>
+        <router-link to="/login" class="link link-primary text-sm">
+          Log in
+        </router-link>
       </div>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, reactive, computed, ref } from 'vue';
+<script setup lang="ts">
+import { reactive, computed, ref } from 'vue';
 import { useVuelidate } from '@vuelidate/core';
 import { required, email, minLength, sameAs, helpers } from '@vuelidate/validators';
+import { useRouter } from 'vue-router';
+import * as api from '@/api/users-management/requests/users';
+import { useLoadingOverlayStore } from '@/stores/loading-overlay';
 
-type RegisterForm = {
+type SigninForm = {
   nickname: string;
   email: string;
   password: string;
   confirmPassword: string;
 };
 
-export default defineComponent({
-  name: 'RegisterView',
-  setup() {
-    const form = reactive<RegisterForm>({
-      nickname: '',
-      email: '',
-      password: '',
-      confirmPassword: ''
-    });
+const router = useRouter();
+const loadingOverlay = useLoadingOverlayStore()
 
-    const showPassword = ref(false);
-    const showConfirmPassword = ref(false);
-    const password = computed(() => form.password);
-
-    const rules = {
-      nickname: { required: helpers.withMessage('Nickname is required', required) },
-      email: { required: helpers.withMessage('Email is required', required), email: helpers.withMessage('Email must be valid', email) },
-      password: { required: helpers.withMessage('Password is required', required), minLength: helpers.withMessage('Password must be at least 6 characters', minLength(6)) },
-      confirmPassword: {
-        required: helpers.withMessage('Confirm Password is required', required),
-        sameAsPassword: helpers.withMessage('Passwords must match', sameAs(password))
-      }
-    };
-
-    const v$ = useVuelidate(rules, form);
-
-    return { form, v$, showPassword, showConfirmPassword };
-  },
-  methods: {
-    handleRegister(): void {
-      this.v$.$touch();
-      if (!this.v$.$invalid) {
-        console.log('Registration submitted:', this.form);
-      }
-    }
-  }
+const form = reactive<SigninForm>({
+  nickname: '',
+  email: '',
+  password: '',
+  confirmPassword: ''
 });
+
+const showPassword = ref(false);
+const showConfirmPassword = ref(false);
+const password = computed(() => form.password);
+
+const rules = {
+  nickname: { required: helpers.withMessage('Nickname is required', required) },
+  email: { required: helpers.withMessage('Email is required', required), email: helpers.withMessage('Email must be valid', email) },
+  password: { required: helpers.withMessage('Password is required', required), minLength: helpers.withMessage('Password must be at least 6 characters', minLength(6)) },
+  confirmPassword: {
+    required: helpers.withMessage('Confirm Password is required', required),
+    sameAsPassword: helpers.withMessage('Passwords must match', sameAs(password))
+  }
+};
+
+const v$ = useVuelidate(rules, form);
+
+
+const handleSignin = async (): Promise<void> => {
+  v$.value.$touch();
+  if (v$.value.$invalid) return;
+
+  try {
+    loadingOverlay.startLoading();
+    await api.userRegistrationRequest({
+      nickname: form.nickname,
+      email: form.email,
+      password: form.password
+    });
+  } finally {
+    loadingOverlay.stopLoading();
+  }
+
+  router.push('/login');
+};
 </script>

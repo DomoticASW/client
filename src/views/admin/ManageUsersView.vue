@@ -1,26 +1,91 @@
 <script setup lang="ts">
-const registeredUsers = [
-  { name: 'Alex', email: 'alex@email.com', role: 'admin' },
-  { name: 'Mia', email: 'mia@email.com', role: 'user' },
-]
-const unregisteredUsers = [
-  { name: 'Liam', email: 'liam@email.com' },
-  { name: 'Emma', email: 'emma@email.com' },
-]
+import { authorizedRequest, deserializeBody } from '@/api/api'
+import { arrayDeserializer } from '@/api/Deserializer'
+import { registrationRequestDeserializer } from '@/api/users-management/dtos/GetRegistrationRequestDTO'
+import { usersDeserializer } from '@/api/users-management/dtos/GetUserDTO'
+import type { RegistrationRequest } from '@/model/users-management/RegistrationRequest'
+import { Role, type User } from '@/model/users-management/User'
+import { useLoadingOverlayStore } from '@/stores/loading-overlay'
+import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
+import { useUserInfoStore } from '@/stores/user-info'
+import { onMounted, ref } from 'vue'
 
-function removeUser(userEmail: string) {
-  // TODO: Implement the logic to remove the user
-  console.log(`Removing user: ${userEmail}`)
+const loadingOverlay = useLoadingOverlayStore()
+const successPresenter = useSuccessPresenterStore();
+const userInfo = useUserInfoStore()
+const registeredUsers = ref<User[]>()
+const unregisteredUsers = ref<RegistrationRequest[]>()
+onMounted(async () => {
+  const res = await authorizedRequest(`/api/users`, userInfo.token)
+  registeredUsers.value = await deserializeBody(res, usersDeserializer)
+})
+onMounted(async () => {
+  const res = await authorizedRequest(`/api/registrationRequests`, userInfo.token)
+  unregisteredUsers.value = await deserializeBody(res, arrayDeserializer(registrationRequestDeserializer))
+})
+
+function removeUser(user: User) {
+  try {
+    loadingOverlay.startLoading()
+    authorizedRequest(`/api/users/${user.email}`, userInfo.token, {
+      method: 'DELETE',
+    })
+      .then(() => {
+        registeredUsers.value = registeredUsers.value?.filter((u) => u.email !== user.email)
+        showToastMessage(`Request for ${user.nickname} removed successfully.`)
+      })
+      .catch((error) => {
+        console.error('Error removing request:', error)
+      })
+  } finally {
+    loadingOverlay.stopLoading()
+  }
 }
 
-function removeRequest(userEmail: string) {
-  // TODO: Implement the logic to remove the request
-  console.log(`Removing request: ${userEmail}`)
+function rejectRequest(user: RegistrationRequest) {
+  try {
+      authorizedRequest(`/api/registrationRequests/${user.email}/reject`, userInfo.token, {
+      method: 'POST',
+    })
+      .then(() => {
+        unregisteredUsers.value = unregisteredUsers.value?.filter((u) => u.email !== user.email)
+        showToastMessage(`Request for ${user.nickname} rejected successfully.`)
+      })
+      .catch((error) => {
+        console.error('Error rejecting request:', error)
+      })
+  } finally {
+    loadingOverlay.stopLoading()
+  }
 }
 
-function addUser(userEmail: string) {
-  // TODO: Implement the logic to add the user
-  console.log(`Adding user: ${userEmail}`)
+function approveRequest(user: RegistrationRequest) {
+  try {
+    loadingOverlay.startLoading()
+    authorizedRequest(`/api/registrationRequests/${user.email}/approve`, userInfo.token, {
+      method: 'POST',
+    })
+      .then(() => {
+        unregisteredUsers.value = unregisteredUsers.value?.filter((u) => u.email !== user.email)
+        const newUser: User = {
+          email: user.email,
+          nickname: user.nickname,
+          passwordHash: "",
+          role: Role.User,
+        }
+        registeredUsers.value?.push(newUser)
+        showToastMessage(`Request for ${user.nickname} accepted successfully.`)
+      })
+      .catch((error) => {
+        console.error('Error approving request:', error)
+      })
+  } finally {
+    loadingOverlay.stopLoading()
+  }
+}
+
+function showToastMessage(msg: string) {
+  successPresenter.showSuccess(presentSuccess(msg, "", 5000))
 }
 </script>
 
@@ -31,30 +96,19 @@ function addUser(userEmail: string) {
         <ul class="list rounded-box">
           <li class="list-row" v-for="user in registeredUsers" :key="user.email">
             <div class="list-col-grow flex flex-col">
-              <div>{{ user.name }}</div>
+              <div>{{ user.nickname }}</div>
               <small class="text-gray-400 ms-1">{{ user.email }}</small>
             </div>
-            <small v-if="user.role === 'admin'" class="text-gray-400 flex items-center">{{
+            <small v-if="user.role == Role.Admin" class="text-gray-400 flex items-center">{{
               user.role
             }}</small>
             <button
               v-else
-              class="btn btn-circle btn-ghost"
+              class="btn btn-circle btn-ghost fa-solid fa-xmark"
               type="button"
               :aria-label="'Remove: ' + user"
-              @click="removeUser(user.email)"
+              @click="removeUser(user)"
             >
-              <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <g
-                  stroke-linejoin="round"
-                  stroke-linecap="round"
-                  stroke-width="2"
-                  fill="none"
-                  stroke="currentColor"
-                >
-                  <path d="M6 6l12 12M6 18L18 6"></path>
-                </g>
-              </svg>
             </button>
           </li>
         </ul>
@@ -67,45 +121,23 @@ function addUser(userEmail: string) {
         <ul class="list rounded-box">
           <li class="list-row" v-for="user in unregisteredUsers" :key="user.email">
             <div class="list-col-grow flex flex-col">
-              <div>{{ user.name }}</div>
+              <div>{{ user.nickname }}</div>
               <small class="text-gray-400 ms-1">{{ user.email }}</small>
             </div>
             <div>
               <button
-                class="btn btn-circle btn-ghost"
+                class="btn btn-circle btn-ghost fa-solid fa-xmark"
                 type="button"
                 :aria-label="'Remove request of: ' + user"
-                @click="removeRequest(user.email)"
+                @click="rejectRequest(user)"
               >
-                <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                  <g
-                    stroke-linejoin="round"
-                    stroke-linecap="round"
-                    stroke-width="2"
-                    fill="none"
-                    stroke="currentColor"
-                  >
-                    <path d="M6 6l12 12M6 18L18 6"></path>
-                  </g>
-                </svg>
               </button>
               <button
-                class="btn btn-circle btn-ghost"
+                class="btn btn-circle btn-ghost fa-solid fa-plus"
                 type="button"
                 :aria-label="'Accept request of: ' + user"
-                @click="addUser(user.email)"
+                @click="approveRequest(user)"
               >
-                <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                  <g
-                    stroke-linejoin="round"
-                    stroke-linecap="round"
-                    stroke-width="2"
-                    fill="none"
-                    stroke="currentColor"
-                  >
-                    <path d="M12 5v14M5 12h14"></path>
-                  </g>
-                </svg>
               </button>
             </div>
           </li>
