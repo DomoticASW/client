@@ -68,7 +68,7 @@ async function executeAction(action: DeviceAction<unknown>, input?: unknown) {
   loadingOverlay.startLoading()
   try {
     await api.executeAction(deviceId, action.id, input, userInfo.token)
-    successPresenter.showSuccess(presentSuccess(`Fatto!`))
+    successPresenter.showSuccess(presentSuccess(`Done!`))
   } finally {
     loadingOverlay.stopLoading()
   }
