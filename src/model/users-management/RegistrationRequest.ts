@@ -1,5 +1,8 @@
 export interface RegistrationRequest {
     nickname: string;
     email: string;
-    passwordHash: string;
+}
+
+export interface CompleteRegistrationRequest extends RegistrationRequest {
+    password: string;
 }

@@ -1,15 +1,15 @@
 import { Role, type UserInfo } from "@/model/users-management/User"
-import { Deserializer } from "../Deserializer"
+import { Deserializer } from "../../Deserializer"
 import { isRole } from "./GetUserDTO";
 
-export interface UserInfoDTO { 
+export interface GetUserInfoDTO { 
   nickname: string;
   email: string;
   role: Role;
   token: string;
 }
 
-export function isUserInfoDTO(o: unknown): o is UserInfoDTO {
+export function isGetUserInfoDTO(o: unknown): o is GetUserInfoDTO {
   return o != undefined && typeof o == "object" &&
     "nickname" in o && typeof o.nickname == "string" &&
     "email" in o && typeof o.email == "string" &&
@@ -18,13 +18,13 @@ export function isUserInfoDTO(o: unknown): o is UserInfoDTO {
 }
 
 export const userDeserializer =
-  Deserializer<UserInfoDTO, UserInfo>(
-    isUserInfoDTO,
+  Deserializer<GetUserInfoDTO, UserInfo>(
+    isGetUserInfoDTO,
     (dto) => ({
       nickname: dto.nickname,
       email: dto.email,
       role: dto.role,
       token: dto.token
     }),
-    (obj) => `Unable to deserialize ${obj} into a User since it was not a UserInfoDTO`
+    (obj) => `Unable to deserialize ${obj} into a User since it was not a GetUserInfoDTO`
   )

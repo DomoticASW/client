@@ -23,8 +23,8 @@
             <li><RouterLink :to="{ name: 'devices' }">Devices</RouterLink></li>
             <li><RouterLink :to="{ name: 'tasks' }">Tasks</RouterLink></li>
             <li><RouterLink :to="{ name: 'automations' }">Automations</RouterLink></li>
-            <!-- <li><RouterLink :to="{ name: 'setting' }">Settings</RouterLink></li> -->
-            <li v-if="userInfo.role === UserRole.Admin">
+            <li><RouterLink :to="{ name: 'settings' }">Settings</RouterLink></li>
+            <li v-if="userInfo.role === Role.Admin">
               <p>Admin</p>
               <ul class="p-2">
                 <!-- <li><RouterLink :to="{ name: 'users' }">Users</RouterLink></li> -->
@@ -45,8 +45,8 @@
           <li><RouterLink :to="{ name: 'devices' }">Devices</RouterLink></li>
           <li><RouterLink :to="{ name: 'tasks' }">Tasks</RouterLink></li>
           <li><RouterLink :to="{ name: 'automations' }">Automations</RouterLink></li>
-          <!-- <li><RouterLink :to="{ name: 'setting' }">Settings</RouterLink></li> -->
-          <li v-if="userInfo.role === UserRole.Admin">
+          <li><RouterLink :to="{ name: 'settings' }">Settings</RouterLink></li>
+          <li v-if="userInfo.role === Role.Admin">
             <details>
               <summary>Admin</summary>
               <ul class="p-2 bg-base-300 w-40 z-1">
@@ -63,6 +63,14 @@
     </template>
     <div class="navbar-end">
       <slot name="actions" />
+      <button 
+        v-if="showLogoutButton"
+        @click="logout" 
+        class="btn btn-ghost btn-sm text-error mr-1"
+        title="Logout"
+      >
+        <i class="fa-solid fa-sign-out-alt fa-lg"></i>
+      </button>
     </div>
   </div>
   <div class="w-full max-w-xl mx-auto">
@@ -71,7 +79,8 @@
 </template>
 
 <script setup lang="ts">
-import { UserRole, useUserInfoStore } from '@/stores/user-info'
+import { useUserInfoStore } from '@/stores/user-info'
+import { Role } from '@/model/users-management/User'
 import { useRouter } from 'vue-router'
 
 defineProps({
@@ -80,9 +89,17 @@ defineProps({
     type: Boolean,
     default: false,
   },
+  showLogoutButton: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const userInfo = useUserInfoStore()
 const router = useRouter()
 const goBack = () => router.back()
+const logout = () => {
+  userInfo.clearUserInfo()
+  router.push({ name: 'login' })
+}
 </script>

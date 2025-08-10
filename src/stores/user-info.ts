@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { type UserInfo } from '@/model/users-management/User';
-import { isUserInfoDTO } from '@/api/users-management/GetUserInfoDTO';
+import { isGetUserInfoDTO } from '@/api/users-management/dtos/GetUserInfoDTO';
 
 export const useUserInfoStore = defineStore('user-info', {
   state: () => ({
@@ -14,11 +14,15 @@ export const useUserInfoStore = defineStore('user-info', {
   },
   actions: {
     setUserInfo(info: UserInfo) {
-      if (!isUserInfoDTO(info)) {
+      if (!isGetUserInfoDTO(info)) {
         throw new Error("Invalid user info format");
       }
       this.userInfo = info;
       localStorage.setItem('userInfo', JSON.stringify(info));
+    },
+    setNickname(nickname: string) {
+      this.userInfo.nickname = nickname;
+      localStorage.setItem('userInfo', JSON.stringify(this.userInfo));
     },
     clearUserInfo() {
       this.userInfo = {} as UserInfo;
@@ -29,7 +33,7 @@ export const useUserInfoStore = defineStore('user-info', {
       if (stored) {
         try {
           const parsed = JSON.parse(stored);
-          if (isUserInfoDTO(parsed)) {
+          if (isGetUserInfoDTO(parsed)) {
             this.userInfo = parsed;
           }
         } catch (e) {
