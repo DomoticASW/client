@@ -27,11 +27,11 @@
             <li v-if="userInfo.role === Role.Admin">
               <p>Admin</p>
               <ul class="p-2">
-                <!-- <li><RouterLink :to="{ name: 'users' }">Users</RouterLink></li> -->
+                <li><RouterLink :to="{ name: 'manage-users' }">Users</RouterLink></li>
                 <li><RouterLink :to="{ name: 'manage-devices' }">Devices</RouterLink></li>
                 <li><RouterLink :to="{ name: 'device-groups' }">Device groups</RouterLink></li>
-                <!-- <li><RouterLink :to="{ name: 'users-permissions' }">Users permissions</RouterLink></li>
-                <li><RouterLink :to="{ name: 'scripts-permissions' }">Scripts permissions</RouterLink></li> -->
+                <li><RouterLink :to="{ name: 'manage-users-permissions' }">Users permissions</RouterLink></li>
+                <li><RouterLink :to="{ name: 'automations-and-tasks-permissions' }">Scripts permissions</RouterLink></li>
               </ul>
             </li>
           </ul>
@@ -50,11 +50,11 @@
             <details>
               <summary>Admin</summary>
               <ul class="p-2 bg-base-300 w-40 z-1">
-                <!-- <li><RouterLink :to="{ name: 'users' }">Users</RouterLink></li> -->
+                <li><RouterLink :to="{ name: 'manage-users' }">Users</RouterLink></li>
                 <li><RouterLink :to="{ name: 'manage-devices' }">Devices</RouterLink></li>
                 <li><RouterLink :to="{ name: 'device-groups' }">Device groups</RouterLink></li>
-                <!-- <li><RouterLink :to="{ name: 'users-permissions' }">Users permissions</RouterLink></li>
-                <li><RouterLink :to="{ name: 'scripts-permissions' }">Scripts permissions</RouterLink></li> -->
+                <li><RouterLink :to="{ name: 'manage-users-permissions' }">Users permissions</RouterLink></li>
+                <li><RouterLink :to="{ name: 'automations-and-tasks-permissions' }">Scripts permissions</RouterLink></li>
               </ul>
             </details>
           </li>
@@ -63,9 +63,9 @@
     </template>
     <div class="navbar-end">
       <slot name="actions" />
-      <button 
+      <button
         v-if="showLogoutButton"
-        @click="logout" 
+        @click="logout"
         class="btn btn-ghost btn-sm text-error mr-1"
         title="Logout"
       >
