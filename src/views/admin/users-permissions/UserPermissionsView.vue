@@ -9,22 +9,11 @@
               {{ device.name }}
             </div>
             <button
-              class="btn btn-circle btn-ghost"
+              class="btn btn-circle btn-ghost fa-solid fa-xmark"
               type="button"
               :aria-label="'Remove permission on: ' + device.name"
               @click="removeUserDevicePermission(device.id)"
             >
-              <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <g
-                  stroke-linejoin="round"
-                  stroke-linecap="round"
-                  stroke-width="2"
-                  fill="none"
-                  stroke="currentColor"
-                >
-                  <path d="M6 6l12 12M6 18L18 6"></path>
-                </g>
-              </svg>
             </button>
           </li>
         </ul>
@@ -38,22 +27,11 @@
               {{ device.name }}
             </div>
             <button
-              class="btn btn-circle btn-ghost"
+              class="btn btn-circle btn-ghost fa-solid fa-plus"
               type="button"
               :aria-label="'Add permission of: ' + device"
               @click="addUserDevicePermission(device.id)"
             >
-              <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <g
-                  stroke-linejoin="round"
-                  stroke-linecap="round"
-                  stroke-width="2"
-                  fill="none"
-                  stroke="currentColor"
-                >
-                  <path d="M12 5v14M5 12h14"></path>
-                </g>
-              </svg>
             </button>
           </li>
         </ul>

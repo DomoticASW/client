@@ -34,7 +34,6 @@ const router = createRouter({
         },
         {
           path: 'users-permissions',
-          name: 'users-permissions',
           children: [
             {
               path: '',
@@ -72,10 +71,10 @@ const router = createRouter({
         },
         {
           path: 'automations-task-permissions',
-          name: 'automations-task-permissions',
           children: [
             {
               path: '',
+              name: 'automations-and-tasks-permissions',
               component: () =>
                 import(
                   '../views/admin/automations-task-permissions/AutomationsAndTasksPermissionsView.vue'
@@ -83,6 +82,7 @@ const router = createRouter({
             },
             {
               path: ':id',
+              name: 'automation-and-task-permission',
               component: () =>
                 import(
                   '../views/admin/automations-task-permissions/AutomationAndTaskPermissionsView.vue'

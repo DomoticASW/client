@@ -8,24 +8,14 @@
         <div class="list-col-grow flex items-center">
           {{ user.nickname }}
         </div>
-        <button
+        <a
           class="btn btn-circle btn-ghost"
           type="button"
           :aria-label="'Get permissions of: ' + user.nickname"
           @click="goToPermissions(user)"
         >
-          <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <g
-              stroke-linejoin="round"
-              stroke-linecap="round"
-              stroke-width="2"
-              fill="none"
-              stroke="currentColor"
-            >
-              <path d="M6 3L20 12 6 21 6 3z"></path>
-            </g>
-          </svg>
-        </button>
+          <i class="fa-solid fa-play"></i>
+        </a>
       </li>
     </ul>
   </NavbarLayout>
@@ -44,7 +34,7 @@ const users = ref<User[]>([]);
 const loadUsers = async () => {
   const userInfoStore = useUserInfoStore();
   const adminToken = userInfoStore.token;
-  
+
   const usersList = await api.getAllUsers(adminToken);
   users.value = usersList.filter(user => user.role !== Role.Admin);
 };
@@ -52,7 +42,7 @@ const loadUsers = async () => {
 const goToPermissions = (user: User): void => {
   router.push({
     path: `./${user.email}`,
-    state: { 
+    state: {
       nickname: user.nickname,
       email: user.email
     }
