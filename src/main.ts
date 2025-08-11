@@ -16,7 +16,6 @@ app.use(router)
 
 const userInfoStore = useUserInfoStore()
 userInfoStore.loadFromStorage()
-app.provide('userInfo', userInfoStore)
 
 const errorPresenterStore = useErrorPresenterStore()
 app.config.errorHandler = (err) => {

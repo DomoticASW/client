@@ -1,4 +1,4 @@
-import { inject } from 'vue'
+import { useUserInfoStore } from '@/stores/user-info'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -166,9 +166,9 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
-  const userInfo = inject('userInfo')
+  const userInfo = useUserInfoStore()
   if (typeof userInfo === 'object' && userInfo && 'token' in userInfo && typeof userInfo.token === 'string') {
-    if (to.name?.toString() === "login" || to.name?.toString() === "signin") {
+    if (to.name === "login" || to.name === "signin") {
       return {
         name: 'devices'
       }
