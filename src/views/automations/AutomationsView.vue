@@ -7,6 +7,7 @@ import type { Automation } from '@/model/scripts/Script'
 import { getAllAutomations, toggleAutomation } from '@/api/scripts/requests/automations'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import NavbarLayout from '@/components/NavbarLayout.vue'
+import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
 
 const userInfo = useUserInfoStore()
 
@@ -26,6 +27,16 @@ async function toggle(automation: Automation) {
   try {
     loadingOverlay.startLoading()
     await toggleAutomation(automation.id, automation.enabled, userInfo.token)
+    useSuccessPresenterStore().showSuccess(
+      presentSuccess(
+        'The ' +
+          automation.name +
+          ' automation has been ' +
+          (automation.enabled ? 'enabled' : 'disabled'),
+        '',
+        3000,
+      ),
+    )
   } finally {
     loadingOverlay.stopLoading()
   }
