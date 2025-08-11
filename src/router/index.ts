@@ -167,7 +167,7 @@ const router = createRouter({
 
 router.beforeEach((to) => {
   const userInfo = useUserInfoStore()
-  if (typeof userInfo === 'object' && userInfo && 'token' in userInfo && typeof userInfo.token === 'string') {
+  if (userInfo.token) {
     if (to.name === "login" || to.name === "signin") {
       return {
         name: 'devices'
