@@ -4,10 +4,11 @@ import type { Device, DeviceId } from '@/model/devices-management/Device'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import { useUserInfoStore } from '@/stores/user-info'
 import { onMounted, ref, useTemplateRef } from 'vue'
-import { RouterLink } from 'vue-router'
 import * as api from '@/api/devices-management/requests/devices'
 import { useErrorPresenterStore } from '@/stores/error-presenter'
 import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
+import AddButton from '@/components/AddButton.vue'
+import NavbarLayout from '@/components/NavbarLayout.vue'
 
 const userInfo = useUserInfoStore()
 const loadingOverlay = useLoadingOverlayStore()
@@ -65,28 +66,25 @@ onMounted(async () => {
 
 <template>
   <div>
-    <div class="navbar justify-between">
-      <h1 class="text-2xl">Manage devices</h1>
-      <RouterLink :to="{ name: 'add-device' }">
-        <a class="btn btn-ghost fa-solid fa-plus fa-lg !flex"></a>
-      </RouterLink>
-    </div>
-    <ul v-if="devices" class="list">
-      <li v-for="d in devices" v-bind:key="d.id" class="list-row">
-        <span class="fa-solid fa-microchip text-2xl self-center"></span>
-        <div>
-          {{ d.name }}
-          <br />
-          <span class="text-xs">id: {{ d.id }}</span>
-        </div>
-        <button
-          class="btn btn-ghost fa-solid fa-pen"
-          v-on:click="startEditingDevice(d.id)"
-        ></button>
-        <button class="btn btn-ghost fa-solid fa-trash" v-on:click="removeDevice(d.id)"></button>
-      </li>
-    </ul>
-    <DeviceListSkeleton v-else />
+    <NavbarLayout title="Manage devices">
+      <ul v-if="devices" class="list">
+        <li v-for="d in devices" v-bind:key="d.id" class="list-row">
+          <span class="fa-solid fa-microchip text-2xl self-center"></span>
+          <div>
+            {{ d.name }}
+            <br />
+            <span class="text-xs">id: {{ d.id }}</span>
+          </div>
+          <button
+            class="btn btn-ghost fa-solid fa-pen"
+            v-on:click="startEditingDevice(d.id)"
+          ></button>
+          <button class="btn btn-ghost fa-solid fa-trash" v-on:click="removeDevice(d.id)"></button>
+        </li>
+      </ul>
+      <DeviceListSkeleton v-else />
+      <AddButton name="add-device" />
+    </NavbarLayout>
 
     <!-- Dialog for changing a device name -->
     <dialog ref="edit-device-name-modal" class="modal modal-bottom sm:modal-middle">

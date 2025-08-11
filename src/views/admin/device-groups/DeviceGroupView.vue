@@ -9,6 +9,7 @@ import { useUserInfoStore } from '@/stores/user-info'
 import * as api from '@/api/devices-management/requests/device-groups'
 import * as devicesApi from '@/api/devices-management/requests/devices'
 import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
+import NavbarLayout from '@/components/NavbarLayout.vue'
 
 const props = defineProps({ id: { type: String, required: true } })
 const groupId = DeviceGroupId(props.id)
@@ -74,43 +75,44 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="navbar flex justify-between">
-    <h1 class="text-2xl" :class="{ 'skeleton h-4 w-1/2': !group }">{{ group?.name }}</h1>
-    <button class="btn btn-ghost text-error" @click="deleteGroup">Delete</button>
-  </div>
-  <ul v-if="group" class="list">
-    <li v-for="d in group.devices" v-bind:key="d.id" class="list-row">
-      <span class="fa-solid fa-microchip text-2xl self-center"></span>
-      <div>
-        {{ d.name }}
-        <br />
-        <span class="text-xs">id: {{ d.id }}</span>
-      </div>
-      <button
-        class="btn btn-ghost fa-solid fa-remove"
-        @click="removeDeviceFromGroup(d.id)"
-      ></button>
-    </li>
-  </ul>
-  <DeviceRowSkeleton v-else />
+  <NavbarLayout :title="group?.name">
+    <template v-slot:actions>
+      <button class="btn btn-ghost text-error" @click="deleteGroup">Delete</button>
+    </template>
+    <ul v-if="group" class="list">
+      <li v-for="d in group.devices" v-bind:key="d.id" class="list-row">
+        <span class="fa-solid fa-microchip text-2xl self-center"></span>
+        <div>
+          {{ d.name }}
+          <br />
+          <span class="text-xs">id: {{ d.id }}</span>
+        </div>
+        <button
+          class="btn btn-ghost fa-solid fa-remove"
+          @click="removeDeviceFromGroup(d.id)"
+        ></button>
+      </li>
+    </ul>
+    <DeviceRowSkeleton v-else />
 
-  <div class="divider"></div>
+    <div class="divider"></div>
 
-  <h2 v-if="devices" class="text-xl">Devices not in group</h2>
-  <div v-else class="skeleton h-4 w-1/2"></div>
+    <h2 v-if="devices" class="text-xl">Devices not in group</h2>
+    <div v-else class="skeleton h-4 w-1/2"></div>
 
-  <ul v-if="devices" class="list">
-    <li v-for="d in devicesNotInGroup" v-bind:key="d.id" class="list-row">
-      <span class="fa-solid fa-microchip text-2xl self-center"></span>
-      <div>
-        {{ d.name }}
-        <br />
-        <span class="text-xs">id: {{ d.id }}</span>
-      </div>
-      <button class="btn btn-ghost fa-solid fa-add" @click="addDeviceToGroup(d.id)"></button>
-    </li>
-  </ul>
-  <DeviceRowSkeleton v-else :nRows="5" />
+    <ul v-if="devices" class="list">
+      <li v-for="d in devicesNotInGroup" v-bind:key="d.id" class="list-row">
+        <span class="fa-solid fa-microchip text-2xl self-center"></span>
+        <div>
+          {{ d.name }}
+          <br />
+          <span class="text-xs">id: {{ d.id }}</span>
+        </div>
+        <button class="btn btn-ghost fa-solid fa-add" @click="addDeviceToGroup(d.id)"></button>
+      </li>
+    </ul>
+    <DeviceRowSkeleton v-else :nRows="5" />
+  </NavbarLayout>
 </template>
 
 <style></style>
