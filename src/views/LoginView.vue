@@ -10,10 +10,10 @@
           <span class="label-text">Email</span><br>
           <label class="input validator w-full">
             <i class="fa-regular fa-envelope opacity-50"></i>
-            <input 
-              v-model="form.email" 
-              type="email" 
-              placeholder="your@email.com" 
+            <input
+              v-model="form.email"
+              type="email"
+              placeholder="your@email.com"
               name="email"
               :class="{ 'input-error': v$.email.$error }"
               @blur="v$.email.$touch()"
@@ -27,29 +27,29 @@
             </label>
           </div>
         </div>
-          
+
         <div class="form-control">
           <span class="label-text">Password</span>
           <div class="relative">
             <label class="input validator w-full">
               <i class="fa-solid fa-key opacity-50"></i>
-              <input 
-                v-model="form.password" 
-                :type="showPassword ? 'text' : 'password'" 
+              <input
+                v-model="form.password"
+                :type="showPassword ? 'text' : 'password'"
                 placeholder="••••••••"
                 name="password"
                 :class="{ 'input-error': v$.password.$error }"
                 @blur="v$.password.$touch()"
               />
-              <button 
-                type="button" 
+              <button
+                type="button"
                 class="absolute inset-y-0 right-0 flex items-center justify-center w-10 text-gray-500 hover:text-gray-700"
                 @click="showPassword = !showPassword"
               >
-                <i 
-                  :class="showPassword ? 'fa-eye-slash' : 'fa-eye'" 
+                <i
+                  :class="showPassword ? 'fa-eye-slash' : 'fa-eye'"
                   class="fas"
-                ></i>              
+                ></i>
               </button>
             </label>
           </div>
@@ -61,11 +61,11 @@
             </label>
           </div>
         </div>
-          
+
           <div class="flex justify-center">
             <div class="form-control mb-6">
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 class="btn btn-primary"
                 :disabled="v$.$invalid"
                 :class="{ 'btn-disabled': v$.$invalid }"
@@ -75,9 +75,9 @@
             </div>
           </div>
       </form>
-      
+
       <div class="divider">OR</div>
-      
+
       <div class="text-center">
         <p class="text-sm">Don't have an account?</p>
         <router-link to="/signin" class="link link-primary text-sm">
@@ -97,6 +97,7 @@ import { type UserInfo } from '@/model/users-management/User';
 import { required, email, helpers } from '@vuelidate/validators';
 import * as api from '@/api/users-management/requests/users';
 import { useLoadingOverlayStore } from '@/stores/loading-overlay';
+import { useNotificationsStore } from '@/stores/notifications';
 
 type LoginForm = {
   email: string;
@@ -126,8 +127,9 @@ const handleLogin = async (): Promise<void> => {
     loadingOverlay.startLoading();
     const token = await api.login(form.email, form.password);
     const user = await api.getUser(token);
-    
+
     const userInfo = useUserInfoStore();
+    const notificationsStore = useNotificationsStore()
     const userInfoData: UserInfo = {
       email: form.email,
       nickname: user.nickname,
@@ -135,7 +137,7 @@ const handleLogin = async (): Promise<void> => {
       role: user.role
     };
     userInfo.setUserInfo(userInfoData);
-    
+    notificationsStore.init(userInfo.email)
   } finally {
     loadingOverlay.stopLoading();
   }
