@@ -14,8 +14,8 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(router)
 
-const userInfoStore = useUserInfoStore()
-userInfoStore.loadFromStorage()
+// Loading a session token if it exists
+useUserInfoStore()
 
 const errorPresenterStore = useErrorPresenterStore()
 app.config.errorHandler = (err) => {
