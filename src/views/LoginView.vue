@@ -97,7 +97,6 @@ import { type UserInfo } from '@/model/users-management/User';
 import { required, email, helpers } from '@vuelidate/validators';
 import * as api from '@/api/users-management/requests/users';
 import { useLoadingOverlayStore } from '@/stores/loading-overlay';
-import { useNotificationsStore } from '@/stores/notifications';
 
 type LoginForm = {
   email: string;
@@ -129,7 +128,6 @@ const handleLogin = async (): Promise<void> => {
     const user = await api.getUser(token);
 
     const userInfo = useUserInfoStore();
-    const notificationsStore = useNotificationsStore()
     const userInfoData: UserInfo = {
       email: form.email,
       nickname: user.nickname,
@@ -137,7 +135,6 @@ const handleLogin = async (): Promise<void> => {
       role: user.role
     };
     userInfo.setUserInfo(userInfoData);
-    notificationsStore.init(userInfo.email)
   } finally {
     loadingOverlay.stopLoading();
   }

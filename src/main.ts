@@ -8,6 +8,7 @@ import router from './router'
 import { useUserInfoStore } from './stores/user-info'
 import { isGetUserInfoDTO } from '@/api/users-management/dtos/GetUserInfoDTO'
 import { useErrorPresenterStore } from './stores/error-presenter'
+import { useNotificationsStore } from './stores/notifications'
 
 const app = createApp(App)
 
@@ -16,6 +17,9 @@ app.use(router)
 
 // Loading a session token if it exists
 useUserInfoStore()
+
+// Subscribing for notifications
+useNotificationsStore()
 
 const errorPresenterStore = useErrorPresenterStore()
 app.config.errorHandler = (err) => {
