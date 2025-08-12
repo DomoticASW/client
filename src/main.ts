@@ -20,7 +20,18 @@ userInfoStore.loadFromStorage()
 const errorPresenterStore = useErrorPresenterStore()
 app.config.errorHandler = (err) => {
   if (typeof err == "object" && err != undefined) {
-    errorPresenterStore.showError(err)
+    if ('__brand' in err && err.__brand === 'InvalidTokenError') {
+      // If the token expires or is not valid, take the user to login page
+      errorPresenterStore.showError({
+        message: 'The session has expired, please login again to continue',
+        __brand: 'SessionExpired'
+      }, () => {
+        useUserInfoStore().clearUserInfo()
+        router.push("/login")
+      })
+    } else {
+      errorPresenterStore.showError(err)
+    }
   }
 }
 
