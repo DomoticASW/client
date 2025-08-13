@@ -99,7 +99,7 @@ onMounted(async () => {
       </RouterLink>
     </ul>
     <DeviceListSkeleton v-else />
-    <AddButton :showModalWhenNameNotProvided="false" @onclick="createGroupModal?.showModal()" />
+    <AddButton @onclick="createGroupModal?.showModal()" />
   </NavbarLayout>
 
   <!-- Dialog for creating a new group -->

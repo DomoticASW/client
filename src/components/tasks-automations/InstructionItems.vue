@@ -5,7 +5,8 @@ import { type Device } from '@/model/devices-management/Device'
 import type { DeviceGroup } from '@/model/devices-management/DeviceGroup'
 import { InstructionType } from '@/model/scripts/Instruction'
 import { useUserInfoStore } from '@/stores/user-info'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, useTemplateRef } from 'vue'
+import AddButton from '../AddButton.vue'
 import {
   EmptyIfElseInstruction,
   EmptyIfInstruction,
@@ -16,9 +17,10 @@ import {
 } from './emptyInstructions'
 import { useInstructionsStore } from '@/stores/instructions'
 
+const userInfo = useUserInfoStore()
 const instructionsStore = useInstructionsStore()
 
-const userInfo = useUserInfoStore()
+const modal = useTemplateRef('add-instruction-modal')
 const groups = ref<DeviceGroup[]>()
 const devices = ref<Device[]>()
 const selectedGroup = ref<DeviceGroup | undefined>(undefined)
@@ -77,69 +79,79 @@ function addSendNotification() {
 </script>
 
 <template>
-  <div class="grid grid-cols-3">
-    <h3 class="text-xl col-span-3">Devices</h3>
-    <select v-model="selectedGroup" class="select my-2 col-span-3 text-lg">
-      <option selected :value="undefined">All devices</option>
-      <option v-for="group in groups" :key="group.id" :value="group">{{ group.name }}</option>
-    </select>
+  <AddButton @onclick="modal?.showModal()" />
+  <dialog ref="add-instruction-modal" class="modal modal-end">
+    <div class="modal-box sm:w-4/12 w-7/12 max-w-screen">
+      <slot></slot>
 
-    <button
-      type="button"
-      v-for="device in selectedGroup ? selectedGroup.devices : devices"
-      :key="device.id"
-      class="btn justify-start my-1 sm:col-span-2 col-span-3 ml-4"
-      @click="openDialog(device)"
-    >
-      {{ device.name }}
-    </button>
-  </div>
-  <div class="grid grid-cols-3">
-    <h3 class="text-xl col-span-3 mb-2 mt-1">Control flow</h3>
-    <button
-      type="button"
-      class="btn justify-start my-1 sm:col-span-2 col-span-3"
-      @click="addIfInstruction()"
-    >
-      If
-    </button>
-    <button
-      type="button"
-      class="btn justify-start my-1 sm:col-span-2 col-span-3"
-      @click="addIfElseInstruction()"
-    >
-      If-Else
-    </button>
-  </div>
-  <div class="grid grid-cols-3">
-    <h3 class="text-xl col-span-3 mb-2 mt-1">Others</h3>
-    <button
-      type="button"
-      class="btn justify-start sm:col-span-2 col-span-3 my-1"
-      @click="addWaitInstruction()"
-    >
-      Wait
-    </button>
-    <button
-      type="button"
-      class="btn justify-start sm:col-span-2 col-span-3 my-1"
-      @click="addStartTaskInstruction()"
-    >
-      Start task
-    </button>
-    <button
-      type="button"
-      class="btn justify-start sm:col-span-2 col-span-3 my-1"
-      @click="addConstantInstruction()"
-    >
-      Constant
-    </button>
-    <button
-      type="button"
-      class="btn justify-start sm:col-span-2 col-span-3 my-1"
-      @click="addSendNotification()"
-    >
-      Send notification
-    </button>
-  </div>
+      <div class="grid grid-cols-3">
+        <h3 class="text-xl col-span-3">Devices</h3>
+        <select v-model="selectedGroup" class="select my-2 col-span-3 text-lg">
+          <option selected :value="undefined">All devices</option>
+          <option v-for="group in groups" :key="group.id" :value="group">{{ group.name }}</option>
+        </select>
+
+        <button
+          type="button"
+          v-for="device in selectedGroup ? selectedGroup.devices : devices"
+          :key="device.id"
+          class="btn justify-start my-1 sm:col-span-2 col-span-3 ml-4"
+          @click="openDialog(device)"
+        >
+          {{ device.name }}
+        </button>
+      </div>
+      <div class="grid grid-cols-3">
+        <h3 class="text-xl col-span-3 mb-2 mt-1">Control flow</h3>
+        <button
+          type="button"
+          class="btn justify-start my-1 sm:col-span-2 col-span-3"
+          @click="addIfInstruction()"
+        >
+          If
+        </button>
+        <button
+          type="button"
+          class="btn justify-start my-1 sm:col-span-2 col-span-3"
+          @click="addIfElseInstruction()"
+        >
+          If-Else
+        </button>
+      </div>
+      <div class="grid grid-cols-3">
+        <h3 class="text-xl col-span-3 mb-2 mt-1">Others</h3>
+        <button
+          type="button"
+          class="btn justify-start sm:col-span-2 col-span-3 my-1"
+          @click="addWaitInstruction()"
+        >
+          Wait
+        </button>
+        <button
+          type="button"
+          class="btn justify-start sm:col-span-2 col-span-3 my-1"
+          @click="addStartTaskInstruction()"
+        >
+          Start task
+        </button>
+        <button
+          type="button"
+          class="btn justify-start sm:col-span-2 col-span-3 my-1"
+          @click="addConstantInstruction()"
+        >
+          Constant
+        </button>
+        <button
+          type="button"
+          class="btn justify-start sm:col-span-2 col-span-3 my-1"
+          @click="addSendNotification()"
+        >
+          Send notification
+        </button>
+      </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+      <button></button>
+    </form>
+  </dialog>
 </template>
