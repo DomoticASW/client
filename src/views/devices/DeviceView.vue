@@ -14,6 +14,7 @@ import { Type } from '@/model/Type'
 import ValueIOControl from '@/components/devices/ValueIOControl.vue'
 import { io } from 'socket.io-client'
 import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
+import NavbarLayout from '@/components/NavbarLayout.vue'
 const props = defineProps({ id: { type: String, required: true } })
 const deviceId = DeviceId(props.id)
 const userInfo = useUserInfoStore()
@@ -120,44 +121,45 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="navbar flex justify-between">
-    <h1 class="text-2xl" :class="{ 'skeleton h-4 w-1/2': !device }">{{ device?.name }}</h1>
-    <button
-      v-if="isSubscribedForOfflineNotifications != undefined"
-      class="btn btn-ghost btn-circle fa-solid"
-      :class="{
-        'fa-bell': isSubscribedForOfflineNotifications,
-        'fa-bell-slash': !isSubscribedForOfflineNotifications,
-      }"
-      @click="offlineNotificationsModal?.showModal()"
-      :title="`You are ${isSubscribedForOfflineNotifications ? '' : 'not '}subscribed for notifications about the device going offline`"
-    ></button>
-    <div v-else class="skeleton h-10 w-10 rounded-full"></div>
-  </div>
-  <ul v-if="device" class="list">
-    <li v-for="p in device.properties" v-bind:key="p.id" class="list-row items-center">
-      <span class="list-col-grow"> {{ p.name }} </span>
-      <ValueIOControl
-        :typeConstraints="p.typeConstraints"
-        :isInput="p.setter !== undefined"
-        v-model="p.value"
-        @input="(input) => onPropertyInput(p, input)"
-      />
-    </li>
-    <li v-for="a in actionsToShow" v-bind:key="a.id" class="list-row items-center">
-      <span class="list-col-grow"> {{ a.name }} </span>
+  <NavbarLayout :title="device?.name">
+    <template v-slot:actions>
       <button
-        class="btn btn-ghost text-primary fa-solid fa-play"
-        @click="onAskActionInput(a)"
+        v-if="isSubscribedForOfflineNotifications != undefined"
+        class="btn btn-ghost btn-circle fa-solid"
+        :class="{
+          'fa-bell': isSubscribedForOfflineNotifications,
+          'fa-bell-slash': !isSubscribedForOfflineNotifications,
+        }"
+        @click="offlineNotificationsModal?.showModal()"
+        :title="`You are ${isSubscribedForOfflineNotifications ? '' : 'not '}subscribed for notifications about the device going offline`"
       ></button>
-    </li>
-  </ul>
-  <ul v-else class="list">
-    <li v-for="i in [...Array(5).keys()]" v-bind:key="i" class="list-row items-center">
-      <div class="skeleton h-5 w-1/3 list-col-grow"></div>
-      <div class="skeleton h-5 w-18"></div>
-    </li>
-  </ul>
+      <div v-else class="skeleton h-10 w-10 rounded-full"></div>
+    </template>
+    <ul v-if="device" class="list">
+      <li v-for="p in device.properties" v-bind:key="p.id" class="list-row items-center">
+        <span class="list-col-grow"> {{ p.name }} </span>
+        <ValueIOControl
+          :typeConstraints="p.typeConstraints"
+          :isInput="p.setter !== undefined"
+          v-model="p.value"
+          @input="(input) => onPropertyInput(p, input)"
+        />
+      </li>
+      <li v-for="a in actionsToShow" v-bind:key="a.id" class="list-row items-center">
+        <span class="list-col-grow"> {{ a.name }} </span>
+        <button
+          class="btn btn-ghost text-primary fa-solid fa-play"
+          @click="onAskActionInput(a)"
+        ></button>
+      </li>
+    </ul>
+    <ul v-else class="list">
+      <li v-for="i in [...Array(5).keys()]" v-bind:key="i" class="list-row items-center">
+        <div class="skeleton h-5 w-1/3 list-col-grow"></div>
+        <div class="skeleton h-5 w-18"></div>
+      </li>
+    </ul>
+  </NavbarLayout>
 
   <!-- Dialog for offline notifications subscription -->
   <dialog ref="offline-notifications-modal" class="modal modal-bottom sm:modal-middle">

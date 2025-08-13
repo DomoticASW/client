@@ -6,6 +6,7 @@ import { useUserInfoStore } from '@/stores/user-info'
 import { onMounted, ref } from 'vue'
 import * as api from '@/api/devices-management/requests/devices'
 import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
+import NavbarLayout from '@/components/NavbarLayout.vue'
 
 const userInfo = useUserInfoStore()
 const loadingOverlay = useLoadingOverlayStore()
@@ -32,10 +33,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="relative">
-    <div class="navbar">
-      <h1 class="text-2xl">Add device</h1>
-    </div>
+  <NavbarLayout title="Add device">
     <ul v-if="devices" class="list">
       <li v-for="d in devices" v-bind:key="d.id" class="list-row">
         <span class="fa-solid fa-microchip text-2xl self-center"></span>
@@ -48,7 +46,7 @@ onMounted(async () => {
       </li>
     </ul>
     <DeviceListSkeleton v-else />
-  </div>
+  </NavbarLayout>
 </template>
 
 <style></style>

@@ -37,7 +37,7 @@
           </ul>
         </div>
       </template>
-      <h1 class="text-xl font-bold ml-4">{{ title }}</h1>
+      <h1 class="text-xl font-bold ml-4" :class="{ 'skeleton h-4 w-1/2': !title }">{{ title }}</h1>
     </div>
     <template v-if="!showBackButton">
       <div class="navbar-center hidden lg:block">
@@ -84,7 +84,7 @@ import { Role } from '@/model/users-management/User'
 import { useRouter } from 'vue-router'
 
 defineProps({
-  title: { type: String, required: true },
+  title: { type: String},
   showBackButton: {
     type: Boolean,
     default: false,

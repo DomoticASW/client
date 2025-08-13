@@ -8,6 +8,7 @@ import type { Device } from '@/model/devices-management/Device'
 import { getAllDeviceGroups } from '@/api/devices-management/requests/device-groups'
 import { getAllDevices } from '@/api/devices-management/requests/devices'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
+import NavbarLayout from '@/components/NavbarLayout.vue'
 
 const userInfo = useUserInfoStore()
 const loadingOverlay = useLoadingOverlayStore()
@@ -51,10 +52,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
-    <div class="navbar">
-      <h1 class="text-2xl">Devices</h1>
-    </div>
+  <NavbarLayout title="Devices">
     <details ref="devices-selected-group-dropdown" v-if="groups" class="dropdown">
       <summary class="btn btn-primary mb-2">
         {{ selectedGroup?.name ?? 'Not in a group' }}
@@ -92,7 +90,7 @@ onMounted(async () => {
       </RouterLink>
     </ul>
     <DeviceListSkeleton v-else />
-  </div>
+  </NavbarLayout>
 </template>
 
 <style></style>

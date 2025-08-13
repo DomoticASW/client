@@ -1,5 +1,19 @@
 <script setup lang="ts">
-const props = defineProps<{ name?: string }>()
+import { useTemplateRef } from 'vue'
+
+const props = defineProps({
+  name: { type: String },
+  showModalWhenNameNotProvided: { type: Boolean, default: true },
+})
+const emit = defineEmits<{ onclick: [] }>()
+const addButtonModal = useTemplateRef('addButtonModal')
+
+function onclick() {
+  if (props.showModalWhenNameNotProvided) {
+    addButtonModal.value?.showModal()
+  }
+  emit('onclick')
+}
 </script>
 
 <template>
@@ -14,14 +28,14 @@ const props = defineProps<{ name?: string }>()
       <template v-else>
         <button
           type="button"
-          onclick="addButtonModal.showModal()"
+          :onclick="onclick"
           class="btn btn-circle btn-base-300 fa-solid fa-plus fa-lg !flex"
         ></button>
       </template>
     </div>
   </div>
 
-  <dialog id="addButtonModal" class="modal modal-end">
+  <dialog ref="addButtonModal" class="modal modal-end">
     <div class="modal-box sm:w-4/12 w-7/12 max-w-screen">
       <slot></slot>
     </div>
