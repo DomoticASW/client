@@ -1,3 +1,4 @@
+import { useUserInfoStore } from '@/stores/user-info'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -162,6 +163,23 @@ const router = createRouter({
       component: () => import('../views/SettingsView.vue'),
     },
   ],
+})
+
+router.beforeEach((to) => {
+  const userInfo = useUserInfoStore()
+  if (userInfo.token) {
+    if (to.name === "login" || to.name === "signin") {
+      return {
+        name: 'devices'
+      }
+    }
+  } else {
+    if (to.name !== 'login' && to.name !== 'signin') {
+      return {
+        name: 'login'
+      }
+    }
+  }
 })
 
 export default router
