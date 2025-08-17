@@ -63,14 +63,7 @@
     </template>
     <div class="navbar-end">
       <slot name="actions" />
-      <button
-        v-if="showLogoutButton"
-        @click="logout"
-        class="btn btn-ghost btn-sm text-error mr-1"
-        title="Logout"
-      >
-        <i class="fa-solid fa-sign-out-alt fa-lg"></i>
-      </button>
+      <slot name="logout" />
     </div>
   </div>
   <div class="w-full max-w-xl mx-auto">
@@ -88,18 +81,10 @@ defineProps({
   showBackButton: {
     type: Boolean,
     default: false,
-  },
-  showLogoutButton: {
-    type: Boolean,
-    default: false,
-  },
+  }
 })
 
 const userInfo = useUserInfoStore()
 const router = useRouter()
 const goBack = () => router.back()
-const logout = () => {
-  userInfo.clearUserInfo()
-  router.push({ name: 'login' })
-}
 </script>
