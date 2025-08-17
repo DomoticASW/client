@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import Trigger from '@/components/tasks-automations/TriggerComponent.vue'
-import AddButton from '@/components/AddButton.vue'
 import { useUserInfoStore } from '@/stores/user-info'
 import { onMounted, ref } from 'vue'
 import { AutomationId, type Trigger as AutomationTrigger } from '@/model/scripts/Script'
@@ -134,9 +133,7 @@ function showToastMessage(msg: string) {
       :edit="true"
     />
     <div class="pb-4"></div>
-    <AddButton>
-      <InstructionItems :openDialog="openDialog" :closeDialog="closeDialog" />
-    </AddButton>
+    <InstructionItems :openDialog="openDialog" :closeDialog="closeDialog" />
     <DeviceActionPropertyDialog :selected-device="selectedDevice" :close-dialog="closeDialog" />
   </NavbarLayout>
 </template>
