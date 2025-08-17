@@ -8,14 +8,13 @@
         <div class="list-col-grow flex items-center">
           {{ user.nickname }}
         </div>
-        <a
+        <RouterLink
           class="btn btn-circle btn-ghost"
-          type="button"
+          :to="{ name: 'user-permissions', params: { id: user.email }, state: { nickname: user.nickname } }"
           :aria-label="'Get permissions of: ' + user.nickname"
-          @click="goToPermissions(user)"
         >
           <i class="fa-solid fa-play"></i>
-        </a>
+        </RouterLink>
       </li>
     </ul>
     <UsersListSkeleton v-else />
@@ -23,7 +22,6 @@
 </template>
 
 <script setup lang="ts">
-import router from '@/router';
 import { ref, onMounted } from 'vue';
 import { useUserInfoStore } from '@/stores/user-info';
 import { Role, type User } from '@/model/users-management/User';
@@ -39,16 +37,6 @@ const loadUsers = async () => {
 
   const usersList = await api.getAllUsers(adminToken);
   users.value = usersList.filter(user => user.role !== Role.Admin);
-};
-
-const goToPermissions = (user: User): void => {
-  router.push({
-    path: `./${user.email}`,
-    state: {
-      nickname: user.nickname,
-      email: user.email
-    }
-  });
 };
 
 onMounted(() => {

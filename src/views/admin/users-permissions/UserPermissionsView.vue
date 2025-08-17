@@ -50,6 +50,7 @@ import * as devicesApi from '@/api/devices-management/requests/devices'
 import * as api from '@/api/permission-management/requests/permissions';
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import router from '@/router';
+import { useRoute } from 'vue-router';
 import NavbarLayout from '@/components/NavbarLayout.vue';
 import DeviceListSkeleton from '@/components/admin/manage-devices/DeviceListSkeleton.vue';
 
@@ -60,9 +61,10 @@ const devicesWithoutPermissions = ref<Device[] | undefined>(undefined);
 const userInfoStore = useUserInfoStore();
 const adminToken = userInfoStore.token;
 
+const route = useRoute();
 const user = {
   nickname: history.state?.nickname,
-  email: history.state?.email
+  email: route.params.id as string,
 };
 
 const loadDevices = async () => {
