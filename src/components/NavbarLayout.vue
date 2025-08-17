@@ -81,11 +81,7 @@ defineProps({
   showBackButton: {
     type: Boolean,
     default: false,
-  },
-  showLogoutButton: {
-    type: Boolean,
-    default: false,
-  },
+  }
 })
 
 const userInfo = useUserInfoStore()
