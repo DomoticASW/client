@@ -1,3 +1,4 @@
+import { Role } from '@/model/users-management/User'
 import { useUserInfoStore } from '@/stores/user-info'
 import { createRouter, createWebHistory } from 'vue-router'
 
@@ -17,6 +18,14 @@ const router = createRouter({
     },
     {
       path: '/admin',
+      beforeEnter: () => {
+        const userInfo = useUserInfoStore()
+        if (userInfo.role !== Role.Admin) {
+          return {
+            name: "devices"
+          }
+        }
+      },
       children: [
         {
           path: 'manage-users',
