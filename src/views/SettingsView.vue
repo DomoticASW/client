@@ -1,6 +1,6 @@
 <template>
   <NavbarLayout title="Settings">
-    <template #logout>
+    <template #actions>
       <button @click="logout" class="btn btn-ghost btn-sm text-error mr-1" title="Logout">
         <i class="fa-solid fa-sign-out-alt fa-lg"></i>
       </button>
