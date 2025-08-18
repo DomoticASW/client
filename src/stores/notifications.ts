@@ -54,5 +54,8 @@ export const useNotificationsStore = defineStore('notifications', () => {
     notifications.value.splice(index, 1)
     localStorage.setItem('notifications', JSON.stringify(notifications.value));
   }
-  return { notifications, socket, setNotificationRead, deleteNotification }
+  function unreadNotifications() {
+    return notifications.value.filter(n => !n.read).length
+  }
+  return { notifications, socket, setNotificationRead, deleteNotification, unreadNotifications }
 })

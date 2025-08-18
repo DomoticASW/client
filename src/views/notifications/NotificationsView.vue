@@ -15,7 +15,9 @@ const notifications = notificationsStore.notifications
 
         <button
           type="button"
-          class="btn btn-circle btn-ghost fa-solid fa-eye-slash fa-lg !flex"
+          @click="notificationsStore.setNotificationRead(idx, !notification.read)"
+          class="btn btn-circle btn-ghost fa-solid fa-lg !flex"
+          :class="notification.read ? 'fa-envelope-open' : 'fa-envelope'"
         ></button>
 
         <button
