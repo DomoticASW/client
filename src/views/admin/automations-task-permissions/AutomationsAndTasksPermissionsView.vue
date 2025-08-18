@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { authorizedRequest, deserializeBody } from '@/api/api'
+import NavbarLayout from '@/components/NavbarLayout.vue';
 import { automationDeserializer } from '@/api/scripts/dtos/GetAutomationDTO'
 import { tasksDeserializer } from '@/api/scripts/dtos/GetTaskDTO'
 import type { Automation, Task } from '@/model/scripts/Script'
@@ -24,6 +25,7 @@ onMounted(async () => {
 </script>
 
 <template>
+  <NavbarLayout title="Manage automations and tasks permissions">
   <div>
     <div>
       <h1 class="text-2xl font-bold dark:text-white">Tasks</h1>
@@ -71,6 +73,7 @@ onMounted(async () => {
       </div>
     </div>
   </div>
+  </NavbarLayout>
 </template>
 
 <style></style>

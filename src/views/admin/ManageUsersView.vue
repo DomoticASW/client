@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import NavbarLayout from '@/components/NavbarLayout.vue';
 import { authorizedRequest, deserializeBody } from '@/api/api'
 import { arrayDeserializer } from '@/api/Deserializer'
 import { registrationRequestDeserializer } from '@/api/users-management/dtos/GetRegistrationRequestDTO'
@@ -89,6 +90,7 @@ function showToastMessage(msg: string) {
 </script>
 
 <template>
+  <NavbarLayout title="Users permissions">
   <div>
     <div>
       <div>
@@ -144,6 +146,7 @@ function showToastMessage(msg: string) {
       </div>
     </div>
   </div>
+  </NavbarLayout>
 </template>
 
 <style></style>
