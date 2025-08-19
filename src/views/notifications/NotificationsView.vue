@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import NavbarLayout from '@/components/NavbarLayout.vue'
+import { formatDate } from '@/components/tasks-automations/timeUtils'
 import { useNotificationsStore } from '@/stores/notifications'
-import { onMounted, ref } from 'vue'
+import { onUnmounted, ref } from 'vue'
 
 const notificationsStore = useNotificationsStore()
 
@@ -9,33 +10,40 @@ const notifications = notificationsStore.notifications
 
 const notificationRefs = ref<Element[]>([])
 
-let observer: IntersectionObserver
-
-onMounted(() => {
-  observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const index = entry.target.getAttribute('data-index')
-          const idx = Number(index)
-          if (Number.isFinite(idx)) {
-            const notification = notifications[idx]
-            if (!notification.read) {
-              notificationsStore.setNotificationRead(idx, true)
-              observer.unobserve(entry.target)
-            }
+const observer = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const index = entry.target.getAttribute('data-index')
+        const idx = Number(index)
+        if (Number.isFinite(idx)) {
+          const notification = notifications[idx]
+          if (!notification.read) {
+            notificationsStore.setNotificationRead(idx, true)
+            observer.unobserve(entry.target)
           }
         }
-      })
-    },
-    {
-      threshold: 0.5, //50% of the element must be visible to be intersecting the viewport
-    },
-  )
+      }
+    })
+  },
+  {
+    threshold: 1, //100% of the element must be visible to be intersecting the viewport
+  },
+)
 
-  notificationRefs.value.forEach((el) => {
-    if (el) observer.observe(el)
-  })
+function addToRefs(idx: number, el: Element) {
+  notificationRefs.value[idx] = el as Element
+  observer.observe(notificationRefs.value[idx])
+}
+
+function deleteNotification(idx: number) {
+  notificationsStore.deleteNotification(idx)
+  observer.unobserve(notificationRefs.value[idx])
+  notificationRefs.value.splice(idx, 1)
+}
+
+onUnmounted(() => {
+  observer.disconnect()
 })
 </script>
 
@@ -43,20 +51,21 @@ onMounted(() => {
   <NavbarLayout title="Notifications" :show-back-button="false">
     <ul class="list rounded-box" v-if="notifications">
       <li
-        class="list-row"
+        class="indicator list-row grid w-full"
         v-for="(notification, idx) in notifications"
         :key="idx"
         :data-index="idx"
-        :ref="(el) => notificationRefs.push(el as Element)"
+        :ref="(el) => el && addToRefs(idx, el as Element)"
       >
-        <span class="list-col-grow">{{ notification.message }}</span>
-
-        <button
-          type="button"
-          class="btn btn-circle btn-ghost fa-solid fa-close fa-lg !flex"
-          @click="notificationsStore.deleteNotification(idx)"
-          :aria-label="'Delete notification number ' + idx"
-        ></button>
+      <span class="self-center list-col-grow">{{ notification.message }}</span>
+      <span class="self-end text-xs opacity-50">{{ formatDate(notification.date) }}</span>
+      <button
+      type="button"
+      class="btn btn-circle btn-ghost fa-solid fa-close fa-lg !flex"
+      @click="deleteNotification(idx)"
+      :aria-label="'Delete notification number ' + idx"
+      ></button>
+      <span class="indicator-item badge badge-primary" v-if="!notification.read">New</span>
       </li>
     </ul>
   </NavbarLayout>

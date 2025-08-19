@@ -6,7 +6,7 @@ import { ref } from "vue";
 import { Socket } from "socket.io-client";
 
 export const useNotificationsStore = defineStore('notifications', () => {
-  const notifications = ref(new Array<Notification & { read: boolean }>())
+  const notifications = ref(new Array<Notification & { read: boolean, date: Date }>())
   const stored = localStorage.getItem('notifications')
   if (stored) {
     try {
@@ -33,7 +33,7 @@ export const useNotificationsStore = defineStore('notifications', () => {
   function openSocket(email: string) {
     if (socket.value) { socket.value.close() }
     socket.value = openSocketIOForNotifications(email, (notification) => {
-      notifications.value.push({ ...notification, read: false })
+      notifications.value.push({ ...notification, read: false, date: new Date() })
       localStorage.setItem('notifications', JSON.stringify(notifications.value));
     })
   }
