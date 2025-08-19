@@ -22,15 +22,6 @@
             <li><RouterLink :to="{ name: 'devices' }">Devices</RouterLink></li>
             <li><RouterLink :to="{ name: 'tasks' }">Tasks</RouterLink></li>
             <li><RouterLink :to="{ name: 'automations' }">Automations</RouterLink></li>
-            <li><RouterLink :to="{ name: 'settings' }">Settings</RouterLink></li>
-            <li>
-              <RouterLink :to="{ name: 'notifications' }">
-                Notifications
-                <div class="badge badge-primary badge-xs">
-                  {{ useNotificationsStore().unreadNotifications() }}
-                </div>
-              </RouterLink>
-            </li>
             <li v-if="userInfo.role === Role.Admin">
               <p>Admin</p>
               <ul class="p-2">
@@ -49,6 +40,15 @@
                 </li>
               </ul>
             </li>
+            <li><RouterLink :to="{ name: 'settings' }">Settings</RouterLink></li>
+            <li>
+              <RouterLink :to="{ name: 'notifications' }">
+                Notifications
+                <div class="badge badge-primary badge-xs">
+                  {{ useNotificationsStore().unreadNotifications() }}
+                </div>
+              </RouterLink>
+            </li>
           </ul>
         </div>
       </template>
@@ -60,15 +60,6 @@
           <li><RouterLink :to="{ name: 'devices' }">Devices</RouterLink></li>
           <li><RouterLink :to="{ name: 'tasks' }">Tasks</RouterLink></li>
           <li><RouterLink :to="{ name: 'automations' }">Automations</RouterLink></li>
-          <li><RouterLink :to="{ name: 'settings' }">Settings</RouterLink></li>
-          <li>
-            <RouterLink :to="{ name: 'notifications' }">
-              Notifications
-              <div class="badge badge-primary badge-sm">
-                {{ useNotificationsStore().unreadNotifications() }}
-              </div>
-            </RouterLink>
-          </li>
           <li v-if="userInfo.role === Role.Admin">
             <details>
               <summary>Admin</summary>
@@ -88,6 +79,15 @@
                 </li>
               </ul>
             </details>
+          </li>
+          <li><RouterLink :to="{ name: 'settings' }">Settings</RouterLink></li>
+          <li>
+            <RouterLink :to="{ name: 'notifications' }">
+              Notifications
+              <div class="badge badge-primary badge-sm">
+                {{ useNotificationsStore().unreadNotifications() }}
+              </div>
+            </RouterLink>
           </li>
         </ul>
       </div>
