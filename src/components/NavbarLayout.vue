@@ -63,7 +63,6 @@
     </template>
     <div class="navbar-end">
       <slot name="actions" />
-      <slot name="logout" />
     </div>
   </div>
   <div class="w-full max-w-xl mx-auto">
