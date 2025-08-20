@@ -75,7 +75,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <NavbarLayout :title="group?.name">
+  <NavbarLayout :title="group?.name" :showBackButton="true">
     <template v-slot:actions>
       <button class="btn btn-ghost text-error" @click="deleteGroup">Delete</button>
     </template>

@@ -121,7 +121,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <NavbarLayout :title="device?.name">
+  <NavbarLayout :title="device?.name" :show-back-button="true">
     <template v-slot:actions>
       <button
         v-if="isSubscribedForOfflineNotifications != undefined"
