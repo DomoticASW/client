@@ -7,7 +7,7 @@ import { onUnmounted, ref } from 'vue'
 const notificationsStore = useNotificationsStore()
 
 const notifications = notificationsStore.notifications
-const readNotification = ref<number[]>([])
+const readNotification = ref<boolean[]>([])
 
 const notificationRefs = ref<Element[]>([])
 
@@ -18,8 +18,8 @@ const observer = new IntersectionObserver(
         const index = entry.target.getAttribute('data-index')
         const idx = Number(index)
         if (Number.isFinite(idx)) {
-          if (!readNotification.value.includes(idx)) {
-            readNotification.value.push(idx)
+          if (!readNotification.value[idx]) {
+            readNotification.value[idx] = true
             observer.unobserve(entry.target)
           }
         }
@@ -33,6 +33,7 @@ const observer = new IntersectionObserver(
 
 function addToRefs(idx: number, el: Element) {
   notificationRefs.value[idx] = el as Element
+  readNotification.value[idx] = notifications[idx].read
   observer.observe(notificationRefs.value[idx])
 }
 
@@ -40,17 +41,18 @@ function deleteNotification(idx: number) {
   notificationsStore.deleteNotification(idx)
   observer.unobserve(notificationRefs.value[idx])
   notificationRefs.value.splice(idx, 1)
+  readNotification.value.splice(idx, 1)
 }
 
 onUnmounted(() => {
+  readNotification.value.forEach((r, idx) => notificationsStore.setNotificationRead(idx, r))
   observer.disconnect()
-  readNotification.value.forEach(r => notificationsStore.setNotificationRead(r, true))
 })
 </script>
 
 <template>
   <NavbarLayout title="Notifications" :show-back-button="false">
-    <ul class="list rounded-box" v-if="notifications">
+    <ul class="list rounded-box">
       <li
         class="indicator list-row grid w-full"
         v-for="(notification, idx) in notifications"
@@ -58,15 +60,17 @@ onUnmounted(() => {
         :data-index="idx"
         :ref="(el) => el && addToRefs(idx, el as Element)"
       >
-      <span class="self-center list-col-grow">{{ notification.message }}</span>
-      <span class="self-end text-xs opacity-50">{{ formatDate(notification.date) }}</span>
-      <button
-      type="button"
-      class="btn btn-circle btn-ghost fa-solid fa-close fa-lg !flex"
-      @click="deleteNotification(idx)"
-      :aria-label="'Delete notification number ' + idx"
-      ></button>
-      <span class="indicator-item badge badge-primary" v-if="!notification.read">New</span>
+        <span class="self-center list-col-grow">{{ notification.message }}</span>
+        <span class="self-end text-xs opacity-50">{{
+          formatDate(new Date(notification.date))
+        }}</span>
+        <button
+          type="button"
+          class="btn btn-circle btn-ghost fa-solid fa-close fa-lg !flex"
+          @click="deleteNotification(idx)"
+          :aria-label="'Delete notification number ' + idx"
+        ></button>
+        <span class="indicator-item badge badge-primary" v-if="!notification.read">New</span>
       </li>
     </ul>
   </NavbarLayout>
