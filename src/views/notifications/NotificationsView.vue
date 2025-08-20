@@ -7,6 +7,7 @@ import { onUnmounted, ref } from 'vue'
 const notificationsStore = useNotificationsStore()
 
 const notifications = notificationsStore.notifications
+const readNotification = ref<number[]>([])
 
 const notificationRefs = ref<Element[]>([])
 
@@ -17,9 +18,8 @@ const observer = new IntersectionObserver(
         const index = entry.target.getAttribute('data-index')
         const idx = Number(index)
         if (Number.isFinite(idx)) {
-          const notification = notifications[idx]
-          if (!notification.read) {
-            notificationsStore.setNotificationRead(idx, true)
+          if (!readNotification.value.includes(idx)) {
+            readNotification.value.push(idx)
             observer.unobserve(entry.target)
           }
         }
@@ -44,6 +44,7 @@ function deleteNotification(idx: number) {
 
 onUnmounted(() => {
   observer.disconnect()
+  readNotification.value.forEach(r => notificationsStore.setNotificationRead(r, true))
 })
 </script>
 
