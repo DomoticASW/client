@@ -33,7 +33,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <NavbarLayout title="Add device">
+  <NavbarLayout title="Add device" :show-back-button="true">
     <ul v-if="devices" class="list">
       <li v-for="d in devices" v-bind:key="d.id" class="list-row">
         <span class="fa-solid fa-microchip text-2xl self-center"></span>
