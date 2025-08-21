@@ -27,7 +27,7 @@
     <div class="row-start-3 col-span-full">
       <textarea
         placeholder="Message sent"
-        class="w-full textarea textarea-primary"
+        class="w-full textarea textarea-primary border-primary!"
         :disabled="!edit"
         v-model="instruction.message"
       />
