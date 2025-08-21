@@ -6,8 +6,7 @@
           type="button"
           class="btn btn-ghost fa-arrow-left fa-solid fa-xl !flex"
           @click="goBack()"
-        >
-        </button>
+        ></button>
       </template>
       <template v-else>
         <div class="dropdown">
@@ -23,16 +22,32 @@
             <li><RouterLink :to="{ name: 'devices' }">Devices</RouterLink></li>
             <li><RouterLink :to="{ name: 'tasks' }">Tasks</RouterLink></li>
             <li><RouterLink :to="{ name: 'automations' }">Automations</RouterLink></li>
-            <li><RouterLink :to="{ name: 'settings' }">Settings</RouterLink></li>
             <li v-if="userInfo.role === Role.Admin">
               <p>Admin</p>
               <ul class="p-2">
                 <li><RouterLink :to="{ name: 'manage-users' }">Users</RouterLink></li>
                 <li><RouterLink :to="{ name: 'manage-devices' }">Devices</RouterLink></li>
                 <li><RouterLink :to="{ name: 'device-groups' }">Device groups</RouterLink></li>
-                <li><RouterLink :to="{ name: 'manage-users-permissions' }">Users permissions</RouterLink></li>
-                <li><RouterLink :to="{ name: 'automations-and-tasks-permissions' }">Scripts permissions</RouterLink></li>
+                <li>
+                  <RouterLink :to="{ name: 'manage-users-permissions' }"
+                    >Users permissions</RouterLink
+                  >
+                </li>
+                <li>
+                  <RouterLink :to="{ name: 'automations-and-tasks-permissions' }"
+                    >Scripts permissions</RouterLink
+                  >
+                </li>
               </ul>
+            </li>
+            <li><RouterLink :to="{ name: 'settings' }">Settings</RouterLink></li>
+            <li>
+              <RouterLink :to="{ name: 'notifications' }">
+                Notifications
+                <div class="badge badge-primary badge-xs">
+                  {{ useNotificationsStore().unreadNotifications() }}
+                </div>
+              </RouterLink>
             </li>
           </ul>
         </div>
@@ -45,7 +60,6 @@
           <li><RouterLink :to="{ name: 'devices' }">Devices</RouterLink></li>
           <li><RouterLink :to="{ name: 'tasks' }">Tasks</RouterLink></li>
           <li><RouterLink :to="{ name: 'automations' }">Automations</RouterLink></li>
-          <li><RouterLink :to="{ name: 'settings' }">Settings</RouterLink></li>
           <li v-if="userInfo.role === Role.Admin">
             <details>
               <summary>Admin</summary>
@@ -53,10 +67,27 @@
                 <li><RouterLink :to="{ name: 'manage-users' }">Users</RouterLink></li>
                 <li><RouterLink :to="{ name: 'manage-devices' }">Devices</RouterLink></li>
                 <li><RouterLink :to="{ name: 'device-groups' }">Device groups</RouterLink></li>
-                <li><RouterLink :to="{ name: 'manage-users-permissions' }">Users permissions</RouterLink></li>
-                <li><RouterLink :to="{ name: 'automations-and-tasks-permissions' }">Scripts permissions</RouterLink></li>
+                <li>
+                  <RouterLink :to="{ name: 'manage-users-permissions' }"
+                    >Users permissions</RouterLink
+                  >
+                </li>
+                <li>
+                  <RouterLink :to="{ name: 'automations-and-tasks-permissions' }"
+                    >Scripts permissions</RouterLink
+                  >
+                </li>
               </ul>
             </details>
+          </li>
+          <li><RouterLink :to="{ name: 'settings' }">Settings</RouterLink></li>
+          <li>
+            <RouterLink :to="{ name: 'notifications' }">
+              Notifications
+              <div class="badge badge-primary badge-sm">
+                {{ useNotificationsStore().unreadNotifications() }}
+              </div>
+            </RouterLink>
           </li>
         </ul>
       </div>
@@ -74,13 +105,14 @@
 import { useUserInfoStore } from '@/stores/user-info'
 import { Role } from '@/model/users-management/User'
 import { useRouter } from 'vue-router'
+import { useNotificationsStore } from '@/stores/notifications'
 
 defineProps({
-  title: { type: String},
+  title: { type: String },
   showBackButton: {
     type: Boolean,
     default: false,
-  }
+  },
 })
 
 const userInfo = useUserInfoStore()

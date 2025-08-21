@@ -1,8 +1,10 @@
 @import './fonts/all.css';
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @plugin "daisyui" {
-  themes: lofi --default, business --prefersdark;
+  themes:
+    lofi --default,
+    business --prefersdark;
 }
 
 @layer base {

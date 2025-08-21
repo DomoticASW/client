@@ -1,6 +1,6 @@
 <template>
   <div :class="indent">
-    <div :class="['card card-sm my-2', colors]">
+    <div :class="['card card-sm my-2 border border-neutral shadow-lg', colors]">
       <div
         class="card-body text-base grid px-4"
         :class="
