@@ -1,11 +1,11 @@
 @import './fonts/all.css';
-@import "tailwindcss";
+@import 'tailwindcss';
 
-@plugin "daisyui";
-
-/* {
-  themes: lofi --default, business --prefersdark; */
-/* } */
+@plugin "daisyui" {
+  themes:
+    lofi --default,
+    business --prefersdark;
+}
 
 @layer base {
   html {
