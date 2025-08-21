@@ -6,12 +6,14 @@ import { ref } from "vue";
 import { Socket } from "socket.io-client";
 
 export const useNotificationsStore = defineStore('notifications', () => {
-  const notifications = ref(new Array<Notification & { read: boolean, date: string }>())
+  const notifications = ref(new Array<Notification & { read: boolean, date: string, id: number }>())
+  let id = 0
   const stored = localStorage.getItem('notifications')
   if (stored) {
     try {
       const parsed = JSON.parse(stored);
       notifications.value = parsed;
+      id = notifications.value[0].id
     } catch (e) {
       console.error("Failed to parse stored notifications", e);
     }
@@ -33,7 +35,8 @@ export const useNotificationsStore = defineStore('notifications', () => {
   function openSocket(email: string) {
     if (socket.value) { socket.value.close() }
     socket.value = openSocketIOForNotifications(email, (notification) => {
-      notifications.value.unshift({ ...notification, read: false, date: (new Date()).toUTCString() })
+      id = id + 1
+      notifications.value.unshift({ ...notification, read: false, date: (new Date()).toUTCString(), id: id })
       localStorage.setItem('notifications', JSON.stringify(notifications.value));
     })
   }
