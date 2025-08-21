@@ -11,9 +11,9 @@
       <input
         type="number"
         v-model="time"
-        class="input h-7 max-w-17 p-2 text-base-content text-center"
+        class="input h-7 max-w-17 p-2 input-primary text-center"
       />
-      <select v-model="timeUnit" class="select h-7 w-28 text-base-content text-center">
+      <select v-model="timeUnit" class="select h-7 w-28 select-primary text-center">
         <option selected disabled>Time unit</option>
         <option value="seconds">Seconds</option>
         <option value="minutes">Minutes</option>

@@ -10,7 +10,7 @@
     <select
       v-model="(instruction.instruction as StartTaskInstruction).taskId"
       v-else
-      class="select h-7 text-center text-base-content"
+      class="select h-7 text-center select-primary"
     >
       <option selected disabled>Choose a task</option>
       <option :value="task.id" v-for="task in tasks" :key="task.id">{{ task.name }}</option>

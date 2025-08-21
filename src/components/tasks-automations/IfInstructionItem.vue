@@ -14,14 +14,14 @@
       <input
         v-if="edit"
         type="text"
-        class="input text-base-content w-20 place-self-center"
+        class="input input-primary w-20 place-self-center"
         placeholder="Constant name"
         v-model="instruction.condition.leftConstantName"
       />
       <select
         v-if="edit"
         v-model="instruction.condition.conditionOperatorType"
-        class="select text-base-content col-span-3 w-20 place-self-center"
+        class="select select-primary col-span-3 w-20 place-self-center"
       >
         <option v-for="operator in ConditionOperatorType" :key="operator" :value="operator">
           {{ getOperator(operator) }}
@@ -30,7 +30,7 @@
       <input
         v-if="edit"
         type="text"
-        class="input text-base-content w-20 place-self-center"
+        class="input input-primary w-20 place-self-center"
         placeholder="Constant name"
         v-model="instruction.condition.rightConstantName"
       />

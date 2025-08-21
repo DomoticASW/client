@@ -1,5 +1,7 @@
 <template>
-  <div class="navbar bg-base-200/90 shadow backdrop-blur mb-4 sticky top-0 z-30">
+  <div
+    class="navbar py-0 mb-4 bg-base-200/70 shadow backdrop-blur sticky top-0 z-30"
+  >
     <div class="navbar-start">
       <template v-if="showBackButton">
         <button
@@ -17,7 +19,7 @@
           ></div>
           <ul
             tabindex="0"
-            class="menu dropdown-content bg-base-300 -ml-2 rounded-box z-1 mt-3 w-52 p-2 shadow"
+            class="menu dropdown-content bg-base-200 -ml-2 rounded-box z-1 mt-3 w-52 p-2 shadow"
           >
             <li><RouterLink :to="{ name: 'devices' }">Devices</RouterLink></li>
             <li><RouterLink :to="{ name: 'tasks' }">Tasks</RouterLink></li>
@@ -52,7 +54,9 @@
           </ul>
         </div>
       </template>
-      <h1 class="text-xl font-bold ml-4" :class="{ 'skeleton h-4 w-1/2': !title }">{{ title }}</h1>
+      <h1 class="text-xl font-bold ml-4" :class="{ 'skeleton h-4 w-1/2': !title }">
+        {{ title }}
+      </h1>
     </div>
     <template v-if="!showBackButton">
       <div class="navbar-center hidden lg:block">
@@ -63,7 +67,7 @@
           <li v-if="userInfo.role === Role.Admin">
             <details>
               <summary>Admin</summary>
-              <ul class="p-2 bg-base-300 w-40 z-1">
+              <ul class="p-2 bg-base-200/90 w-40 z-1">
                 <li><RouterLink :to="{ name: 'manage-users' }">Users</RouterLink></li>
                 <li><RouterLink :to="{ name: 'manage-devices' }">Devices</RouterLink></li>
                 <li><RouterLink :to="{ name: 'device-groups' }">Device groups</RouterLink></li>

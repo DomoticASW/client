@@ -6,7 +6,7 @@
     :instruction="props.instruction"
     @click="openDialog"
     v-if="device && action"
-    :class="[edit ? 'cursor-pointer transition-all hover:bg-secondary' : '']"
+    :class="'cursor-pointer transition-all duration-100 hover:bg-primary/10'"
   >
     <p class="truncate">{{ device.name }}</p>
 

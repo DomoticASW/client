@@ -10,7 +10,7 @@
     <select
       v-model="instruction.email"
       v-else
-      class="select text-center truncate h-7 text-base-content"
+      class="select text-center truncate h-7 select-primary"
     >
       <!-- Show all the users -->
       <option
@@ -27,7 +27,7 @@
     <div class="row-start-3 col-span-full">
       <textarea
         placeholder="Message sent"
-        class="w-full textarea text-base-content"
+        class="w-full textarea textarea-primary"
         :disabled="!edit"
         v-model="instruction.message"
       />

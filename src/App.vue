@@ -9,7 +9,7 @@ import SuccessPresenter from './components/SuccessPresenter.vue'
   <div class="flex justify-center">
     <ErrorPresenter>
         <LoadingOverlay>
-          <div class="h-screen lg:w-full w-xl max-w-5xl">
+          <div class="h-full lg:w-full w-xl max-w-5xl">
             <SuccessPresenter>
             </SuccessPresenter>
             <RouterView />

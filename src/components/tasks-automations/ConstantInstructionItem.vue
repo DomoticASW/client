@@ -5,7 +5,7 @@
     :edit="edit"
     :instruction="props.instruction"
     @click="openDialog"
-    :class="[edit ? 'cursor-pointer transition-all hover:bg-secondary' : '']"
+    :class="edit ? 'cursor-pointer transition-all duration-100 hover:bg-primary/10' : ''"
   >
     <p>Constant</p>
     <p class="font-bold truncate text-center">{{ instruction.name }}</p>
@@ -17,9 +17,9 @@
     </template>
     <template v-else>
       <input
-        class="col-start-2 place-self-center"
+        class="col-start-2 place-self-center cursor-pointer transition-all"
         type="color"
-        disabled
+        @click.prevent="openDialog"
         :value="instruction.value"
       />
     </template>
