@@ -1,7 +1,6 @@
 <template>
   <InstructionLayout
     :colors="colors"
-    :indent="indent"
     :edit="edit"
     :instruction="props.instruction"
   >
@@ -30,8 +29,6 @@ const userInfo = useUserInfoStore()
 
 const props = defineProps<{
   instruction: Instruction
-  indent: string
-  depth: number
   colors: string
   edit: boolean
 }>()

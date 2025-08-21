@@ -1,12 +1,11 @@
 <template>
   <InstructionLayout
     :colors="colors"
-    :indent="indent"
     :edit="edit"
     :instruction="props.instruction"
     @click="openDialog"
     v-if="device && property"
-    :class="'cursor-pointer transition-all duration-100 hover:bg-primary/10'"
+    :class="edit ? 'cursor-pointer transition-all duration-100 hover:bg-primary/10' : ''"
   >
     <p class="truncate">{{ device.name }}</p>
     <p class="font-bold text-center truncate">{{ instruction.name }}</p>
@@ -92,10 +91,8 @@
           id="constant_name"
         />
         <div class="modal-action grid grid-cols-3 w-full">
-          <button type="button" class="btn btn-error col-start-1" @click="closeDialog">
-            Close
-          </button>
-          <button type="submit" class="btn col-start-3">Confirm</button>
+          <button type="button" class="btn col-start-1" @click="closeDialog">Close</button>
+          <button type="submit" class="btn col-start-3 btn-primary">Confirm</button>
         </div>
       </form>
     </div>
@@ -114,17 +111,17 @@ import type { Device, DeviceProperty } from '@/model/devices-management/Device'
 import { findDevice } from '@/api/devices-management/requests/devices'
 import { useUserInfoStore } from '@/stores/user-info'
 import { useInstructionsStore } from '@/stores/instructions'
+import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 
 const props = defineProps<{
   id: string
   instruction: Instruction
-  indent: string
-  depth: number
   colors: string
   edit: boolean
 }>()
 
 const instructionsStore = useInstructionsStore()
+const loadingOverlay = useLoadingOverlayStore()
 const userInfo = useUserInfoStore()
 const instruction = ref(props.instruction.instruction as CreateDevicePropertyConstantInstruction)
 const device = ref<Device>()
@@ -149,10 +146,15 @@ watch(
 onMounted(async () => await updateInstruction())
 
 async function updateInstruction() {
-  device.value = await findDevice(instruction.value.deviceId, userInfo.token)
-  property.value = device.value.properties.find(
-    (prop) => prop.id === instruction.value.devicePropertyId,
-  )
+  try {
+    loadingOverlay.startLoading()
+    device.value = await findDevice(instruction.value.deviceId, userInfo.token)
+    property.value = device.value.properties.find(
+      (prop) => prop.id === instruction.value.devicePropertyId,
+    )
+  } finally {
+    loadingOverlay.stopLoading()
+  }
 }
 
 function openDialog() {
@@ -167,19 +169,26 @@ function openDialog() {
 }
 
 async function handleConfirm() {
-  const device = await findDevice(variableForm.value.deviceId, userInfo.token)
-  const property = device.properties.find((prop) => prop.id === variableForm.value.devicePropertyId)
-  if (property) {
-    variableForm.value.type = property.typeConstraints.type
-    instructionsStore.changeInstruction(props.instruction, {
-      type: InstructionType.CreateDevicePropertyConstantInstruction,
-      instruction: {
-        name: variableForm.value.name,
-        type: variableForm.value.type,
-        deviceId: variableForm.value.deviceId,
-        devicePropertyId: variableForm.value.devicePropertyId,
-      },
-    })
+  try {
+    loadingOverlay.startLoading()
+    const device = await findDevice(variableForm.value.deviceId, userInfo.token)
+    const property = device.properties.find(
+      (prop) => prop.id === variableForm.value.devicePropertyId,
+    )
+    if (property) {
+      variableForm.value.type = property.typeConstraints.type
+      instructionsStore.changeInstruction(props.instruction, {
+        type: InstructionType.CreateDevicePropertyConstantInstruction,
+        instruction: {
+          name: variableForm.value.name,
+          type: variableForm.value.type,
+          deviceId: variableForm.value.deviceId,
+          devicePropertyId: variableForm.value.devicePropertyId,
+        },
+      })
+    }
+  } finally {
+    loadingOverlay.stopLoading()
   }
   closeDialog()
 }

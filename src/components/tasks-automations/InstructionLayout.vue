@@ -1,5 +1,4 @@
 <template>
-  <div :class="indent">
     <div :class="['card card-sm my-2', colors, props.class]">
       <div
         class="card-body text-base grid px-4"
@@ -41,7 +40,6 @@
         </template>
       </div>
     </div>
-  </div>
 </template>
 
 <script setup lang="ts">
@@ -50,7 +48,6 @@ import { useInstructionsStore } from '@/stores/instructions'
 
 const props = defineProps<{
   instruction: Instruction
-  indent: string
   colors: string
   edit: boolean
   class?: string

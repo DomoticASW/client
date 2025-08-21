@@ -1,14 +1,11 @@
 <template>
   <!-- If card -->
-  <InstructionLayout
-    :colors="colors"
-    :indent="indent"
-    :edit="edit"
-    :instruction="props.instruction"
-  >
-  <div class="grid grid-cols-6 col-span-3 row-span-2">
+  <InstructionLayout :colors="colors" :edit="edit" :instruction="props.instruction">
+    <div class="grid grid-cols-6 col-span-3 row-span-2">
       <p class="self-center">If</p>
-      <p class="truncate col-span-2 font-bold" v-if="!edit">{{ instruction.condition.leftConstantName }}</p>
+      <p class="truncate col-span-2 font-bold" v-if="!edit">
+        {{ instruction.condition.leftConstantName }}
+      </p>
       <p class="truncate col-span-2 font-bold" v-if="!edit">{{ operatorSymbol }}</p>
       <p class="truncate font-bold" v-if="!edit">{{ instruction.condition.rightConstantName }}</p>
       <input
@@ -37,38 +34,42 @@
     </div>
   </InstructionLayout>
 
-  <!-- Then instructions -->
-  <InstructionItem
-    v-for="(ins, i) in instruction.thenInstructions"
-    :key="id + '-then-' + i.toString()"
-    :id="id + '-then' + i.toString()"
-    :instruction="ins"
-    :depth="depth + 1"
-    :edit="edit"
-  />
+  <div class="grid grid-cols-24">
+    <div class="row-span-full bg-secondary w-[2px] rounded-3xl"></div>
+    <div class="col-span-23 -mt-2 -mb-2">
+      <!-- Then instructions -->
+      <InstructionItem
+        v-for="(ins, i) in instruction.thenInstructions"
+        :key="id + '-then-' + i.toString()"
+        :id="id + '-then' + i.toString()"
+        :instruction="ins"
+        :edit="edit"
+      />
+    </div>
+  </div>
 
   <!-- Else block -->
   <template v-if="'elseInstructions' in instruction">
-    <div :class="indent">
-      <div :class="['card my-2', colors]">
-        <div class="card-body p-2 text-base">Else</div>
+    <div :class="['card my-2', colors]">
+      <div class="card-body p-2 text-base">Else</div>
+    </div>
+    <div class="grid grid-cols-24">
+      <div class="row-span-full bg-secondary w-[2px] rounded-3xl"></div>
+      <div class="col-span-23 -mt-2 -mb-2">
+        <InstructionItem
+          v-for="(ins, i) in instruction.elseInstructions"
+          :key="id + '-else-' + i.toString()"
+          :id="id + '-else' + i.toString()"
+          :instruction="ins"
+          :edit="edit"
+        />
       </div>
     </div>
-    <InstructionItem
-      v-for="(ins, i) in instruction.elseInstructions"
-      :key="id + '-else-' + i.toString()"
-      :id="id + '-else' + i.toString()"
-      :instruction="ins"
-      :depth="depth + 1"
-      :edit="edit"
-    />
   </template>
 
   <!-- Endif card -->
-  <div :class="indent">
-    <div :class="['card my-2', colors]">
-      <div class="card-body p-2 text-base">Endif</div>
-    </div>
+  <div :class="['card my-2', colors]">
+    <div class="card-body p-2 text-base">Endif</div>
   </div>
 </template>
 
@@ -86,8 +87,6 @@ import { ref, watch } from 'vue'
 const props = defineProps<{
   id: string
   instruction: Instruction
-  indent: string
-  depth: number
   colors: string
   edit: boolean
 }>()

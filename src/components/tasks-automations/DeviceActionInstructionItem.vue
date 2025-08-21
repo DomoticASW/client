@@ -1,12 +1,11 @@
 <template>
   <InstructionLayout
     :colors="colors"
-    :indent="indent"
     :edit="edit"
     :instruction="props.instruction"
     @click="openDialog"
     v-if="device && action"
-    :class="'cursor-pointer transition-all duration-100 hover:bg-primary/10'"
+    :class="edit ? 'cursor-pointer transition-all duration-100 hover:bg-primary/10' : ''"
   >
     <p class="truncate">{{ device.name }}</p>
 
@@ -131,10 +130,8 @@
           id="input"
         />
         <div class="modal-action grid grid-cols-3 w-full">
-          <button type="button" class="btn btn-error col-start-1" @click="closeDialog">
-            Close
-          </button>
-          <button type="submit" class="btn col-start-3">Confirm</button>
+          <button type="button" class="btn col-start-1" @click="closeDialog">Close</button>
+          <button type="submit" class="btn col-start-3 btn-primary">Confirm</button>
         </div>
       </form>
     </div>
@@ -155,17 +152,17 @@ import { useInstructionsStore } from '@/stores/instructions'
 import { findDevice } from '@/api/devices-management/requests/devices'
 import { Type } from '@/model/Type'
 import { getDefaultInput } from './emptyInstructions'
+import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 
 const props = defineProps<{
   id: string
   instruction: Instruction
-  indent: string
-  depth: number
   colors: string
   edit: boolean
 }>()
 
 const instructionsStore = useInstructionsStore()
+const loadingOverlay = useLoadingOverlayStore()
 const userInfo = useUserInfoStore()
 const instruction = ref(props.instruction.instruction as DeviceActionInstruction)
 const device = ref<Device>()
@@ -290,9 +287,14 @@ function variableType(): TypeDTO {
 onMounted(async () => await updateInstruction())
 
 async function updateInstruction() {
-  device.value = await findDevice(instruction.value.deviceId, userInfo.token)
-  action.value = device.value.actions.find((act) => act.id === instruction.value.deviceActionId)
-  selectedAction.value = action.value
+  try {
+    loadingOverlay.startLoading()
+    device.value = await findDevice(instruction.value.deviceId, userInfo.token)
+    action.value = device.value.actions.find((act) => act.id === instruction.value.deviceActionId)
+    selectedAction.value = action.value
+  } finally {
+    loadingOverlay.stopLoading()
+  }
 }
 
 function openDialog() {

@@ -1,10 +1,5 @@
 <template>
-  <InstructionLayout
-    :colors="colors"
-    :indent="indent"
-    :edit="edit"
-    :instruction="props.instruction"
-  >
+  <InstructionLayout :colors="colors" :edit="edit" :instruction="props.instruction">
     <p class="truncate">Send notification to</p>
     <p v-if="!edit" class="font-bold text-center truncate">{{ selectedUser?.nickname }}</p>
     <select
@@ -42,11 +37,10 @@ import { onMounted, ref, watch } from 'vue'
 import type { User } from '@/model/users-management/User'
 import { getAllUsers } from '@/api/users-management/requests/users'
 import { useUserInfoStore } from '@/stores/user-info'
+import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 
 const props = defineProps<{
   instruction: Instruction
-  indent: string
-  depth: number
   colors: string
   edit: boolean
 }>()
@@ -55,6 +49,7 @@ const userInfo = useUserInfoStore()
 const instruction = ref(props.instruction.instruction as SendNotificationInstruction)
 const users = ref<User[]>()
 const selectedUser = ref<User>()
+const loadingOverlay = useLoadingOverlayStore()
 
 watch(
   () => props.instruction,
@@ -65,7 +60,12 @@ watch(
 )
 
 onMounted(async () => {
-  users.value = await getAllUsers(userInfo.token)
-  selectedUser.value = users.value?.find((u) => u.email === instruction.value.email)
+  try {
+    loadingOverlay.startLoading()
+    users.value = await getAllUsers(userInfo.token)
+    selectedUser.value = users.value?.find((u) => u.email === instruction.value.email)
+  } finally {
+    loadingOverlay.stopLoading()
+  }
 })
 </script>

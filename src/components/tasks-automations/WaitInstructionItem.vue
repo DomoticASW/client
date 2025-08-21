@@ -1,7 +1,6 @@
 <template>
   <InstructionLayout
     :colors="colors"
-    :indent="indent"
     :edit="edit"
     :instruction="props.instruction"
   >
@@ -32,8 +31,6 @@ import { convertToSeconds, decomposeToLargestUnit, formatDuration } from './time
 
 const props = defineProps<{
   instruction: Instruction
-  indent: string
-  depth: number
   colors: string
   edit: boolean
 }>()

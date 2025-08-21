@@ -6,7 +6,7 @@ import SuccessPresenter from './components/SuccessPresenter.vue'
 </script>
 
 <template>
-  <div class="flex justify-center">
+  <div class="flex justify-center mx-2">
     <ErrorPresenter>
         <LoadingOverlay>
           <div class="h-full lg:w-full w-xl max-w-5xl">
