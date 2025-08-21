@@ -1,5 +1,5 @@
 <template>
-  <div class="navbar bg-base-300 shadow mb-4">
+  <div class="navbar bg-base-200/90 shadow backdrop-blur mb-4 sticky top-0 z-30">
     <div class="navbar-start">
       <template v-if="showBackButton">
         <button
