@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+import NavbarLayout from '@/components/NavbarLayout.vue';
 import type { EditList } from '@/model/permissions-management/EditList'
 import type { TaskList } from '@/model/permissions-management/TaskList'
 import { authorizedRequest, deserializeBody } from '@/api/api'
@@ -166,6 +167,7 @@ function showToastMessage(msg: string) {
 </script>
 
 <template>
+  <NavbarLayout :title="script?.name" :show-back-button="true">
   <div>
     <div class="relative">
       <div class="flex items-center space-x-2">
@@ -239,6 +241,7 @@ function showToastMessage(msg: string) {
       </div>
     </div>
   </div>
+  </NavbarLayout>
 </template>
 
 <style></style>
