@@ -13,7 +13,7 @@ export const useNotificationsStore = defineStore('notifications', () => {
     try {
       const parsed = JSON.parse(stored);
       notifications.value = parsed;
-      id = notifications.value[0].id
+      id = notifications.value.reduce((maxId, n) => n.id > maxId ? n.id : maxId, 0)
     } catch (e) {
       console.error("Failed to parse stored notifications", e);
     }
