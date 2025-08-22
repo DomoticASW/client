@@ -16,24 +16,24 @@ function camelToSentence(str: string): string {
 
 const errorTitle = computed(() => {
   const error = state.errorShown
-  if (error && '__brand' in error) {
-    return camelToSentence(error.__brand as string)
+  if (error?.__brand) {
+    return camelToSentence(error.__brand)
   } else {
     return 'Error'
   }
 })
 const errorMessage = computed(() => {
   const error = state.errorShown
-  if (error && 'message' in error) {
-    return error.message as string
+  if (error?.message) {
+    return error.message
   } else {
     return ''
   }
 })
 const errorCause = computed(() => {
   const error = state.errorShown
-  if (error && 'cause' in error) {
-    return error.cause as string
+  if (error?.cause) {
+    return error.cause
   } else {
     return undefined
   }
