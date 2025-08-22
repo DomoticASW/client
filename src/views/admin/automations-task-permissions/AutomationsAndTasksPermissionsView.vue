@@ -25,7 +25,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <NavbarLayout title="Manage automations and tasks permissions">
+  <NavbarLayout title="Manage scripts permissions">
   <div>
     <div>
       <h1 class="text-2xl font-bold dark:text-white">Tasks</h1>
