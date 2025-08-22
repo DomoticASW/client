@@ -10,14 +10,14 @@ function onclick() {
 </script>
 
 <template>
-  <div class="px-4 pb-4 fixed bottom-3 max-w-[inherit] w-[inherit]">
+  <div class="px-4 pb-4 fixed bottom-3 max-w-[inherit] w-[inherit] pointer-events-none">
     <div class="flex justify-end px-5">
       <RouterLink
         v-if="name"
         :to="{ name: props.name }"
         type="button"
         class="btn btn-base-300 shadow !flex items-center gap-2 w-12 h-12
-               sm:w-auto sm:h-auto sm:gap-2 rounded-full sm:rounded-lg py-2"
+               sm:w-auto sm:h-auto sm:gap-2 rounded-full sm:rounded-lg py-2 pointer-events-auto"
       >
         <span class="hidden sm:inline text-lg font-semibold">Add</span>
         <i class="fa-solid fa-plus fa-lg"></i>
@@ -28,7 +28,7 @@ function onclick() {
           type="button"
           :onclick="onclick"
           class="btn btn-base-300 shadow !flex items-center gap-2 w-12 h-12
-                 sm:w-auto sm:h-auto sm:gap-2 rounded-full sm:rounded-lg py-2"
+                 sm:w-auto sm:h-auto sm:gap-2 rounded-full sm:rounded-lg py-2 pointer-events-auto"
         >
           <span class="hidden sm:inline text-lg font-semibold">Add</span>
           <i class="fa-solid fa-plus fa-lg"></i>
