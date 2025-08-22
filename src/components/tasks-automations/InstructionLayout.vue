@@ -12,12 +12,12 @@
       >
         <template v-if="edit">
           <button
-            class="btn btn-xs btn-square bg-primary fa-solid fa-angle-up col-end-1 mr-2"
+            class="btn btn-xs btn-square btn-primary fa-solid fa-angle-up col-end-1 mr-2"
             @click="instructionsStore.moveInstruction(props.instruction, 'up')"
             @click.stop
           ></button>
           <button
-            class="btn btn-xs btn-square bg-primary fa-solid fa-angle-down row-start-2"
+            class="btn btn-xs btn-square btn-primary fa-solid fa-angle-down row-start-2"
             @click="instructionsStore.moveInstruction(props.instruction, 'down')"
             @click.stop
           ></button>
@@ -25,7 +25,7 @@
         <slot></slot>
         <template v-if="edit">
           <button
-            class="btn btn-square fa-solid bg-primary fa-xmark row-start-1 place-self-center row-span-2 ml-2"
+            class="btn btn-square fa-solid btn-primary fa-xmark row-start-1 place-self-center row-span-2 ml-2"
             :class="
               instruction.type === InstructionType.IfInstruction ||
               instruction.type === InstructionType.IfElseInstruction
