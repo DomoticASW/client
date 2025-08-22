@@ -5,10 +5,11 @@
         class="card-body text-base grid px-4"
         :class="
           instruction.type === InstructionType.IfInstruction ||
-          instruction.type === InstructionType.IfElseInstruction ||
-          (instruction.type === InstructionType.WaitInstruction && edit)
-            ? 'grid-cols-3'
-            : 'grid-cols-2'
+          instruction.type === InstructionType.IfElseInstruction
+            ? 'grid-cols-12'
+            : instruction.type === InstructionType.WaitInstruction && edit
+              ? 'grid-cols-3'
+              : 'grid-cols-2'
         "
       >
         <template v-if="edit">
@@ -30,7 +31,7 @@
             :class="
               instruction.type === InstructionType.IfInstruction ||
               instruction.type === InstructionType.IfElseInstruction
-                ? 'ml-4 col-start-7'
+                ? 'ml-4 col-start-13'
                 : instruction.type === InstructionType.WaitInstruction && edit
                   ? 'col-start-4'
                   : 'col-start-3'
