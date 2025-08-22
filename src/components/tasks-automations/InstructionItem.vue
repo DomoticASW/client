@@ -68,6 +68,6 @@ defineProps<{
   edit: boolean
 }>()
 
-const colors = 'bg-base-200 text-base-content border border-neutral shadow-lg'
+const colors = 'bg-base-300 text-base-content border border-neutral shadow-lg'
 
 </script>

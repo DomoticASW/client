@@ -166,7 +166,7 @@ onMounted(async () => {
     </button>
   </div>
   <!-- Trigger -->
-  <div class="card card-sm bg-base-200 text-base-content border border-neutral shadow-lg my-2" v-else>
+  <div class="card card-sm bg-base-300 text-base-content border border-neutral shadow-lg my-2" v-else>
     <!-- Period trigger -->
     <div class="card-body text-base grid grid-cols-6 px-4">
       <template v-if="isPeriodTrigger(trigger)">
