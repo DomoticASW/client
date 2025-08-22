@@ -14,7 +14,7 @@ import {
 import { Type } from '@/model/Type'
 import hexRgb from 'hex-rgb'
 import rgbHex from 'rgb-hex'
-import { computed, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 const { typeConstraints, isInput } = defineProps<{
   typeConstraints: TypeConstraints<unknown>
@@ -97,6 +97,19 @@ function defaultInitialValueForTypeConstraints(tc: TypeConstraints<unknown>) {
       return undefined
   }
 }
+/* This section aim is to allow the range control to enter into a "detached" state where it doesn't show the value given as v-model */
+const isRangeControlDetached = ref(false)
+const detachedRangeControlValue = ref(value.value)
+const rangeControlValue = computed({
+  get: () => (isRangeControlDetached.value ? detachedRangeControlValue.value : value.value),
+  set(v) {
+    if (isRangeControlDetached.value) {
+      detachedRangeControlValue.value = v
+    } else {
+      value.value = v
+    }
+  },
+})
 </script>
 
 <template>
@@ -132,7 +145,7 @@ function defaultInitialValueForTypeConstraints(tc: TypeConstraints<unknown>) {
   </div>
   <div v-if="type === Type.IntType || type === Type.DoubleType">
     <div v-if="isRangeTypeConstraints(typeConstraints)" class="flex flex-col max-w-xs">
-      <span class="self-center">{{ value }}</span>
+      <span class="self-center">{{ rangeControlValue }}</span>
       <input
         type="range"
         class="range range-primary"
@@ -140,8 +153,13 @@ function defaultInitialValueForTypeConstraints(tc: TypeConstraints<unknown>) {
         :max="typeConstraints.max"
         :step="type == Type.IntType ? 1 : '0.01'"
         :disabled="!isInput"
-        v-model.number="value"
-        @change="processInput(Number.parseFloat(htmlInputValue($event.target)))"
+        v-model.number="rangeControlValue"
+        @mousedown="isRangeControlDetached = true"
+        @touchstart="isRangeControlDetached = true"
+        @change="
+          (processInput(Number.parseFloat(htmlInputValue($event.target))),
+          (isRangeControlDetached = false))
+        "
       />
       <div class="flex flex-row justify-between">
         <span class="opacity-30">{{ typeConstraints.min }}</span>
