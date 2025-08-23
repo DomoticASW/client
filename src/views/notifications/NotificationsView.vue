@@ -27,7 +27,7 @@ const observer = new IntersectionObserver(
     })
   },
   {
-    threshold: 1, //100% of the element must be visible to be intersecting the viewport
+    threshold: 0.75, //75% of the element must be visible to be intersecting the viewport
   },
 )
 
@@ -56,7 +56,7 @@ onUnmounted(() => {
       <li
         class="indicator list-row grid w-full"
         v-for="(notification, idx) in notifications"
-        :key="idx"
+        :key="notification.id"
         :data-index="idx"
         :ref="(el) => el && addToRefs(idx, el as Element)"
       >
