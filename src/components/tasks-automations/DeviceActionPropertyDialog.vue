@@ -54,14 +54,10 @@ function handleConfirm() {
       <p v-else-if="selectedDevice.properties.length != 0">This device has only properties</p>
       <p v-else>This device does not have any properties or actions</p>
       <form @submit.prevent="handleConfirm">
-        <div class="modal-action grid grid-cols-3 w-full">
-          <button type="button" class="btn btn-error col-start-1" @click="closeDialog">
-            Close
-          </button>
+        <div class="modal-action w-full">
           <button
             type="submit"
-            class="btn"
-            :class="selectedDevice.actions.length == 0 ? 'col-start-3' : ''"
+            class="btn btn-primary"
             @click="isActionSelected = false"
             v-if="selectedDevice.properties.length != 0"
           >
@@ -70,8 +66,7 @@ function handleConfirm() {
           </button>
           <button
             type="submit"
-            class="btn"
-            :class="selectedDevice.actions.length == 0 ? 'col-start-3' : ''"
+            class="btn btn-primary"
             @click="isActionSelected = true"
             v-if="selectedDevice.actions.length != 0"
           >
@@ -81,5 +76,8 @@ function handleConfirm() {
         </div>
       </form>
     </div>
+    <form method="dialog" class="modal-backdrop">
+      <button @click="closeDialog">close</button>
+    </form>
   </dialog>
 </template>
