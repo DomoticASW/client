@@ -31,44 +31,32 @@ onMounted(async () => {
       <h1 class="text-2xl font-bold dark:text-white">Tasks</h1>
       <div>
         <ul class="list rounded-box">
-          <li class="list-row" v-for="task in tasks" :key="task.id">
+          <RouterLink v-for="task in tasks" :key="task.id":to="{ name: 'automation-and-task-permission', params: { id: task.id } }">
+          <li class="list-row hover:bg-primary/20">
             <div class="list-col-grow flex items-center">
               {{ task.name }}
             </div>
-            <RouterLink :to="{ name: 'automation-and-task-permission', params: { id: task.id } }">
-              <a
-                class="btn btn-circle btn-ghost"
-                type="button"
-                :aria-label="'Get permissions of: ' + task.name"
-              >
-                <i class="fa-solid fa-play"></i>
-              </a>
-            </RouterLink>
+            <span class="fa-solid fa-chevron-right opacity-30 self-center"></span>
           </li>
-        </ul>
-      </div>
+        </RouterLink>
+      </ul>
+    </div>
     </div>
     <div>
       <hr class="my-4 border-gray-300" />
       <h1 class="text-2xl font-bold dark:text-white">Automations</h1>
       <div>
         <ul class="list rounded-box">
-          <li class="list-row" v-for="automation in automations" :key="automation.id">
+          <RouterLink v-for="automation in automations" :key="automation.id"
+            :to="{ name: 'automation-and-task-permission', params: { id: automation.id } }"
+          >
+          <li class="list-row hover:bg-primary/20">
             <div class="list-col-grow flex items-center">
               {{ automation.name }}
             </div>
-            <RouterLink
-              :to="{ name: 'automation-and-task-permission', params: { id: automation.id } }"
-            >
-              <a
-                class="btn btn-circle btn-ghost"
-                type="button"
-                :aria-label="'Get permissions of: ' + automation.name"
-              >
-                <i class="fa-solid fa-play"></i>
-              </a>
-            </RouterLink>
+            <span class="fa-solid fa-chevron-right opacity-30 self-center"></span>
           </li>
+          </RouterLink>
         </ul>
       </div>
     </div>

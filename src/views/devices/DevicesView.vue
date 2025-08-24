@@ -93,7 +93,7 @@ onMounted(async () => {
         v-bind:key="d.id"
         :to="{ name: 'device', params: { id: d.id } }"
       >
-        <li class="list-row">
+        <li class="list-row hover:bg-primary/20">
           <span class="fa-solid fa-microchip text-2xl self-center"></span>
           {{ d.name }}
           <span class="fa-solid fa-chevron-right opacity-30 self-center"></span>

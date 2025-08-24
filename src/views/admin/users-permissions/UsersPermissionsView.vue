@@ -9,7 +9,7 @@
         :to="{ name: 'user-permissions', params: { id: user.email }, state: { nickname: user.nickname } }"
         :aria-label="'Get permissions of: ' + user.nickname"
       >
-      <li class="list-row hover:bg-primary/30">
+      <li class="list-row hover:bg-primary/20">
         <div class="list-col-grow flex items-center">
           {{ user.nickname }}
         </div>
