@@ -1,5 +1,5 @@
 <template>
-  <div class="navbar bg-base-300 shadow mb-4">
+  <div class="navbar bg-base-300 shadow mb-4 lg:rounded-xl md:mt-1">
     <div class="navbar-start">
       <template v-if="showBackButton">
         <button
@@ -13,7 +13,7 @@
           <div
             tabindex="0"
             role="button"
-            class="btn btn-ghost lg:hidden! fa-bars fa-solid fa-xl !flex"
+            class="btn btn-ghost md:hidden! fa-bars fa-solid fa-xl !flex"
           ></div>
           <ul
             tabindex="0"
@@ -66,7 +66,7 @@
       <h1 class="text-xl font-bold ml-4" :class="{ 'skeleton h-4 w-1/2': !title }">{{ title }}</h1>
     </div>
     <template v-if="!showBackButton">
-      <div class="navbar-center hidden lg:block">
+      <div class="navbar-center hidden md:block">
         <ul class="menu menu-horizontal px-1 text-base">
           <li><RouterLink :to="{ name: 'devices' }">Devices</RouterLink></li>
           <li><RouterLink :to="{ name: 'tasks' }">Tasks</RouterLink></li>
