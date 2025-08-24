@@ -31,7 +31,7 @@ onMounted(async () => {
       <h1 class="text-2xl font-bold dark:text-white">Tasks</h1>
       <div>
         <ul class="list rounded-box">
-          <RouterLink v-for="task in tasks" :key="task.id":to="{ name: 'automation-and-task-permission', params: { id: task.id } }">
+          <RouterLink v-for="task in tasks" :key="task.id" :to="{ name: 'automation-and-task-permission', params: { id: task.id } }">
           <li class="list-row hover:bg-primary/20">
             <div class="list-col-grow flex items-center">
               {{ task.name }}
