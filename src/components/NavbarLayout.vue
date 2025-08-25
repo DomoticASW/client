@@ -1,5 +1,5 @@
 <template>
-  <div class="navbar bg-base-300 shadow mb-4 lg:rounded-xl md:mt-1">
+  <div class="navbar py-0 mb-4 bg-base-200/70 shadow backdrop-blur sticky top-0 z-30 lg:rounded-xl md:mt-1">
     <div class="navbar-start">
       <template v-if="showBackButton">
         <button
@@ -17,7 +17,7 @@
           ></div>
           <ul
             tabindex="0"
-            class="menu dropdown-content bg-base-300 -ml-2 rounded-box z-1 mt-3 w-52 p-2 shadow"
+            class="menu dropdown-content bg-base-200 -ml-2 rounded-box z-1 mt-3 w-52 p-2 shadow"
           >
             <li><RouterLink :to="{ name: 'devices' }">Devices</RouterLink></li>
             <li><RouterLink :to="{ name: 'tasks' }">Tasks</RouterLink></li>
@@ -63,7 +63,9 @@
           </ul>
         </div>
       </template>
-      <h1 class="text-xl font-bold ml-4" :class="{ 'skeleton h-4 w-1/2': !title }">{{ title }}</h1>
+      <h1 class="text-xl font-bold ml-4" :class="{ 'skeleton h-4 w-1/2': !title }">
+        {{ title }}
+      </h1>
     </div>
     <template v-if="!showBackButton">
       <div class="navbar-center hidden md:block">
@@ -84,7 +86,7 @@
                 </div>
               </summary>
 
-              <ul class="p-2 bg-base-300 w-40 z-1">
+              <ul class="p-2 bg-base-200 w-40 z-2">
                 <li>
                   <RouterLink :to="{ name: 'manage-users' }">
                     Users
