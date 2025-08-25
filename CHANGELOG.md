@@ -1,3 +1,73 @@
+## [0.2.0](https://github.com/DomoticASW/client/compare/0.1.0...0.2.0) (2025-08-25)
+
+### Features
+
+* add date to notifications and indicator for new notifications ([8d9cf14](https://github.com/DomoticASW/client/commit/8d9cf1489f0113131e1495bd918ab2b23bcb4b5d))
+* add icons to users, devices and notifications lists ([d7111f6](https://github.com/DomoticASW/client/commit/d7111f6e1d5766c59c8c33e66ac03564bb346a94))
+* add loading skeletons for users permissions views ([9cdc8e1](https://github.com/DomoticASW/client/commit/9cdc8e1ddcdff2eb3c9419d38686160aece98782))
+* add negate to if and if-else instructions ([21f6c95](https://github.com/DomoticASW/client/commit/21f6c954890edd7c8e8d1d599551428598bb7c74))
+* add notifications page and now notifications store uses local storage ([de7d3c2](https://github.com/DomoticASW/client/commit/de7d3c267de204c617910c65a05cffeda7f0e446))
+* duplicate errors are shown only once ([0f4108f](https://github.com/DomoticASW/client/commit/0f4108f930c2e9ce521f85ab7846f84c04e61439))
+* enhanced UX in DevicesView ([0324463](https://github.com/DomoticASW/client/commit/0324463c94604a655eee5ded9bd03a77d22c7d98))
+* notifications are automatically read when in viewport ([6895c8a](https://github.com/DomoticASW/client/commit/6895c8ac479df49eba5ae58db4deea6d7c13c68c))
+
+### Bug Fixes
+
+* add little margin left on small devices ([170a900](https://github.com/DomoticASW/client/commit/170a90007bd4f2f8f08e1dc9ec1227eedbd0dd23))
+* bad layout causing add button misplacement ([92f6d9c](https://github.com/DomoticASW/client/commit/92f6d9cb1d6bbb2bfbdb46e77db1484da674ef21))
+* now notifications have an id to index them correctly in the v-for ([caf9796](https://github.com/DomoticASW/client/commit/caf9796d68ba23909f8ae389893c8f1a2281fd1e))
+* period trigger now has right spacing ([cf1e6ca](https://github.com/DomoticASW/client/commit/cf1e6ca72e7bc134cadb2cd19a090d664f414f73))
+* reverse of theme change ([dfb6b2f](https://github.com/DomoticASW/client/commit/dfb6b2fe9caac31c0df55676d8c56ad659b12843))
+* wait instruction now has right spacing ([866f5c2](https://github.com/DomoticASW/client/commit/866f5c2fcdf0babb2d8b28d5469e3757e851095c))
+* wrong toast messages ([7fe8e5a](https://github.com/DomoticASW/client/commit/7fe8e5a6d701b5c3312db384b51fcc36c2ab4def))
+
+### Build and continuous integration
+
+* **release:** now can trigger manually ([ca501f9](https://github.com/DomoticASW/client/commit/ca501f93daf0aa4bf354bd90913d5b372e7a847c))
+
+### General maintenance
+
+* add back button to pages ([d815930](https://github.com/DomoticASW/client/commit/d815930c94c6fc0ec9c184ef676eed18b64239cd))
+* add border primary to textarea on script view mode ([77922e7](https://github.com/DomoticASW/client/commit/77922e702e510dca055c044811d130d0e017036a))
+* add NavBar ([314870b](https://github.com/DomoticASW/client/commit/314870bebd0608cfda4791a045fcf785d343e4ea))
+* add notification text to task, automation and notification pages if list is empty ([94d9e65](https://github.com/DomoticASW/client/commit/94d9e656f52e91d25c2ee5ffe393827efc3eaf9e))
+* add vertical lines on if and loading overlay on async functions on instructions ([7677ea2](https://github.com/DomoticASW/client/commit/7677ea225b92d1aae4a406d2ed925a51bad3b160))
+* better getter for id from previous notifications ([0b7f24a](https://github.com/DomoticASW/client/commit/0b7f24a3ab3fae7931a90e48374e8dd788f103c2))
+* better UX for range input ([f0d2b5f](https://github.com/DomoticASW/client/commit/f0d2b5f4a4084cf7736240da870eb60c9221f219))
+* change also trigger component colors ([b090a51](https://github.com/DomoticASW/client/commit/b090a51e4a69a74732b71d24cbc16700fe9f1ab3))
+* change instructions colors and navbar is sticky to top ([d82fce9](https://github.com/DomoticASW/client/commit/d82fce94f1c9f8630894276876dbb25f092a392b))
+* changed dialog design ([1cf9c08](https://github.com/DomoticASW/client/commit/1cf9c08ac65ca1d8283f28ce839d943f7fd2e2b1))
+* fix typo ([253f4a5](https://github.com/DomoticASW/client/commit/253f4a532073efc876e57a8be39ddf9e97593ee3))
+* make add button colored primary ([f36119b](https://github.com/DomoticASW/client/commit/f36119b1ccf0f33cf7ec1f9344bc230ef014850c))
+* make bg of card a little bit darker ([0a47228](https://github.com/DomoticASW/client/commit/0a47228dd70a97fce81532af844eb4036f7aa250))
+* making all row buttons btn-circle ([b7e6f7b](https://github.com/DomoticASW/client/commit/b7e6f7b4eb283de2d5465caaa14ff35c257c84d4))
+* minor graphic adjustments to navbar and app ([2c185c1](https://github.com/DomoticASW/client/commit/2c185c148a9980e8dbbcf9973ae0bfe3b6742ce9))
+* move notifications and settings to the right of navbar ([7a4adb3](https://github.com/DomoticASW/client/commit/7a4adb3a2770a0b9eeb850c1164454a13267185b))
+* navbar sticky on top and with blur effect ([4f94ccf](https://github.com/DomoticASW/client/commit/4f94ccffe3510b56963671e197501109eb429814))
+* nicer dropdown for selecting device groups ([f4713c2](https://github.com/DomoticASW/client/commit/f4713c262179d1b42579775fea1a4f6c9a000dee))
+* now it is notified with a red dot if a registration request is pending ([8faf382](https://github.com/DomoticASW/client/commit/8faf382c4d4fbfd1b0bb4fe52c89249032953c46))
+* now notifications are displayed in reverse and they are removed/read correctly ([0f7848f](https://github.com/DomoticASW/client/commit/0f7848f8775e1bb9604cdcd0d13dddc9819f2150))
+* now notifications are set to read just when changing page ([7fea5e5](https://github.com/DomoticASW/client/commit/7fea5e590b84568887130f263a5d62b49ed99c7a))
+* now notifications have badge for unread messages and can be read/unread ([41cc027](https://github.com/DomoticASW/client/commit/41cc027947cf48107b3c32bb4056d7439ad53afa))
+* remove unused showLogoutButton prop from navbar ([8254252](https://github.com/DomoticASW/client/commit/8254252bc5d0fc9d7e31884548270c529bc5ffa2))
+* revert start task button and remove w-xl class from App.vue ([774d233](https://github.com/DomoticASW/client/commit/774d2332675b03e208aa719a2fde68a140b3bc80))
+* some minor changes to margins and add button now is primary ([804f862](https://github.com/DomoticASW/client/commit/804f862cd545b70accfe97f18388ba37b62fcfa4))
+
+### Style improvements
+
+* add hover color in clickable lists elements ([ce3af7b](https://github.com/DomoticASW/client/commit/ce3af7bf9c6807f34d898428c6fd742b6970c721))
+* add hover color in users permissions list ([1afe2ef](https://github.com/DomoticASW/client/commit/1afe2ef90d947e0ed4b24800b11098d7a5120c3d))
+* add pointer-events-none and auto to AddButton component ([53da87b](https://github.com/DomoticASW/client/commit/53da87b67ab7b7905c4fff41431facd2e356341d))
+* make AddButton component responsive ([0db7193](https://github.com/DomoticASW/client/commit/0db7193f28a1ed9fb8d4b41bc20019c4288ab530))
+
+### Refactoring
+
+* change navbar title ([aa4d882](https://github.com/DomoticASW/client/commit/aa4d882633b081cdcb53e8b537232fcc30e6517a))
+* move logout button to slot in navbar ([647b73f](https://github.com/DomoticASW/client/commit/647b73f487f26cc65f3ba00a3dc4830f29868084))
+* moved async methods insive view page in api ([db430f3](https://github.com/DomoticASW/client/commit/db430f33d0dc3e334c6686af5787aea27fd23b37))
+* use actions slot in navbar for logout button ([fd17fdb](https://github.com/DomoticASW/client/commit/fd17fdb914d35dc32fce296858707d994378e3f3))
+* use RouterLink for user permissions navigation ([e5e4d9d](https://github.com/DomoticASW/client/commit/e5e4d9d02cdcc42a81d6547557b93f4730f35531))
+
 ## [0.1.0](https://github.com/DomoticASW/client/compare/0.0.1...0.1.0) (2025-08-17)
 
 ### Features
