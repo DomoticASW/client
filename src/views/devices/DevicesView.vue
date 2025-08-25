@@ -65,13 +65,13 @@ onMounted(async () => {
 <template>
   <NavbarLayout title="Devices">
     <details ref="devices-selected-group-dropdown" v-if="groups" class="dropdown">
-      <summary class="btn btn-primary mb-2">
+      <summary class="btn btn-primary mb-2 min-w-32 flex justify-between">
         {{ selectedGroup?.name ?? 'All devices' }}
         <span class="fa-solid fa-caret-down ps-4"></span>
       </summary>
       <div class="fixed size-full inset-0 z-999" @click.stop="closeDropdown"></div>
       <ul
-        class="menu dropdown-content rounded-box w-52 p-2 bg-base-100 border border-primary-content/30"
+        class="menu dropdown-content rounded-box w-52 p-2 bg-base-100 border border-primary gap-1"
       >
         <li v-for="g in groups" v-bind:key="g.id">
           <a @click="selectGroup(g.id)" :class="{ 'menu-active': g.id == selectedGroup?.id }">
