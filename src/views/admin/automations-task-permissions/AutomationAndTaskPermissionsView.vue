@@ -208,6 +208,7 @@ function showToastMessage(msg: string) {
       <div>
         <ul class="list rounded-box">
           <li class="list-row" v-for="user in listSelectedItems" :key="user">
+            <span class="fa-solid fa-user text-xl self-center"></span>
             <div class="list-col-grow flex items-center">
               {{ user }}
             </div>
@@ -228,6 +229,7 @@ function showToastMessage(msg: string) {
       <div>
         <ul class="list rounded-box">
           <li class="list-row" v-for="user in usersNotInList" :key="user.email">
+            <span class="fa-solid fa-user text-xl self-center"></span>
             <div class="list-col-grow flex items-center">
               {{ user.nickname }}
             </div>

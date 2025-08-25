@@ -9,11 +9,10 @@
         :to="{ name: 'user-permissions', params: { id: user.email }, state: { nickname: user.nickname } }"
         :aria-label="'Get permissions of: ' + user.nickname"
       >
-      <li class="list-row hover:bg-primary/20">
-        <div class="list-col-grow flex items-center">
+        <li class="list-row hover:bg-primary/20">
+          <span class="fa-solid fa-user text-xl self-center"></span>
           {{ user.nickname }}
-        </div>
-        <span class="fa-solid fa-chevron-right opacity-30 self-center"></span>
+          <span class="fa-solid fa-chevron-right opacity-30 self-center"></span>
         </li>
       </RouterLink>
     </ul>

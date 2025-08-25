@@ -60,8 +60,10 @@ onUnmounted(() => {
         :data-index="idx"
         :ref="(el) => el && addToRefs(idx, el as Element)"
       >
+        <span v-if="!notification.read" class="fa-solid fa-envelope text-lg self-center"></span>
+        <span v-else class="fa-solid fa-envelope-open text-lg self-center"></span>
         <span class="self-center list-col-grow">{{ notification.message }}</span>
-        <span class="self-end text-xs opacity-50">{{
+        <span class="self-center text-xs opacity-50">{{
           formatDate(new Date(notification.date))
         }}</span>
         <button
