@@ -166,7 +166,10 @@ onMounted(async () => {
     </button>
   </div>
   <!-- Trigger -->
-  <div class="card card-sm bg-base-300 text-base-content border border-neutral shadow-lg my-2" v-else>
+  <div
+    class="card card-sm bg-base-300 text-base-content border border-neutral shadow-lg my-2"
+    v-else
+  >
     <!-- Period trigger -->
     <div class="card-body text-base grid grid-cols-6 px-4">
       <template v-if="isPeriodTrigger(trigger)">
@@ -242,13 +245,13 @@ onMounted(async () => {
         </template>
       </select>
       <form @submit.prevent="handleConfirm">
-        <div class="modal-action grid grid-cols-3 w-full">
-          <button type="button" class="btn btn-error col-start-1" @click="closeDialog">
-            Close
-          </button>
-          <button type="submit" class="btn col-start-3">Confirm</button>
+        <div class="modal-action w-full">
+          <button type="submit" class="btn btn-primary">Confirm</button>
         </div>
       </form>
     </div>
+    <form method="dialog" class="modal-backdrop">
+      <button>Close</button>
+    </form>
   </dialog>
 </template>
