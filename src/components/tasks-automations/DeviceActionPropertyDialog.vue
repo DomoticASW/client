@@ -77,7 +77,7 @@ function handleConfirm() {
       </form>
     </div>
     <form method="dialog" class="modal-backdrop">
-      <button @click="closeDialog">close</button>
+      <button>Close</button>
     </form>
   </dialog>
 </template>

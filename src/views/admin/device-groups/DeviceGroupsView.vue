@@ -29,6 +29,7 @@ async function saveCreatingGroup() {
       const id = await api.createDeviceGroup(name, userInfo.token)
       const group = await api.findDeviceGroup(id, userInfo.token)
       groups.value?.push(group)
+      groupCreatingName.value = undefined
       successPresenter.showSuccess(presentSuccess(`Group ${name} created!`))
     } catch (e) {
       if (typeof e == 'object' && e != null)
@@ -103,10 +104,15 @@ onMounted(async () => {
   </NavbarLayout>
 
   <!-- Dialog for creating a new group -->
-  <dialog ref="create-group-modal" class="modal modal-bottom sm:modal-middle">
-    <div class="modal-box">
-      <h3 class="text-lg font-bold">Create a new group</h3>
-      <input type="text" placeholder="Group name" class="input" v-model="groupCreatingName" />
+  <dialog ref="create-group-modal" class="modal modal-middle">
+    <div class="modal-box max-w-sm">
+      <h3 class="card-title mb-2 mx-auto justify-center">Create a new group</h3>
+      <input
+        type="text"
+        placeholder="Group name"
+        class="input w-full"
+        v-model="groupCreatingName"
+      />
       <div class="modal-action">
         <button
           class="btn btn-primary"
@@ -115,18 +121,18 @@ onMounted(async () => {
         >
           Save
         </button>
-        <button class="btn btn-primary btn-soft" v-on:click="createGroupModal!.close()">
-          Cancel
-        </button>
       </div>
     </div>
+    <form method="dialog" class="modal-backdrop">
+      <button @click="createGroupModal!.close()">Cancel</button>
+    </form>
   </dialog>
 
   <!-- Dialog for changing a group name -->
-  <dialog ref="edit-group-name-modal" class="modal modal-bottom sm:modal-middle">
-    <div class="modal-box">
-      <h3 class="text-lg font-bold">Change the group name</h3>
-      <input type="text" placeholder="Group name" class="input" v-model="groupEditingName" />
+  <dialog ref="edit-group-name-modal" class="modal modal-middle">
+    <div class="modal-box max-w-sm">
+      <h3 class="card-title mb-2 mx-auto justify-center">Change the group name</h3>
+      <input type="text" placeholder="Group name" class="input w-full" v-model="groupEditingName" />
       <div class="modal-action">
         <button
           class="btn btn-primary"
@@ -135,11 +141,11 @@ onMounted(async () => {
         >
           Save
         </button>
-        <button class="btn btn-primary btn-soft" v-on:click="editGroupNameModal!.close()">
-          Cancel
-        </button>
       </div>
     </div>
+    <form method="dialog" class="modal-backdrop">
+      <button @click="editGroupNameModal!.close()">Cancel</button>
+    </form>
   </dialog>
 </template>
 

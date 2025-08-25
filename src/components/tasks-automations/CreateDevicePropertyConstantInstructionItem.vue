@@ -48,7 +48,7 @@
       </p>
       <div class="modal-action mt-2">
         <form method="dialog">
-          <button class="btn">Ok</button>
+          <button class="btn btn-primary">Ok</button>
         </form>
       </div>
     </div>
@@ -90,12 +90,14 @@
           name="constant_name"
           id="constant_name"
         />
-        <div class="modal-action grid grid-cols-3 w-full">
-          <button type="button" class="btn col-start-1" @click="closeDialog">Close</button>
-          <button type="submit" class="btn col-start-3 btn-primary">Confirm</button>
+        <div class="modal-action w-full">
+          <button type="submit" class="btn btn-primary">Confirm</button>
         </div>
       </form>
     </div>
+    <form method="dialog" class="modal-backdrop">
+      <button>Close</button>
+    </form>
   </dialog>
 </template>
 

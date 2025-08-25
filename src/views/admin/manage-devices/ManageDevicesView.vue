@@ -79,7 +79,10 @@ onMounted(async () => {
             class="btn btn-circle btn-ghost fa-solid fa-pen"
             v-on:click="startEditingDevice(d.id)"
           ></button>
-          <button class="btn btn-circle btn-ghost fa-solid fa-trash" v-on:click="removeDevice(d.id)"></button>
+          <button
+            class="btn btn-circle btn-ghost fa-solid fa-trash"
+            v-on:click="removeDevice(d.id)"
+          ></button>
         </li>
       </ul>
       <DeviceListSkeleton v-else />
@@ -87,17 +90,22 @@ onMounted(async () => {
     </NavbarLayout>
 
     <!-- Dialog for changing a device name -->
-    <dialog ref="edit-device-name-modal" class="modal modal-bottom sm:modal-middle">
-      <div class="modal-box">
-        <h3 class="text-lg font-bold">Change the device name</h3>
-        <input type="text" placeholder="Device name" class="input" v-model="deviceEditingName" />
+    <dialog ref="edit-device-name-modal" class="modal modal-middle">
+      <div class="modal-box max-w-sm">
+        <h3 class="card-title mb-2 mx-auto justify-center">Change the device name</h3>
+        <input
+          type="text"
+          placeholder="Device name"
+          class="input w-full"
+          v-model="deviceEditingName"
+        />
         <div class="modal-action">
           <button class="btn btn-primary" v-on:click="saveEditingDevice()">Save</button>
-          <button class="btn btn-primary btn-soft" v-on:click="editDeviceNameModal?.close()">
-            Cancel
-          </button>
         </div>
       </div>
+      <form method="dialog" class="modal-backdrop">
+        <button @click="editDeviceNameModal?.close()">Cancel</button>
+      </form>
     </dialog>
   </div>
 </template>

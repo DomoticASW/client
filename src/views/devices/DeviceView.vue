@@ -162,27 +162,30 @@ onUnmounted(() => {
   </NavbarLayout>
 
   <!-- Dialog for offline notifications subscription -->
-  <dialog ref="offline-notifications-modal" class="modal modal-bottom sm:modal-middle">
-    <div class="modal-box">
-      <h3 class="text-lg font-bold">Device offline notifications</h3>
+  <dialog ref="offline-notifications-modal" class="modal modal-middle">
+    <div class="modal-box max-w-sm">
+      <h3 class="card-title mb-2 mx-auto justify-center">Device offline notifications</h3>
       <p>Do you want to receive a notification when this device goes offline?</p>
       <form method="dialog">
         <div class="modal-action">
-          <button class="btn btn-primary" v-on:click="subscribeForOfflineNotifications(true)">
-            Yes
-          </button>
           <button class="btn btn-primary" v-on:click="subscribeForOfflineNotifications(false)">
             No
+          </button>
+          <button class="btn btn-primary" v-on:click="subscribeForOfflineNotifications(true)">
+            Yes
           </button>
         </div>
       </form>
     </div>
+    <form method="dialog" class="modal-backdrop">
+      <button>Cancel</button>
+    </form>
   </dialog>
 
   <!-- Dialog for action input -->
-  <dialog ref="action-input-modal" class="modal modal-bottom sm:modal-middle">
-    <div class="modal-box">
-      <h3 class="text-lg font-bold">Action input</h3>
+  <dialog ref="action-input-modal" class="modal modal-middle">
+    <div class="modal-box max-w-sm">
+      <h3 class="card-title mb-2 mx-auto justify-center">Action input</h3>
       <ValueIOControl
         v-if="executingAction"
         :typeConstraints="executingAction!.inputTypeConstraints"
@@ -198,9 +201,11 @@ onUnmounted(() => {
         >
           Execute
         </button>
-        <button class="btn btn-primary btn-soft" v-on:click="onCancelExecuteAction">Cancel</button>
       </div>
     </div>
+    <form method="dialog" class="modal-backdrop">
+      <button @click="onCancelExecuteAction">Cancel</button>
+    </form>
   </dialog>
 </template>
 
