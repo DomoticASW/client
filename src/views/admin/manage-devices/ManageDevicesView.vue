@@ -76,10 +76,10 @@ onMounted(async () => {
             <span class="text-xs">id: {{ d.id }}</span>
           </div>
           <button
-            class="btn btn-ghost fa-solid fa-pen"
+            class="btn btn-circle btn-ghost fa-solid fa-pen"
             v-on:click="startEditingDevice(d.id)"
           ></button>
-          <button class="btn btn-ghost fa-solid fa-trash" v-on:click="removeDevice(d.id)"></button>
+          <button class="btn btn-circle btn-ghost fa-solid fa-trash" v-on:click="removeDevice(d.id)"></button>
         </li>
       </ul>
       <DeviceListSkeleton v-else />

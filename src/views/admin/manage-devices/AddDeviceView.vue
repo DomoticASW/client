@@ -33,7 +33,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <NavbarLayout title="Add device">
+  <NavbarLayout title="Add device" :show-back-button="true">
     <ul v-if="devices" class="list">
       <li v-for="d in devices" v-bind:key="d.id" class="list-row">
         <span class="fa-solid fa-microchip text-2xl self-center"></span>
@@ -42,7 +42,7 @@ onMounted(async () => {
           <br />
           <span class="text-xs">id: {{ d.id }}</span>
         </div>
-        <button class="btn btn-ghost fa-solid fa-plus" v-on:click="addDevice(d.id)"></button>
+        <button class="btn btn-circle btn-ghost fa-solid fa-plus" v-on:click="addDevice(d.id)"></button>
       </li>
     </ul>
     <DeviceListSkeleton v-else />

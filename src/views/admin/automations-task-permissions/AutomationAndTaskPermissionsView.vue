@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+import NavbarLayout from '@/components/NavbarLayout.vue';
 import type { EditList } from '@/model/permissions-management/EditList'
 import type { TaskList } from '@/model/permissions-management/TaskList'
 import { authorizedRequest, deserializeBody } from '@/api/api'
@@ -106,7 +107,7 @@ function addUser(user: User) {
         } else if (listSelectedName.value === 'Blacklist' && taskList.value) {
           taskList.value.blacklist.push(user.email)
         }
-        showToastMessage(`Request for ${user.nickname} added successfully.`)
+        showToastMessage(`${user.nickname} added to the ${listSelectedName.value}.`)
       })
       .catch((error) => {
         console.error('Error adding user:', error)
@@ -141,7 +142,7 @@ function removeUser(userEmail: string) {
             taskList.value.blacklist.splice(index, 1)
           }
         }
-        showToastMessage(`Request for ${userEmail} removed successfully.`)
+        showToastMessage(`${userFromEmail(userEmail)?.nickname ?? "User"} removed from the ${listSelectedName.value}.`)
       })
       .catch((error) => {
         console.error('Error removing user:', error)
@@ -160,12 +161,17 @@ function calculateUsersNotInList(list: string[], users: User[]): User[] {
   return users.filter((user) => !list.some((email) => email === user.email))
 }
 
+function userFromEmail(email: string): User | undefined {
+  return users.value.find(u => u.email === email)
+}
+
 function showToastMessage(msg: string) {
   successPresenter.showSuccess(presentSuccess(msg, "", 5000))
 }
 </script>
 
 <template>
+  <NavbarLayout :title="script?.name" :show-back-button="true">
   <div>
     <div class="relative">
       <div class="flex items-center space-x-2">
@@ -202,6 +208,7 @@ function showToastMessage(msg: string) {
       <div>
         <ul class="list rounded-box">
           <li class="list-row" v-for="user in listSelectedItems" :key="user">
+            <span class="fa-solid fa-user text-xl self-center"></span>
             <div class="list-col-grow flex items-center">
               {{ user }}
             </div>
@@ -222,6 +229,7 @@ function showToastMessage(msg: string) {
       <div>
         <ul class="list rounded-box">
           <li class="list-row" v-for="user in usersNotInList" :key="user.email">
+            <span class="fa-solid fa-user text-xl self-center"></span>
             <div class="list-col-grow flex items-center">
               {{ user.nickname }}
             </div>
@@ -239,6 +247,7 @@ function showToastMessage(msg: string) {
       </div>
     </div>
   </div>
+  </NavbarLayout>
 </template>
 
 <style></style>

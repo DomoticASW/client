@@ -3,8 +3,9 @@
     <div class="px-4">
       <h2 class="text-2xl font-bold dark:text-white">Can use these devices</h2>
       <div>
-        <ul class="list rounded-box">
+        <ul class="list rounded-box" v-if="devicesWithPermissions">
           <li class="list-row" v-for="device in devicesWithPermissions" :key="device.id">
+            <span class="fa-solid fa-microchip text-2xl self-center"></span>
             <div class="list-col-grow flex items-center">
               {{ device.name }}
             </div>
@@ -17,12 +18,14 @@
             </button>
           </li>
         </ul>
+        <DeviceListSkeleton v-else />
       </div>
       <hr class="my-4 border-gray-300" />
       <h2 class="text-2xl font-bold dark:text-white">Cannot use these devices</h2>
       <div>
-        <ul class="list rounded-box">
+        <ul class="list rounded-box" v-if="devicesWithoutPermissions">
           <li class="list-row" v-for="device in devicesWithoutPermissions" :key="device.id">
+            <span class="fa-solid fa-microchip text-2xl self-center"></span>
             <div class="list-col-grow flex items-center">
               {{ device.name }}
             </div>
@@ -35,6 +38,7 @@
             </button>
           </li>
         </ul>
+        <DeviceListSkeleton v-else />
       </div>
     </div>
   </NavbarLayout>
@@ -48,18 +52,21 @@ import * as devicesApi from '@/api/devices-management/requests/devices'
 import * as api from '@/api/permission-management/requests/permissions';
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import router from '@/router';
+import { useRoute } from 'vue-router';
 import NavbarLayout from '@/components/NavbarLayout.vue';
+import DeviceListSkeleton from '@/components/admin/manage-devices/DeviceListSkeleton.vue';
 
 const loadingOverlay = useLoadingOverlayStore();
-const devicesWithPermissions = ref<Device[]>([]);
-const devicesWithoutPermissions = ref<Device[]>([]);
+const devicesWithPermissions = ref<Device[] | undefined>(undefined);
+const devicesWithoutPermissions = ref<Device[] | undefined>(undefined);
 
 const userInfoStore = useUserInfoStore();
 const adminToken = userInfoStore.token;
 
+const route = useRoute();
 const user = {
   nickname: history.state?.nickname,
-  email: history.state?.email
+  email: route.params.id as string,
 };
 
 const loadDevices = async () => {
@@ -74,10 +81,12 @@ const addUserDevicePermission = async (deviceId: DeviceId) => {
   try {
     loadingOverlay.startLoading();
     await api.setUserDevicePermission(user.email, deviceId, adminToken);
-    const deviceIndex = devicesWithoutPermissions.value.findIndex(device => device.id === deviceId);
-    if (deviceIndex !== -1) {
-      const [movedDevice] = devicesWithoutPermissions.value.splice(deviceIndex, 1);
-      devicesWithPermissions.value.push(movedDevice);
+    if (devicesWithoutPermissions.value && devicesWithPermissions.value) {
+      const deviceIndex = devicesWithoutPermissions.value.findIndex(device => device.id === deviceId);
+      if (deviceIndex !== -1) {
+        const [movedDevice] = devicesWithoutPermissions.value.splice(deviceIndex, 1);
+        devicesWithPermissions.value.push(movedDevice);
+      }
     }
   } finally {
     loadingOverlay.stopLoading();
@@ -88,10 +97,12 @@ const removeUserDevicePermission = async (deviceId: DeviceId) => {
   try {
     loadingOverlay.startLoading();
     await api.deleteUserDevicePermission(user.email, deviceId, adminToken);
-    const deviceIndex = devicesWithPermissions.value.findIndex(device => device.id === deviceId);
-    if (deviceIndex !== -1) {
-      const [removedDevice] = devicesWithPermissions.value.splice(deviceIndex, 1);
-      devicesWithoutPermissions.value.push(removedDevice);
+    if (devicesWithPermissions.value && devicesWithoutPermissions.value) {
+      const deviceIndex = devicesWithPermissions.value.findIndex(device => device.id === deviceId);
+      if (deviceIndex !== -1) {
+        const [removedDevice] = devicesWithPermissions.value.splice(deviceIndex, 1);
+        devicesWithoutPermissions.value.push(removedDevice);
+      }
     }
   } finally {
     loadingOverlay.stopLoading();

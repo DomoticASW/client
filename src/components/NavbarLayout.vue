@@ -1,80 +1,139 @@
 <template>
-  <div class="navbar bg-base-300 shadow mb-4">
+  <div class="navbar py-0 mb-4 bg-base-200/70 shadow backdrop-blur sticky top-0 z-30 lg:rounded-xl md:mt-1">
     <div class="navbar-start">
       <template v-if="showBackButton">
         <button
           type="button"
           class="btn btn-ghost fa-arrow-left fa-solid fa-xl !flex"
           @click="goBack()"
-        >
-        </button>
+        ></button>
       </template>
       <template v-else>
         <div class="dropdown">
           <div
             tabindex="0"
             role="button"
-            class="btn btn-ghost lg:hidden! fa-bars fa-solid fa-xl !flex"
+            class="btn btn-ghost md:hidden! fa-bars fa-solid fa-xl !flex"
           ></div>
           <ul
             tabindex="0"
-            class="menu dropdown-content bg-base-300 -ml-2 rounded-box z-1 mt-3 w-52 p-2 shadow"
+            class="menu dropdown-content bg-base-200 -ml-2 rounded-box z-1 mt-3 w-52 p-2 shadow"
           >
             <li><RouterLink :to="{ name: 'devices' }">Devices</RouterLink></li>
             <li><RouterLink :to="{ name: 'tasks' }">Tasks</RouterLink></li>
             <li><RouterLink :to="{ name: 'automations' }">Automations</RouterLink></li>
-            <li><RouterLink :to="{ name: 'settings' }">Settings</RouterLink></li>
             <li v-if="userInfo.role === Role.Admin">
               <p>Admin</p>
               <ul class="p-2">
-                <li><RouterLink :to="{ name: 'manage-users' }">Users</RouterLink></li>
+                <li>
+                  <RouterLink :to="{ name: 'manage-users' }">
+                    Users
+                    <div
+                      class="inline-grid *:[grid-area:1/1] h-full items-center mt-1"
+                      v-if="registrationRequests.length > 0"
+                    >
+                      <div class="status status-error animate-ping"></div>
+                      <div class="status status-error"></div>
+                    </div>
+                  </RouterLink>
+                </li>
                 <li><RouterLink :to="{ name: 'manage-devices' }">Devices</RouterLink></li>
                 <li><RouterLink :to="{ name: 'device-groups' }">Device groups</RouterLink></li>
-                <li><RouterLink :to="{ name: 'manage-users-permissions' }">Users permissions</RouterLink></li>
-                <li><RouterLink :to="{ name: 'automations-and-tasks-permissions' }">Scripts permissions</RouterLink></li>
+                <li>
+                  <RouterLink :to="{ name: 'manage-users-permissions' }"
+                    >Users permissions</RouterLink
+                  >
+                </li>
+                <li>
+                  <RouterLink :to="{ name: 'automations-and-tasks-permissions' }"
+                    >Scripts permissions</RouterLink
+                  >
+                </li>
               </ul>
+            </li>
+            <li><RouterLink :to="{ name: 'settings' }">Settings</RouterLink></li>
+            <li>
+              <RouterLink :to="{ name: 'notifications' }">
+                Notifications
+                <div class="badge badge-primary badge-xs">
+                  {{ useNotificationsStore().unreadNotifications() }}
+                </div>
+              </RouterLink>
             </li>
           </ul>
         </div>
       </template>
-      <h1 class="text-xl font-bold ml-4" :class="{ 'skeleton h-4 w-1/2': !title }">{{ title }}</h1>
+      <h1 class="text-xl font-bold ml-4" :class="{ 'skeleton h-4 w-1/2': !title }">
+        {{ title }}
+      </h1>
     </div>
     <template v-if="!showBackButton">
-      <div class="navbar-center hidden lg:block">
+      <div class="navbar-center hidden md:block">
         <ul class="menu menu-horizontal px-1 text-base">
           <li><RouterLink :to="{ name: 'devices' }">Devices</RouterLink></li>
           <li><RouterLink :to="{ name: 'tasks' }">Tasks</RouterLink></li>
           <li><RouterLink :to="{ name: 'automations' }">Automations</RouterLink></li>
-          <li><RouterLink :to="{ name: 'settings' }">Settings</RouterLink></li>
           <li v-if="userInfo.role === Role.Admin">
             <details>
-              <summary>Admin</summary>
-              <ul class="p-2 bg-base-300 w-40 z-1">
-                <li><RouterLink :to="{ name: 'manage-users' }">Users</RouterLink></li>
+              <summary>
+                Admin
+                <div
+                  class="inline-grid *:[grid-area:1/1] h-full items-center mt-1"
+                  v-if="registrationRequests.length > 0"
+                >
+                  <div class="status status-error animate-ping"></div>
+                  <div class="status status-error"></div>
+                </div>
+              </summary>
+
+              <ul class="p-2 bg-base-200 w-40 z-2">
+                <li>
+                  <RouterLink :to="{ name: 'manage-users' }">
+                    Users
+                    <div
+                      class="inline-grid *:[grid-area:1/1] h-full items-center mt-1"
+                      v-if="registrationRequests.length > 0"
+                    >
+                      <div class="status status-error animate-ping"></div>
+                      <div class="status status-error"></div>
+                    </div>
+                  </RouterLink>
+                </li>
                 <li><RouterLink :to="{ name: 'manage-devices' }">Devices</RouterLink></li>
                 <li><RouterLink :to="{ name: 'device-groups' }">Device groups</RouterLink></li>
-                <li><RouterLink :to="{ name: 'manage-users-permissions' }">Users permissions</RouterLink></li>
-                <li><RouterLink :to="{ name: 'automations-and-tasks-permissions' }">Scripts permissions</RouterLink></li>
+                <li>
+                  <RouterLink :to="{ name: 'manage-users-permissions' }"
+                    >Users permissions</RouterLink
+                  >
+                </li>
+                <li>
+                  <RouterLink :to="{ name: 'automations-and-tasks-permissions' }"
+                    >Scripts permissions</RouterLink
+                  >
+                </li>
               </ul>
             </details>
+          </li>
+          <li><RouterLink :to="{ name: 'settings' }">Settings</RouterLink></li>
+          <li>
+            <RouterLink :to="{ name: 'notifications' }">
+              Notifications
+              <div class="badge badge-primary badge-sm">
+                {{ useNotificationsStore().unreadNotifications() }}
+              </div>
+            </RouterLink>
           </li>
         </ul>
       </div>
     </template>
     <div class="navbar-end">
       <slot name="actions" />
-      <button
-        v-if="showLogoutButton"
-        @click="logout"
-        class="btn btn-ghost btn-sm text-error mr-1"
-        title="Logout"
-      >
-        <i class="fa-solid fa-sign-out-alt fa-lg"></i>
-      </button>
     </div>
   </div>
-  <div class="w-full max-w-xl mx-auto">
-    <slot />
+  <div class="ml-2 md:ml-0">
+    <div class="w-full max-w-xl mx-auto">
+      <slot />
+    </div>
   </div>
 </template>
 
@@ -82,24 +141,33 @@
 import { useUserInfoStore } from '@/stores/user-info'
 import { Role } from '@/model/users-management/User'
 import { useRouter } from 'vue-router'
+import { useNotificationsStore } from '@/stores/notifications'
+import type { RegistrationRequest } from '@/model/users-management/RegistrationRequest'
+import { onMounted, ref } from 'vue'
+import { getAllRegistrationRequests } from '@/api/users-management/requests/users'
+import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 
 defineProps({
-  title: { type: String},
+  title: { type: String },
   showBackButton: {
-    type: Boolean,
-    default: false,
-  },
-  showLogoutButton: {
     type: Boolean,
     default: false,
   },
 })
 
 const userInfo = useUserInfoStore()
+const loadingOverlay = useLoadingOverlayStore()
 const router = useRouter()
 const goBack = () => router.back()
-const logout = () => {
-  userInfo.clearUserInfo()
-  router.push({ name: 'login' })
-}
+
+const registrationRequests = ref<RegistrationRequest[]>([])
+
+onMounted(async () => {
+  try {
+    loadingOverlay.startLoading()
+    registrationRequests.value = await getAllRegistrationRequests(userInfo.token)
+  } finally {
+    loadingOverlay.stopLoading()
+  }
+})
 </script>

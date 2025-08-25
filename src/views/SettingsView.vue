@@ -1,5 +1,10 @@
 <template>
-  <NavbarLayout title="Settings" :show-logout-button="true">
+  <NavbarLayout title="Settings">
+    <template #actions>
+      <button @click="logout" class="btn btn-ghost btn-sm text-error mr-1" title="Logout">
+        <i class="fa-solid fa-sign-out-alt fa-lg"></i>
+      </button>
+    </template>
 
     <form @submit.prevent="handleSave" class="w-full px-6">
       <div class="form-control">
@@ -136,6 +141,7 @@ import * as api from '@/api/users-management/requests/users';
 import { useLoadingOverlayStore } from '@/stores/loading-overlay';
 import NavbarLayout from '@/components/NavbarLayout.vue'
 import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
+import { useRouter } from 'vue-router'
 
 type SettingsForm = {
   nickname: string;
@@ -150,6 +156,8 @@ const successPresenter = useSuccessPresenterStore();
 const userInfoStore = useUserInfoStore();
 const userNickname = ref(userInfoStore.nickname);
 const userEmail = ref(userInfoStore.email);
+
+const router = useRouter();
 
 onMounted(() => {
   userNickname.value = userInfoStore.nickname;
@@ -185,6 +193,13 @@ const rules = {
 };
 
 const v$ = useVuelidate(rules, form);
+
+const logout = () => {
+  userInfoStore.clearUserInfo()
+  router.push({ name: 'login' })
+
+  successPresenter.showSuccess(presentSuccess('You have been logged out', '', 5000));
+}
 
 const handleSave = async (): Promise<void> => {
   v$.value.$touch();

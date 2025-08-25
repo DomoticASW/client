@@ -3,29 +3,41 @@ import { computed, onMounted, ref, useTemplateRef } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useUserInfoStore } from '@/stores/user-info'
 import DeviceListSkeleton from '@/components/admin/manage-devices/DeviceListSkeleton.vue'
-import type { DeviceGroup, DeviceGroupId } from '@/model/devices-management/DeviceGroup'
+import { DeviceGroupId, type DeviceGroup } from '@/model/devices-management/DeviceGroup'
 import type { Device } from '@/model/devices-management/Device'
 import { getAllDeviceGroups } from '@/api/devices-management/requests/device-groups'
 import { getAllDevices } from '@/api/devices-management/requests/devices'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import NavbarLayout from '@/components/NavbarLayout.vue'
+import router from '@/router'
 
 const userInfo = useUserInfoStore()
 const loadingOverlay = useLoadingOverlayStore()
 const groups = ref<DeviceGroup[] | undefined>(undefined)
-const selectedGroup = ref<DeviceGroup | undefined>(undefined)
+const selectedGroupId = ref<DeviceGroupId | undefined>(getGroupQueryParam())
 const devices = ref<Device[] | undefined>(undefined)
 const dropdown = useTemplateRef('devices-selected-group-dropdown')
 
-const devicesNotInGroup = computed(() =>
-  devices.value?.filter((d) =>
-    groups.value ? !groups.value.some((g) => g.devices.some((gd) => gd.id == d.id)) : undefined,
-  ),
-)
-const devicesToShow = computed(() => selectedGroup.value?.devices ?? devicesNotInGroup.value)
+const devicesToShow = computed(() => selectedGroup.value?.devices ?? devices.value)
+const selectedGroup = computed(() => groups.value?.find((g) => g.id == selectedGroupId.value))
+
+function getGroupQueryParam() {
+  const rawValue = router.currentRoute.value.query.group
+  if (typeof rawValue == 'string') {
+    return DeviceGroupId(rawValue)
+  } else {
+    return undefined
+  }
+}
 
 function selectGroup(id?: DeviceGroupId) {
-  selectedGroup.value = id ? groups.value?.find((g) => g.id == id) : undefined
+  selectedGroupId.value = id
+  router.replace({
+    query: {
+      ...router.currentRoute.value.query,
+      group: id,
+    },
+  })
   closeDropdown()
 }
 function closeDropdown() {
@@ -39,7 +51,6 @@ onMounted(async () => {
   } finally {
     loadingOverlay.stopLoading()
   }
-  selectedGroup.value = groups.value[0]
 })
 onMounted(async () => {
   loadingOverlay.startLoading()
@@ -54,13 +65,13 @@ onMounted(async () => {
 <template>
   <NavbarLayout title="Devices">
     <details ref="devices-selected-group-dropdown" v-if="groups" class="dropdown">
-      <summary class="btn btn-primary mb-2">
-        {{ selectedGroup?.name ?? 'Not in a group' }}
+      <summary class="btn btn-primary mb-2 min-w-32 flex justify-between">
+        {{ selectedGroup?.name ?? 'All devices' }}
         <span class="fa-solid fa-caret-down ps-4"></span>
       </summary>
       <div class="fixed size-full inset-0 z-999" @click.stop="closeDropdown"></div>
       <ul
-        class="menu dropdown-content rounded-box w-52 p-2 bg-base-100 border border-primary-content/30"
+        class="menu dropdown-content rounded-box w-52 p-2 bg-base-100 border border-primary gap-1"
       >
         <li v-for="g in groups" v-bind:key="g.id">
           <a @click="selectGroup(g.id)" :class="{ 'menu-active': g.id == selectedGroup?.id }">
@@ -69,7 +80,7 @@ onMounted(async () => {
         </li>
         <li>
           <a @click="selectGroup(undefined)" :class="{ 'menu-active': !selectedGroup }">
-            Not in a group
+            All devices
           </a>
         </li>
       </ul>
@@ -82,7 +93,7 @@ onMounted(async () => {
         v-bind:key="d.id"
         :to="{ name: 'device', params: { id: d.id } }"
       >
-        <li class="list-row">
+        <li class="list-row hover:bg-primary/20">
           <span class="fa-solid fa-microchip text-2xl self-center"></span>
           {{ d.name }}
           <span class="fa-solid fa-chevron-right opacity-30 self-center"></span>

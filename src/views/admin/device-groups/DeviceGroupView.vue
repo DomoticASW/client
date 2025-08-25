@@ -75,7 +75,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <NavbarLayout :title="group?.name">
+  <NavbarLayout :title="group?.name" :showBackButton="true">
     <template v-slot:actions>
       <button class="btn btn-ghost text-error" @click="deleteGroup">Delete</button>
     </template>
@@ -88,7 +88,7 @@ onMounted(async () => {
           <span class="text-xs">id: {{ d.id }}</span>
         </div>
         <button
-          class="btn btn-ghost fa-solid fa-remove"
+          class="btn btn-circle btn-ghost fa-solid fa-remove"
           @click="removeDeviceFromGroup(d.id)"
         ></button>
       </li>
@@ -108,7 +108,7 @@ onMounted(async () => {
           <br />
           <span class="text-xs">id: {{ d.id }}</span>
         </div>
-        <button class="btn btn-ghost fa-solid fa-add" @click="addDeviceToGroup(d.id)"></button>
+        <button class="btn btn-circle btn-ghost fa-solid fa-add" @click="addDeviceToGroup(d.id)"></button>
       </li>
     </ul>
     <DeviceRowSkeleton v-else :nRows="5" />

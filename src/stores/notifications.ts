@@ -6,7 +6,18 @@ import { ref } from "vue";
 import { Socket } from "socket.io-client";
 
 export const useNotificationsStore = defineStore('notifications', () => {
-  const notifications = ref(new Array<Notification & { read: boolean }>())
+  const notifications = ref(new Array<Notification & { read: boolean, date: string, id: number }>())
+  let id = 0
+  const stored = localStorage.getItem('notifications')
+  if (stored) {
+    try {
+      const parsed = JSON.parse(stored);
+      notifications.value = parsed;
+      id = notifications.value.reduce((maxId, n) => n.id > maxId ? n.id : maxId, 0)
+    } catch (e) {
+      console.error("Failed to parse stored notifications", e);
+    }
+  }
   const socket = ref<Socket | undefined>()
 
   const userInfo = useUserInfoStore()
@@ -17,28 +28,37 @@ export const useNotificationsStore = defineStore('notifications', () => {
     if (state.userInfo.token && !socket.value) {
       openSocket(state.userInfo.email)
     } else if (!state.userInfo.token && socket.value) {
-      closeSocket()
+      closeSocketAndResetNotifications()
     }
   })
-  window.addEventListener('beforeunload', () => closeSocket())
-
+  window.addEventListener('beforeunload', closeSocket)
   function openSocket(email: string) {
     if (socket.value) { socket.value.close() }
     socket.value = openSocketIOForNotifications(email, (notification) => {
-      notifications.value.push({ ...notification, read: false })
-      // TODO: remove after implementing notifications page
-      console.log(`Received notification: ${notification.message}`)
+      id = id + 1
+      notifications.value.unshift({ ...notification, read: false, date: (new Date()).toUTCString(), id: id })
+      localStorage.setItem('notifications', JSON.stringify(notifications.value));
     })
   }
   function closeSocket() {
     socket.value?.close()
     socket.value = undefined
   }
+  function closeSocketAndResetNotifications() {
+    closeSocket()
+    localStorage.removeItem('notifications')
+    notifications.value = []
+  }
   function setNotificationRead(index: number, read: boolean) {
     notifications.value[index].read = read
+    localStorage.setItem('notifications', JSON.stringify(notifications.value));
   }
   function deleteNotification(index: number) {
     notifications.value.splice(index, 1)
+    localStorage.setItem('notifications', JSON.stringify(notifications.value));
   }
-  return { notifications, socket, setNotificationRead, deleteNotification }
+  function unreadNotifications() {
+    return notifications.value.filter(n => !n.read).length
+  }
+  return { notifications, socket, setNotificationRead, deleteNotification, unreadNotifications }
 })

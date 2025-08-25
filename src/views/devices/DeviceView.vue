@@ -121,7 +121,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <NavbarLayout :title="device?.name">
+  <NavbarLayout :title="device?.name" :show-back-button="true">
     <template v-slot:actions>
       <button
         v-if="isSubscribedForOfflineNotifications != undefined"
@@ -148,7 +148,7 @@ onUnmounted(() => {
       <li v-for="a in actionsToShow" v-bind:key="a.id" class="list-row items-center">
         <span class="list-col-grow"> {{ a.name }} </span>
         <button
-          class="btn btn-ghost text-primary fa-solid fa-play"
+          class="btn btn-circle btn-ghost fa-solid fa-play"
           @click="onAskActionInput(a)"
         ></button>
       </li>
