@@ -190,7 +190,7 @@ onMounted(async () => {
           <input
             type="number"
             v-model="time"
-            class="input h-7 max-w-15 p-2 input-primary text-center"
+            class="input h-7 max-w-15 p-2 mr-2 input-primary text-center"
           />
           <select v-model="timeUnit" class="select h-7 w-25 input-primary text-center">
             <option selected disabled>Time unit</option>
