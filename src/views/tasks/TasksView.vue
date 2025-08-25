@@ -8,9 +8,10 @@ import { executeTask, findTask, getAllTasks } from '@/api/scripts/requests/tasks
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import NavbarLayout from '@/components/NavbarLayout.vue'
 import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
+import ListSkeleton from '@/components/ListSkeleton.vue'
 
 const userInfo = useUserInfoStore()
-const tasks = ref<Task[]>([])
+const tasks = ref<Task[]>()
 
 const loadingOverlay = useLoadingOverlayStore()
 
@@ -62,6 +63,7 @@ async function startTask(taskId: TaskId) {
         ></button>
       </li>
     </ul>
+    <ListSkeleton v-else />
 
     <AddButton name="add-task" />
   </NavbarLayout>

@@ -8,6 +8,7 @@ import { getAllAutomations, toggleAutomation } from '@/api/scripts/requests/auto
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import NavbarLayout from '@/components/NavbarLayout.vue'
 import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
+import ListSkeleton from '@/components/ListSkeleton.vue'
 
 const userInfo = useUserInfoStore()
 
@@ -51,7 +52,7 @@ async function toggle(automation: Automation) {
     >
       <p class="text-2xl">No automation yet...</p>
     </div>
-    <ul class="list rounded-box">
+    <ul class="list rounded-box" v-if="automations">
       <RouterLink
         v-for="automation in automations"
         :key="automation.name"
@@ -74,6 +75,7 @@ async function toggle(automation: Automation) {
         </li>
       </RouterLink>
     </ul>
+    <ListSkeleton v-else/>
 
     <AddButton name="add-automation" />
   </NavbarLayout>
