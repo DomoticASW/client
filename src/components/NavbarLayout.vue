@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="navbar py-0 mb-4 bg-base-200/70 shadow backdrop-blur sticky top-0 z-30"
-  >
+  <div class="navbar py-0 mb-4 bg-base-200/70 shadow backdrop-blur sticky top-0 z-30">
     <div class="navbar-start">
       <template v-if="showBackButton">
         <button

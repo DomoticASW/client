@@ -6,10 +6,10 @@ import SuccessPresenter from './components/SuccessPresenter.vue'
 </script>
 
 <template>
-  <div class="flex justify-center mx-2">
+  <div class="flex justify-center">
     <ErrorPresenter>
         <LoadingOverlay>
-          <div class="h-full lg:w-full w-xl max-w-5xl">
+          <div class="h-full md:w-full w-xl max-w-5xl">
             <SuccessPresenter>
             </SuccessPresenter>
             <RouterView />
