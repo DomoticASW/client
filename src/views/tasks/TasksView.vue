@@ -50,7 +50,7 @@ async function startTask(taskId: TaskId) {
 
         <button
           type="button"
-          class="btn btn-circle btn-ghost fa-solid fa-play fa-lg !flex w-5 h-5"
+          class="btn btn-circle btn-ghost fa-solid fa-play fa-lg !flex"
           @click="startTask(task.id)"
           :aria-label="'Start task: ' + task.name"
         ></button>

@@ -86,7 +86,7 @@
                 </div>
               </summary>
 
-              <ul class="p-2 bg-base-200/90 w-40 z-1">
+              <ul class="p-2 bg-base-200 w-40 z-2">
                 <li>
                   <RouterLink :to="{ name: 'manage-users' }">
                     Users
