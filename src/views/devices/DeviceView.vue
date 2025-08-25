@@ -168,11 +168,11 @@ onUnmounted(() => {
       <p>Do you want to receive a notification when this device goes offline?</p>
       <form method="dialog">
         <div class="modal-action">
-          <button class="btn btn-primary" v-on:click="subscribeForOfflineNotifications(true)">
-            Yes
-          </button>
           <button class="btn btn-primary" v-on:click="subscribeForOfflineNotifications(false)">
             No
+          </button>
+          <button class="btn btn-primary" v-on:click="subscribeForOfflineNotifications(true)">
+            Yes
           </button>
         </div>
       </form>
