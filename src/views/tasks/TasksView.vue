@@ -8,9 +8,10 @@ import { executeTask, findTask, getAllTasks } from '@/api/scripts/requests/tasks
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import NavbarLayout from '@/components/NavbarLayout.vue'
 import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
+import ListSkeleton from '@/components/ListSkeleton.vue'
 
 const userInfo = useUserInfoStore()
-const tasks = ref<Task[]>([])
+const tasks = ref<Task[]>()
 
 const loadingOverlay = useLoadingOverlayStore()
 
@@ -46,22 +47,25 @@ async function startTask(taskId: TaskId) {
       <p class="text-2xl">No tasks yet...</p>
     </div>
     <ul class="list rounded-box" v-if="tasks">
-      <li class="list-row hover:bg-primary/20" v-for="task in tasks" :key="task.id">
-        <RouterLink
-          class="list-col-grow flex items-center"
-          :to="{ name: 'task', params: { id: task.id } }"
-        >
-          {{ task.name }}
-        </RouterLink>
+      <RouterLink
+        v-for="task in tasks"
+        :key="task.id"
+        :to="{ name: 'task', params: { id: task.id } }"
+      >
+        <li class="list-row hover:bg-primary/20">
+          <span class="fa-solid fa-scroll text-2xl self-center"></span>
+          <div class="list-col-grow flex items-center">{{ task.name }}</div>
 
-        <button
-          type="button"
-          class="btn btn-circle btn-ghost fa-solid fa-play fa-lg !flex"
-          @click="startTask(task.id)"
-          :aria-label="'Start task: ' + task.name"
-        ></button>
-      </li>
+          <button
+            type="button"
+            class="btn btn-circle btn-ghost fa-solid fa-play fa-lg !flex"
+            @click.prevent="startTask(task.id)"
+            :aria-label="'Start task: ' + task.name"
+          ></button>
+        </li>
+      </RouterLink>
     </ul>
+    <ListSkeleton v-else />
 
     <AddButton name="add-task" />
   </NavbarLayout>
