@@ -107,7 +107,7 @@ function addUser(user: User) {
         } else if (listSelectedName.value === 'Blacklist' && taskList.value) {
           taskList.value.blacklist.push(user.email)
         }
-        showToastMessage(`Request for ${user.nickname} added successfully.`)
+        showToastMessage(`${user.nickname} added to the ${listSelectedName.value}.`)
       })
       .catch((error) => {
         console.error('Error adding user:', error)
@@ -142,7 +142,7 @@ function removeUser(userEmail: string) {
             taskList.value.blacklist.splice(index, 1)
           }
         }
-        showToastMessage(`Request for ${userEmail} removed successfully.`)
+        showToastMessage(`${userFromEmail(userEmail)?.nickname ?? "User"} removed from the ${listSelectedName.value}.`)
       })
       .catch((error) => {
         console.error('Error removing user:', error)
@@ -159,6 +159,10 @@ function select(option: string) {
 
 function calculateUsersNotInList(list: string[], users: User[]): User[] {
   return users.filter((user) => !list.some((email) => email === user.email))
+}
+
+function userFromEmail(email: string): User | undefined {
+  return users.value.find(u => u.email === email)
 }
 
 function showToastMessage(msg: string) {
