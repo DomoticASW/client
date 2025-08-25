@@ -1,11 +1,10 @@
 <template>
   <InstructionLayout
     :colors="colors"
-    :indent="indent"
     :edit="edit"
     :instruction="props.instruction"
     @click="openDialog"
-    :class="[edit ? 'cursor-pointer transition-all hover:bg-secondary' : '']"
+    :class="edit ? 'cursor-pointer transition-all duration-100 hover:bg-primary/10' : ''"
   >
     <p>Constant</p>
     <p class="font-bold truncate text-center">{{ instruction.name }}</p>
@@ -17,9 +16,9 @@
     </template>
     <template v-else>
       <input
-        class="col-start-2 place-self-center"
+        class="col-start-2 place-self-center cursor-pointer transition-all"
         type="color"
-        disabled
+        @click.prevent="openDialog"
         :value="instruction.value"
       />
     </template>
@@ -86,10 +85,10 @@
           id="value"
         />
         <div class="modal-action grid grid-cols-3 w-full">
-          <button type="button" class="btn btn-error col-start-1" @click="closeDialog">
+          <button type="button" class="btn col-start-1" @click="closeDialog">
             Close
           </button>
-          <button type="submit" class="btn col-start-3">Confirm</button>
+          <button type="submit" class="btn col-start-3 btn-primary">Confirm</button>
         </div>
       </form>
     </div>
@@ -110,8 +109,6 @@ import { useInstructionsStore } from '@/stores/instructions'
 const props = defineProps<{
   id: string
   instruction: Instruction
-  indent: string
-  depth: number
   colors: string
   edit: boolean
 }>()

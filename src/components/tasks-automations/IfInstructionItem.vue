@@ -2,7 +2,6 @@
   <!-- If card -->
   <InstructionLayout
     :colors="colors"
-    :indent="indent"
     :edit="edit"
     :instruction="props.instruction"
   >
@@ -15,70 +14,74 @@
     <input
       v-if="edit"
       type="text"
-      class="input text-base-content col-span-3 w-17 md:w-25 place-self-center h-7 text-center"
+      class="input input-primary col-span-3 w-17 md:w-25 place-self-center h-7 text-center"
       placeholder="Constant name"
       v-model="instruction.condition.leftConstantName"
     />
     <select
       v-if="edit"
       v-model="instruction.condition.conditionOperatorType"
-      class="select text-base-content col-span-3 w-17 md:w-20 place-self-center h-7"
+      class="select select-primary col-span-3 w-17 md:w-20 place-self-center h-7"
     >
       <option v-for="operator in ConditionOperatorType" :key="operator" :value="operator">
         {{ getOperator(operator) }}
       </option>
     </select>
-    <label v-if="edit" for="negate" class="label text-sm md:text-base text-secondary-content col-span-2 place-self-center">
+    <label v-if="edit" for="negate" class="label text-sm md:text-base text-base-content col-span-2 place-self-center">
       Not
       <input
         name="negate"
         id="negate"
         type="checkbox"
-        class="checkbox text-secondary-content"
+        class="checkbox checkbox-primary"
         v-model="instruction.condition.negate"
       />
     </label>
     <input
       v-if="edit"
       type="text"
-      class="input text-base-content w-17 md:w-25 col-span-3 place-self-center h-7 text-center"
+      class="input input-primary w-17 md:w-25 col-span-3 place-self-center h-7 text-center"
       placeholder="Constant name"
       v-model="instruction.condition.rightConstantName"
     />
   </InstructionLayout>
 
-  <!-- Then instructions -->
-  <InstructionItem
-    v-for="(ins, i) in instruction.thenInstructions"
-    :key="id + '-then-' + i.toString()"
-    :id="id + '-then' + i.toString()"
-    :instruction="ins"
-    :depth="depth + 1"
-    :edit="edit"
-  />
+  <div class="grid grid-cols-24">
+    <div class="row-span-full bg-secondary w-[2px] rounded-3xl"></div>
+    <div class="col-span-23 -mt-2 -mb-2">
+      <!-- Then instructions -->
+      <InstructionItem
+        v-for="(ins, i) in instruction.thenInstructions"
+        :key="id + '-then-' + i.toString()"
+        :id="id + '-then' + i.toString()"
+        :instruction="ins"
+        :edit="edit"
+      />
+    </div>
+  </div>
 
   <!-- Else block -->
   <template v-if="'elseInstructions' in instruction">
-    <div :class="indent">
-      <div :class="['card my-2', colors]">
-        <div class="card-body p-2 text-base">Else</div>
+    <div :class="['card my-2', colors]">
+      <div class="card-body p-2 text-base">Else</div>
+    </div>
+    <div class="grid grid-cols-24">
+      <div class="row-span-full bg-secondary w-[2px] rounded-3xl"></div>
+      <div class="col-span-23 -mt-2 -mb-2">
+        <InstructionItem
+          v-for="(ins, i) in instruction.elseInstructions"
+          :key="id + '-else-' + i.toString()"
+          :id="id + '-else' + i.toString()"
+          :instruction="ins"
+          :edit="edit"
+        />
       </div>
     </div>
-    <InstructionItem
-      v-for="(ins, i) in instruction.elseInstructions"
-      :key="id + '-else-' + i.toString()"
-      :id="id + '-else' + i.toString()"
-      :instruction="ins"
-      :depth="depth + 1"
-      :edit="edit"
-    />
   </template>
 
   <!-- Endif card -->
-  <div :class="indent">
-    <div :class="['card my-2', colors]">
-      <div class="card-body p-2 text-base">Endif</div>
-    </div>
+  <div :class="['card my-2', colors]">
+    <div class="card-body p-2 text-base">Endif</div>
   </div>
 </template>
 
@@ -97,8 +100,6 @@ import { ref, watch } from 'vue'
 const props = defineProps<{
   id: string
   instruction: Instruction
-  indent: string
-  depth: number
   colors: string
   edit: boolean
 }>()
