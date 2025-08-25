@@ -166,7 +166,7 @@ onMounted(async () => {
     </button>
   </div>
   <!-- Trigger -->
-  <div class="card card-sm bg-secondary/70 text-secondary-content my-2" v-else>
+  <div class="card card-sm bg-base-300 text-base-content border border-neutral shadow-lg my-2" v-else>
     <!-- Period trigger -->
     <div class="card-body text-base grid grid-cols-6 px-4">
       <template v-if="isPeriodTrigger(trigger)">
@@ -178,7 +178,7 @@ onMounted(async () => {
           <input
             type="datetime-local"
             v-model="dateTime"
-            class="input h-7 text-base-content text-center"
+            class="input h-7 input-primary text-center"
           />
         </div>
 
@@ -190,9 +190,9 @@ onMounted(async () => {
           <input
             type="number"
             v-model="time"
-            class="input h-7 max-w-15 p-2 text-base-content text-center"
+            class="input h-7 max-w-15 p-2 mr-2 input-primary text-center"
           />
-          <select v-model="timeUnit" class="select h-7 w-25 text-base-content text-center">
+          <select v-model="timeUnit" class="select h-7 w-25 input-primary text-center">
             <option selected disabled>Time unit</option>
             <option value="seconds">Seconds</option>
             <option value="minutes">Minutes</option>
@@ -206,7 +206,7 @@ onMounted(async () => {
         <p class="col-span-full font-bold text-center">{{ selectedDevice.name }}</p>
         <select
           v-model="selectedEvent"
-          class="col-span-full select h-7 w-45 text-base-content justify-self-center text-center"
+          class="col-span-full select h-7 w-45 select-primary justify-self-center text-center"
           v-if="edit"
         >
           <option selected disabled>Pick an event</option>
@@ -223,7 +223,7 @@ onMounted(async () => {
       </template>
       <template v-if="edit">
         <button
-          class="btn btn-square fa-solid fa-xmark row-start-1 col-start-7 row-span-2 place-self-center"
+          class="btn btn-square btn-primary fa-solid fa-xmark row-start-1 col-start-7 row-span-2 place-self-center"
           @click="removeTrigger()"
         ></button>
       </template>

@@ -87,11 +87,11 @@ onMounted(async () => {
         v-bind:key="g.id"
         :to="{ name: 'device-group', params: { id: g.id } }"
       >
-        <li class="list-row">
+        <li class="list-row hover:bg-primary/20">
           <span class="fa-solid fa-sitemap text-2xl self-center"></span>
           {{ g.name }}
           <button
-            class="btn btn-ghost fa-solid fa-pen"
+            class="btn btn-circle btn-ghost fa-solid fa-pen"
             @click.prevent="startEditingGroup(g.id)"
           ></button>
           <span class="fa-solid fa-chevron-right opacity-30 self-center"></span>

@@ -51,7 +51,7 @@ async function toggle(automation: Automation) {
         :key="automation.name"
         :to="{ name: 'automation', params: { id: automation.id } }"
       >
-        <li class="list-row">
+        <li class="list-row hover:bg-primary/20">
           <div class="list-col-grow flex items-center">
             <div>{{ automation.name }}</div>
           </div>

@@ -1,7 +1,6 @@
 <template>
   <InstructionLayout
     :colors="colors"
-    :indent="indent"
     :edit="edit"
     :instruction="props.instruction"
   >
@@ -10,7 +9,7 @@
     <select
       v-model="(instruction.instruction as StartTaskInstruction).taskId"
       v-else
-      class="select h-7 text-center text-base-content"
+      class="select h-7 text-center select-primary"
     >
       <option selected disabled>Choose a task</option>
       <option :value="task.id" v-for="task in tasks" :key="task.id">{{ task.name }}</option>
@@ -30,8 +29,6 @@ const userInfo = useUserInfoStore()
 
 const props = defineProps<{
   instruction: Instruction
-  indent: string
-  depth: number
   colors: string
   edit: boolean
 }>()

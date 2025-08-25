@@ -148,7 +148,7 @@ onUnmounted(() => {
       <li v-for="a in actionsToShow" v-bind:key="a.id" class="list-row items-center">
         <span class="list-col-grow"> {{ a.name }} </span>
         <button
-          class="btn btn-ghost text-primary fa-solid fa-play"
+          class="btn btn-circle btn-ghost fa-solid fa-play"
           @click="onAskActionInput(a)"
         ></button>
       </li>

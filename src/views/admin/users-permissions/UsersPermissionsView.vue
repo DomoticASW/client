@@ -4,18 +4,18 @@
       <p class="text-2xl">No users yet...</p>
     </div>
     <ul class="list rounded-box" v-if="users">
-      <li class="list-row" v-for="user in users" :key="user.email">
+      <RouterLink
+        v-for="user in users" :key="user.email"
+        :to="{ name: 'user-permissions', params: { id: user.email }, state: { nickname: user.nickname } }"
+        :aria-label="'Get permissions of: ' + user.nickname"
+      >
+      <li class="list-row hover:bg-primary/20">
         <div class="list-col-grow flex items-center">
           {{ user.nickname }}
         </div>
-        <RouterLink
-          class="btn btn-circle btn-ghost"
-          :to="{ name: 'user-permissions', params: { id: user.email }, state: { nickname: user.nickname } }"
-          :aria-label="'Get permissions of: ' + user.nickname"
-        >
-          <i class="fa-solid fa-play"></i>
-        </RouterLink>
-      </li>
+        <span class="fa-solid fa-chevron-right opacity-30 self-center"></span>
+        </li>
+      </RouterLink>
     </ul>
     <UsersListSkeleton v-else />
   </NavbarLayout>

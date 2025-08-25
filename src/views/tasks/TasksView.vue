@@ -40,7 +40,7 @@ async function startTask(taskId: TaskId) {
 <template>
   <NavbarLayout title="Tasks" :show-back-button="false">
     <ul class="list rounded-box" v-if="tasks">
-      <li class="list-row" v-for="task in tasks" :key="task.id">
+      <li class="list-row hover:bg-primary/20" v-for="task in tasks" :key="task.id">
         <RouterLink
           class="list-col-grow flex items-center"
           :to="{ name: 'task', params: { id: task.id } }"
