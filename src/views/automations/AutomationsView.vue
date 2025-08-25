@@ -45,6 +45,12 @@ async function toggle(automation: Automation) {
 
 <template>
   <NavbarLayout title="Automations">
+    <div
+      v-if="automations?.length === 0"
+      class="flex text-center text-gray-500 justify-center items-center min-h-[50vh]"
+    >
+      <p class="text-2xl">No automation yet...</p>
+    </div>
     <ul class="list rounded-box">
       <RouterLink
         v-for="automation in automations"

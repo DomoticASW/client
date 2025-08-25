@@ -39,6 +39,12 @@ async function startTask(taskId: TaskId) {
 
 <template>
   <NavbarLayout title="Tasks" :show-back-button="false">
+    <div
+      v-if="tasks?.length === 0"
+      class="flex text-center text-gray-500 justify-center items-center min-h-[50vh]"
+    >
+      <p class="text-2xl">No tasks yet...</p>
+    </div>
     <ul class="list rounded-box" v-if="tasks">
       <li class="list-row hover:bg-primary/20" v-for="task in tasks" :key="task.id">
         <RouterLink
