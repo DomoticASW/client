@@ -5,6 +5,7 @@
       <div>
         <ul class="list rounded-box" v-if="devicesWithPermissions">
           <li class="list-row" v-for="device in devicesWithPermissions" :key="device.id">
+            <span class="fa-solid fa-microchip text-2xl self-center"></span>
             <div class="list-col-grow flex items-center">
               {{ device.name }}
             </div>
@@ -24,6 +25,7 @@
       <div>
         <ul class="list rounded-box" v-if="devicesWithoutPermissions">
           <li class="list-row" v-for="device in devicesWithoutPermissions" :key="device.id">
+            <span class="fa-solid fa-microchip text-2xl self-center"></span>
             <div class="list-col-grow flex items-center">
               {{ device.name }}
             </div>

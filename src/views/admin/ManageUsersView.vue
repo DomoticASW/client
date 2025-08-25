@@ -81,9 +81,11 @@ function showToastMessage(msg: string) {
         <div>
           <ul class="list rounded-box">
             <li class="list-row" v-for="user in registeredUsers" :key="user.email">
+              <span v-if="user.role == Role.Admin" class="fa-solid fa-user-tie text-2xl self-center"></span>
+              <span v-else class="fa-solid fa-user text-2xl self-center"></span>
               <div class="list-col-grow flex flex-col">
                 <div>{{ user.nickname }}</div>
-                <small class="text-gray-400 ms-1">{{ user.email }}</small>
+                <small class="text-gray-400">{{ user.email }}</small>
               </div>
               <small v-if="user.role == Role.Admin" class="text-gray-400 flex items-center">{{
                 user.role
@@ -105,9 +107,10 @@ function showToastMessage(msg: string) {
         <div>
           <ul class="list rounded-box">
             <li class="list-row" v-for="user in unregisteredUsers" :key="user.email">
+              <span class="fa-solid fa-user text-2xl self-center"></span>
               <div class="list-col-grow flex flex-col">
                 <div>{{ user.nickname }}</div>
-                <small class="text-gray-400 ms-1">{{ user.email }}</small>
+                <small class="text-gray-400">{{ user.email }}</small>
               </div>
               <div>
                 <button
