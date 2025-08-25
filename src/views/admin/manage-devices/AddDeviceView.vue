@@ -42,7 +42,7 @@ onMounted(async () => {
           <br />
           <span class="text-xs">id: {{ d.id }}</span>
         </div>
-        <button class="btn btn-ghost fa-solid fa-plus" v-on:click="addDevice(d.id)"></button>
+        <button class="btn btn-circle btn-ghost fa-solid fa-plus" v-on:click="addDevice(d.id)"></button>
       </li>
     </ul>
     <DeviceListSkeleton v-else />
