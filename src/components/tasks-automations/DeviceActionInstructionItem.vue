@@ -64,7 +64,7 @@
             step="1"
             :min="variableType().constraints.min"
             :max="variableType().constraints.max"
-            v-model="variableForm.input"
+            v-model.number="variableForm.input"
             name="input"
             id="input"
           />
@@ -78,7 +78,7 @@
           v-else-if="variableType().type === 'number'"
           :type="variableType().type"
           :class="['mt-2 mx-2', variableType().class]"
-          v-model="variableForm.input"
+          v-model.number="variableForm.input"
           :min="variableType().constraints.min"
           :max="variableType().constraints.max"
           :step="selectedAction?.inputTypeConstraints.type === Type.DoubleType ? 'any' : '1'"
@@ -323,4 +323,5 @@ function closeDialog() {
   const dialog = document.getElementById(props.id.toString()) as HTMLDialogElement
   dialog.close()
 }
+
 </script>
