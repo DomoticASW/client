@@ -7,7 +7,7 @@
     v-if="device && action"
     :class="edit ? 'cursor-pointer transition-all duration-100 hover:bg-primary/10' : ''"
   >
-    <DeviceNameAndGroup :open-groups-dialog="openGroupsDialog" :device="device" :device-groups="deviceGroups"/>
+    <DeviceNameAndGroup :id="id" :device="device" />
 
     <template v-if="action.inputTypeConstraints.type === Type.VoidType">
       <p class="font-bold text-center truncate">{{ action.name }}</p>
@@ -25,7 +25,7 @@
     </template>
   </InstructionLayout>
 
-  <DeviceGroupsDialog :id="id" :device="device" :device-groups="deviceGroups"/>
+  <DeviceGroupsDialog :id="id" :device="device" />
 
   <dialog :id="id" class="modal" v-if="device && action">
     <div class="modal-box max-w-sm">
@@ -155,10 +155,9 @@ import { findDevice } from '@/api/devices-management/requests/devices'
 import { Type } from '@/model/Type'
 import { getDefaultInput } from './emptyInstructions'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
-import { getAllDeviceGroups } from '@/api/devices-management/requests/device-groups'
-import type { DeviceGroup } from '@/model/devices-management/DeviceGroup'
 import DeviceGroupsDialog from '../DeviceGroupsDialog.vue'
 import DeviceNameAndGroup from '../DeviceNameAndGroup.vue'
+import { useGroupsStore } from '@/stores/groups'
 
 const props = defineProps<{
   id: string
@@ -173,7 +172,6 @@ const userInfo = useUserInfoStore()
 const instruction = ref(props.instruction.instruction as DeviceActionInstruction)
 const device = ref<Device>()
 const action = ref<DeviceAction<unknown>>()
-const deviceGroups = ref<DeviceGroup[]>([])
 
 const selectedAction = ref<DeviceAction<unknown>>()
 
@@ -296,14 +294,9 @@ onMounted(async () => await updateInstruction())
 async function updateInstruction() {
   try {
     loadingOverlay.startLoading()
-    const groups = await getAllDeviceGroups(userInfo.token)
-    deviceGroups.value = groups.filter((g) =>
-      g.devices.map((d) => d.id).includes(variableForm.value.deviceId),
-    )
-    if (deviceGroups.value.length > 0) {
-      device.value = deviceGroups.value[0].devices.find(
-        (d) => d.id === variableForm.value.deviceId,
-      )!
+    const deviceGroups = useGroupsStore().deviceGroups(variableForm.value.deviceId)
+    if (deviceGroups.length > 0) {
+      device.value = useGroupsStore().getDeviceFromGroups(variableForm.value.deviceId)!
     } else {
       device.value = await findDevice(variableForm.value.deviceId, userInfo.token)
     }
@@ -339,10 +332,5 @@ function handleConfirm() {
 function closeDialog() {
   const dialog = document.getElementById(props.id.toString()) as HTMLDialogElement
   dialog.close()
-}
-
-function openGroupsDialog() {
-  const dialog = document.getElementById(props.id.toString() + '_groups') as HTMLDialogElement
-  dialog.showModal()
 }
 </script>

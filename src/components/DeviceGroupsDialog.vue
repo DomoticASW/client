@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import type { Device } from '@/model/devices-management/Device'
-import type { DeviceGroup } from '@/model/devices-management/DeviceGroup'
+import { useGroupsStore } from '@/stores/groups'
 
-defineProps<{
+const props = defineProps<{
   id: string
   device?: Device
-  deviceGroups: DeviceGroup[]
 }>()
+
+const deviceGroups = props.device ? useGroupsStore().deviceGroups(props.device?.id) : []
 </script>
 
 <template>

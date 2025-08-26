@@ -18,6 +18,7 @@ import type { Device } from '@/model/devices-management/Device'
 import DeviceActionPropertyDialog from '@/components/tasks-automations/DeviceActionPropertyDialog.vue'
 import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
 import { useErrorPresenterStore } from '@/stores/error-presenter'
+import { useGroupsStore } from '@/stores/groups'
 
 const props = defineProps<{ id?: string }>()
 const userInfo = useUserInfoStore()
@@ -34,6 +35,7 @@ onMounted(async () => {
     try {
       loadingOverlay.startLoading()
       const automation = await findAutomation(AutomationId(props.id), userInfo.token)
+      await useGroupsStore().updateGroups()
       instructionsStore.instructions = automation.instructions
       automationName.value = automation.name
       trigger.value = automation.trigger

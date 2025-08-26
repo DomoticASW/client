@@ -1,22 +1,29 @@
 <script setup lang="ts">
 import type { Device } from '@/model/devices-management/Device'
-import type { DeviceGroup } from '@/model/devices-management/DeviceGroup'
+import { useGroupsStore } from '@/stores/groups'
 
 const props = defineProps<{
+  id: string
   device: Device
-  deviceGroups: DeviceGroup[]
-  openGroupsDialog: () => void
 }>()
+
+const deviceGroups = useGroupsStore().groups.filter((g) =>
+  g.devices.map((d) => d.id).includes(props.device.id),
+)
+
+function openGroupsDialog() {
+  const dialog = document.getElementById(props.id.toString() + '_groups') as HTMLDialogElement
+  dialog.showModal()
+}
 
 function groupsToString() {
   return (
-    props.deviceGroups[0].name +
-    (props.deviceGroups.length > 1
-      ? ', ' + props.deviceGroups[1].name + (props.deviceGroups.length > 2 ? ', ...' : '')
+    deviceGroups[0].name +
+    (deviceGroups.length > 1
+      ? ', ' + deviceGroups[1].name + (deviceGroups.length > 2 ? ', ...' : '')
       : '')
   )
 }
-
 </script>
 
 <template>

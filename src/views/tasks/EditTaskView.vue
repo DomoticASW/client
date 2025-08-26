@@ -13,6 +13,7 @@ import type { Device } from '@/model/devices-management/Device'
 import DeviceActionPropertyDialog from '@/components/tasks-automations/DeviceActionPropertyDialog.vue'
 import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
 import { useErrorPresenterStore } from '@/stores/error-presenter'
+import { useGroupsStore } from '@/stores/groups'
 
 const props = defineProps<{ id?: string }>()
 const userInfo = useUserInfoStore()
@@ -28,6 +29,7 @@ onMounted(async () => {
     try {
       loadingOverlay.startLoading()
       const task = await findTask(TaskId(props.id), userInfo.token)
+      await useGroupsStore().updateGroups()
       instructionsStore.instructions = task.instructions
       taskName.value = task.name
     } catch (err) {
