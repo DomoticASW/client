@@ -18,6 +18,7 @@ import type { Device } from '@/model/devices-management/Device'
 import DeviceActionPropertyDialog from '@/components/tasks-automations/DeviceActionPropertyDialog.vue'
 import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
 import { useErrorPresenterStore } from '@/stores/error-presenter'
+import InfoDialogs from '@/components/tasks-automations/InfoDialogs.vue'
 
 const props = defineProps<{ id?: string }>()
 const userInfo = useUserInfoStore()
@@ -135,5 +136,6 @@ function showToastMessage(msg: string) {
     <div class="pb-4"></div>
     <InstructionItems :openDialog="openDialog" :closeDialog="closeDialog" />
     <DeviceActionPropertyDialog :selected-device="selectedDevice" :close-dialog="closeDialog" />
+    <InfoDialogs/>
   </NavbarLayout>
 </template>
