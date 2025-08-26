@@ -9,12 +9,15 @@ import { useUserInfoStore } from './stores/user-info'
 import { isGetUserInfoDTO } from '@/api/users-management/dtos/GetUserInfoDTO'
 import { useErrorPresenterStore } from './stores/error-presenter'
 import { useNotificationsStore } from './stores/notifications'
+import { useGroupsStore } from './stores/groups'
+import { useLoadingOverlayStore } from './stores/loading-overlay'
 
 const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
 
+const loadingOverlay = useLoadingOverlayStore()
 // Loading a session token if it exists
 useUserInfoStore()
 
@@ -57,3 +60,12 @@ if (import.meta.env.DEV && userInfoStr) {
 }
 
 app.mount('#app')
+
+if (useUserInfoStore().token) {
+  try {
+    loadingOverlay.startLoading()
+    await useGroupsStore().updateGroups()
+  } finally {
+    loadingOverlay.stopLoading()
+  }
+}
