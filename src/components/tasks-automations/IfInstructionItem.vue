@@ -1,6 +1,6 @@
 <template>
   <!-- If card -->
-  <InstructionLayout :colors="colors" :edit="edit" :instruction="props.instruction">
+  <InstructionLayout :colors="colors" :edit="edit" :instruction="props.instruction" :depth="depth">
     <p class="self-center">If</p>
     <p class="truncate col-span-4 font-bold text-center" v-if="!edit">
       {{ instruction.condition.leftConstantName }}
@@ -12,14 +12,16 @@
     <input
       v-if="edit"
       type="text"
-      class="input input-primary col-span-3 w-17 md:w-25 place-self-center h-7 text-center"
+      class="input input-primary place-self-center h-7 text-center"
       placeholder="Constant name"
+      :class="depth > 1 ? 'w-full col-span-3' : 'w-17 md:w-25 col-span-3'"
       v-model="instruction.condition.leftConstantName"
     />
     <select
       v-if="edit"
       v-model="instruction.condition.conditionOperatorType"
-      class="select select-primary col-span-3 w-17 md:w-20 place-self-center h-7"
+      class="select select-primary w-17 md:w-20 place-self-center h-7"
+      :class="depth > 1 ? 'row-start-2 col-start-2 ml-2' : 'col-span-3'"
     >
       <option v-for="operator in ConditionOperatorType" :key="operator" :value="operator">
         {{ getOperator(operator) }}
@@ -28,21 +30,23 @@
     <label
       v-if="edit"
       for="negate"
-      class="label text-sm md:text-base text-base-content col-span-2 place-self-center"
+      class="label text-sm md:text-base text-base-content place-self-center col-span-2"
+      :class="depth > 1 ? 'row-start-2 ml-4' : ''"
     >
       Not
       <input
         name="negate"
         id="negate"
         type="checkbox"
-        class="checkbox checkbox-primary"
+        class="checkbox checkbox-primary checkbox-sm md:checkbox-md"
         v-model="instruction.condition.negate"
       />
     </label>
     <input
       v-if="edit"
       type="text"
-      class="input input-primary w-17 md:w-25 col-span-3 place-self-center h-7 text-center"
+      class="input input-primary place-self-center h-7 text-center"
+      :class="depth > 1 ? 'row-start-3 col-start-2 col-span-full w-full' : 'col-span-3 w-17 md:w-25'"
       placeholder="Constant name"
       v-model="instruction.condition.rightConstantName"
     />
