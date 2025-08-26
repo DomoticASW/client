@@ -5,7 +5,7 @@
       :class="
         instruction.type === InstructionType.IfInstruction ||
         instruction.type === InstructionType.IfElseInstruction
-          ? depth && depth > 1
+          ? depth && depth > 1 && edit
             ? 'grid-cols-3'
             : 'grid-cols-12'
           : instruction.type === InstructionType.WaitInstruction && edit
