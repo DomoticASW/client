@@ -16,9 +16,9 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(router)
 
-const loadingOverlay = useLoadingOverlayStore()
+useLoadingOverlayStore()
 // Loading a session token if it exists
-useUserInfoStore()
+const userInfo = useUserInfoStore()
 
 // Subscribing for notifications
 useNotificationsStore()
@@ -41,13 +41,10 @@ app.config.errorHandler = (err) => {
   }
 }
 
-if (useUserInfoStore().token) {
-  try {
-    loadingOverlay.startLoading()
-    await useGroupsStore().updateGroups()
-  } finally {
-    loadingOverlay.stopLoading()
-  }
-}
+userInfo.$subscribe(async () => {
+  useGroupsStore().updateGroups()
+})
+
+useGroupsStore().updateGroups()
 
 app.mount('#app')

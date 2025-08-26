@@ -92,7 +92,6 @@ import { type UserInfo } from '@/model/users-management/User'
 import { required, email, helpers } from '@vuelidate/validators'
 import * as api from '@/api/users-management/requests/users'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
-import { useGroupsStore } from '@/stores/groups'
 
 type LoginForm = {
   email: string
@@ -134,7 +133,6 @@ const handleLogin = async (): Promise<void> => {
       role: user.role,
     }
     userInfo.setUserInfo(userInfoData)
-    await useGroupsStore().updateGroups()
   } finally {
     loadingOverlay.stopLoading()
   }
