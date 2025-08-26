@@ -16,7 +16,7 @@
         </li>
       </RouterLink>
     </ul>
-    <UsersListSkeleton v-else />
+    <ListSkeleton v-else />
   </NavbarLayout>
 </template>
 
@@ -26,7 +26,7 @@ import { useUserInfoStore } from '@/stores/user-info';
 import { Role, type User } from '@/model/users-management/User';
 import * as api from '@/api/users-management/requests/users';
 import NavbarLayout from '@/components/NavbarLayout.vue';
-import UsersListSkeleton from '@/components/admin/users-permissions/UsersListSkeleton.vue'
+import ListSkeleton from '@/components/ListSkeleton.vue'
 
 const users = ref<User[] | undefined>(undefined);
 
