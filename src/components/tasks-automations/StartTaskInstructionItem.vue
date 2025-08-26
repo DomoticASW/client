@@ -1,9 +1,5 @@
 <template>
-  <InstructionLayout
-    :colors="colors"
-    :edit="edit"
-    :instruction="props.instruction"
-  >
+  <InstructionLayout :colors="colors" :edit="edit" :instruction="props.instruction">
     <p>Start task</p>
     <p v-if="!edit" class="font-bold truncate text-center">{{ taskName }}</p>
     <select
@@ -20,11 +16,11 @@
 <script setup lang="ts">
 import type { Instruction, StartTaskInstruction } from '@/model/scripts/Instruction'
 import InstructionLayout from './InstructionLayout.vue'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useUserInfoStore } from '@/stores/user-info'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
-import { findTask, getAllTasks } from '@/api/scripts/requests/tasks'
-import { TaskId, type Task } from '@/model/scripts/Script'
+import { getAllTasks } from '@/api/scripts/requests/tasks'
+import { type Task } from '@/model/scripts/Script'
 const userInfo = useUserInfoStore()
 
 const props = defineProps<{
@@ -38,19 +34,24 @@ const tasks = ref<Task[]>([])
 
 const loadingOverlay = useLoadingOverlayStore()
 
+watch(
+  () => props.instruction,
+  (val) => {
+    updateTaskName(val.instruction as StartTaskInstruction)
+  },
+)
+
 onMounted(async () => {
   try {
     loadingOverlay.startLoading()
+    tasks.value = await getAllTasks(userInfo.token)
     updateTaskName(props.instruction.instruction as StartTaskInstruction)
-    if (props.edit) {
-      tasks.value = await getAllTasks(userInfo.token)
-    }
   } finally {
     loadingOverlay.stopLoading()
   }
 })
 
 async function updateTaskName(instruction: StartTaskInstruction) {
-  taskName.value = (await findTask(TaskId(instruction.taskId), userInfo.token)).name
+  taskName.value = tasks.value.find((t) => t.id === instruction.taskId)!.name
 }
 </script>
