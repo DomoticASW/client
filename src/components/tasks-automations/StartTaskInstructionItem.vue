@@ -1,5 +1,5 @@
 <template>
-  <InstructionLayout :colors="colors" :edit="edit" :instruction="props.instruction">
+  <InstructionLayout :colors="colors" :edit="edit" :instruction="props.instruction" v-if="tasks">
     <p>Start task</p>
     <p v-if="!edit" class="font-bold truncate text-center">{{ taskName }}</p>
     <select
@@ -29,17 +29,10 @@ const props = defineProps<{
   edit: boolean
 }>()
 
-const taskName = ref('')
-const tasks = ref<Task[]>([])
+const taskName = ref<string>()
+const tasks = ref<Task[]>()
 
 const loadingOverlay = useLoadingOverlayStore()
-
-watch(
-  () => props.instruction,
-  (val) => {
-    updateTaskName(val.instruction as StartTaskInstruction)
-  },
-)
 
 onMounted(async () => {
   try {
@@ -51,7 +44,14 @@ onMounted(async () => {
   }
 })
 
+watch(
+  () => props.instruction,
+  (val) => {
+    updateTaskName(val.instruction as StartTaskInstruction)
+  },
+)
+
 async function updateTaskName(instruction: StartTaskInstruction) {
-  taskName.value = tasks.value.find((t) => t.id === instruction.taskId)!.name
+  taskName.value = tasks.value?.find((t) => t.id === instruction.taskId)?.name
 }
 </script>

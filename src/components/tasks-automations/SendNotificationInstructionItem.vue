@@ -51,15 +51,6 @@ const users = ref<User[]>()
 const selectedUser = ref<User>()
 const loadingOverlay = useLoadingOverlayStore()
 
-watch(
-  () => props.instruction,
-  (val) => {
-    instruction.value = val.instruction as SendNotificationInstruction
-    selectedUser.value = users.value?.find((u) => u.email === instruction.value.email)
-  },
-  { immediate: true },
-)
-
 onMounted(async () => {
   try {
     loadingOverlay.startLoading()
@@ -69,4 +60,13 @@ onMounted(async () => {
     loadingOverlay.stopLoading()
   }
 })
+
+watch(
+  () => props.instruction,
+  (val) => {
+    instruction.value = val.instruction as SendNotificationInstruction
+    selectedUser.value = users.value?.find((u) => u.email === instruction.value.email)
+  },
+  { immediate: true },
+)
 </script>
