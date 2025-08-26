@@ -6,17 +6,20 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 import { useUserInfoStore } from './stores/user-info'
-import { isGetUserInfoDTO } from '@/api/users-management/dtos/GetUserInfoDTO'
 import { useErrorPresenterStore } from './stores/error-presenter'
 import { useNotificationsStore } from './stores/notifications'
+import { useGroupsStore } from './stores/groups'
+import { useLoadingOverlayStore } from './stores/loading-overlay'
+import { isGetUserInfoDTO } from './api/users-management/dtos/GetUserInfoDTO'
 
 const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
 
+useLoadingOverlayStore()
 // Loading a session token if it exists
-useUserInfoStore()
+const userInfo = useUserInfoStore()
 
 // Subscribing for notifications
 useNotificationsStore()
@@ -38,6 +41,12 @@ app.config.errorHandler = (err) => {
     }
   }
 }
+
+userInfo.$subscribe(async () => {
+  useGroupsStore().updateGroups()
+})
+
+useGroupsStore().updateGroups()
 
 // During development it's possible to set a VITE_USER_INFO object to skip login:
 // VITE_USER_INFO='{"email": "a@email.com", "nickname": "Foo", "token": "blablabla", "role": "Admin" }' npm run dev

@@ -7,7 +7,7 @@
     v-if="device && action"
     :class="edit ? 'cursor-pointer transition-all duration-100 hover:bg-primary/10' : ''"
   >
-    <p class="truncate">{{ device.name }}</p>
+    <DeviceNameAndGroup :id="id" :device="device" />
 
     <template v-if="action.inputTypeConstraints.type === Type.VoidType">
       <p class="font-bold text-center truncate">{{ action.name }}</p>
@@ -24,6 +24,8 @@
       <p class="text-center truncate col-start-2" v-else>{{ instruction.input }}</p>
     </template>
   </InstructionLayout>
+
+  <DeviceGroupsDialog :id="id" :device="device" />
 
   <dialog :id="id" class="modal" v-if="device && action">
     <div class="modal-box max-w-sm">
@@ -155,6 +157,9 @@ import { findDevice } from '@/api/devices-management/requests/devices'
 import { Type } from '@/model/Type'
 import { getDefaultInput } from './emptyInstructions'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
+import DeviceGroupsDialog from '../DeviceGroupsDialog.vue'
+import DeviceNameAndGroup from '../DeviceNameAndGroup.vue'
+import { useGroupsStore } from '@/stores/groups'
 
 const props = defineProps<{
   id: string
@@ -291,7 +296,12 @@ onMounted(async () => await updateInstruction())
 async function updateInstruction() {
   try {
     loadingOverlay.startLoading()
-    device.value = await findDevice(instruction.value.deviceId, userInfo.token)
+    const deviceGroups = useGroupsStore().deviceGroups(variableForm.value.deviceId)
+    if (deviceGroups.length > 0) {
+      device.value = useGroupsStore().getDeviceFromGroups(variableForm.value.deviceId)!
+    } else {
+      device.value = await findDevice(variableForm.value.deviceId, userInfo.token)
+    }
     action.value = device.value.actions.find((act) => act.id === instruction.value.deviceActionId)
     selectedAction.value = action.value
   } finally {
