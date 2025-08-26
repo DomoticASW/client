@@ -1,16 +1,14 @@
 <template>
   <!-- If card -->
-  <InstructionLayout
-    :colors="colors"
-    :edit="edit"
-    :instruction="props.instruction"
-  >
+  <InstructionLayout :colors="colors" :edit="edit" :instruction="props.instruction">
     <p class="self-center">If</p>
     <p class="truncate col-span-4 font-bold text-center" v-if="!edit">
       {{ instruction.condition.leftConstantName }}
     </p>
     <p class="truncate font-bold col-span-2 text-center" v-if="!edit">{{ operatorSymbol }}</p>
-    <p class="truncate font-bold col-span-4 text-center" v-if="!edit">{{ instruction.condition.rightConstantName }}</p>
+    <p class="truncate font-bold col-span-4 text-center" v-if="!edit">
+      {{ instruction.condition.rightConstantName }}
+    </p>
     <input
       v-if="edit"
       type="text"
@@ -27,7 +25,11 @@
         {{ getOperator(operator) }}
       </option>
     </select>
-    <label v-if="edit" for="negate" class="label text-sm md:text-base text-base-content col-span-2 place-self-center">
+    <label
+      v-if="edit"
+      for="negate"
+      class="label text-sm md:text-base text-base-content col-span-2 place-self-center"
+    >
       Not
       <input
         name="negate"
@@ -47,8 +49,8 @@
   </InstructionLayout>
 
   <div class="grid grid-cols-24">
-    <div class="row-span-full bg-secondary w-[2px] rounded-3xl"></div>
-    <div class="col-span-23 -mt-2 -mb-2">
+    <div class="row-span-full bg-secondary w-[2px] rounded-3xl" v-if="depth <= 3"></div>
+    <div class="-mt-2 -mb-2" :class="depth <= 3 ? 'col-span-23' : 'col-span-full'">
       <!-- Then instructions -->
       <InstructionItem
         v-for="(ins, i) in instruction.thenInstructions"
@@ -56,6 +58,7 @@
         :id="id + '-then' + i.toString()"
         :instruction="ins"
         :edit="edit"
+        :depth="depth + 1"
       />
     </div>
   </div>
@@ -66,14 +69,15 @@
       <div class="card-body p-2 text-base">Else</div>
     </div>
     <div class="grid grid-cols-24">
-      <div class="row-span-full bg-secondary w-[2px] rounded-3xl"></div>
-      <div class="col-span-23 -mt-2 -mb-2">
+      <div class="row-span-full bg-secondary w-[2px] rounded-3xl" v-if="depth <= 3"></div>
+      <div class="-mt-2 -mb-2" :class="depth <= 3 ? 'col-span-23' : 'col-span-full'">
         <InstructionItem
           v-for="(ins, i) in instruction.elseInstructions"
           :key="id + '-else-' + i.toString()"
           :id="id + '-else' + i.toString()"
           :instruction="ins"
           :edit="edit"
+          :depth="depth + 1"
         />
       </div>
     </div>
@@ -102,6 +106,7 @@ const props = defineProps<{
   instruction: Instruction
   colors: string
   edit: boolean
+  depth: number
 }>()
 
 const instruction = ref(props.instruction.instruction as IfInstruction | IfElseInstruction)
