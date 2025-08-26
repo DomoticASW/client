@@ -48,11 +48,18 @@ function handleConfirm() {
       <h3 class="card-title mb-2 mx-auto justify-center">{{ selectedDevice.name }}</h3>
       <p>{{ selectedDevice.name }} has been selected.</p>
       <p v-if="selectedDevice.actions.length != 0 && selectedDevice.properties.length != 0">
-        Do you want to use a property or an action?
+        Do you want to create a <span class="font-bold">constant</span> linked to a property or an
+        instruction to execute an <span class="font-bold">action</span>?
       </p>
-      <p v-else-if="selectedDevice.actions.length != 0">This device has only actions</p>
-      <p v-else-if="selectedDevice.properties.length != 0">This device has only properties</p>
-      <p v-else>This device does not have any properties or actions</p>
+      <p v-else-if="selectedDevice.actions.length != 0">
+        This device has only actions, so it is only possible to create instructions to execute an
+        <span class="font-bold">action</span>.
+      </p>
+      <p v-else-if="selectedDevice.properties.length != 0">
+        his device has only properties, so it is only possible to create
+        <span class="font-bold">constant</span>s linked to properties.
+      </p>
+      <p v-else>This device does not have any properties or actions.</p>
       <form @submit.prevent="handleConfirm">
         <div class="modal-action w-full">
           <button
@@ -61,7 +68,7 @@ function handleConfirm() {
             @click="isActionSelected = false"
             v-if="selectedDevice.properties.length != 0"
           >
-            <template v-if="selectedDevice.actions.length != 0"> Property </template>
+            <template v-if="selectedDevice.actions.length != 0"> Link to a property </template>
             <template v-else>Confirm</template>
           </button>
           <button
@@ -70,7 +77,7 @@ function handleConfirm() {
             @click="isActionSelected = true"
             v-if="selectedDevice.actions.length != 0"
           >
-            <template v-if="selectedDevice.properties.length != 0"> Action </template>
+            <template v-if="selectedDevice.properties.length != 0"> Execute an action </template>
             <template v-else>Confirm</template>
           </button>
         </div>
