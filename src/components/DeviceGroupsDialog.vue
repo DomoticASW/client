@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import type { Device } from '@/model/devices-management/Device'
 import { useGroupsStore } from '@/stores/groups'
+import { computed } from 'vue';
 
 const props = defineProps<{
   id: string
   device?: Device
 }>()
 
-const deviceGroups = props.device ? useGroupsStore().deviceGroups(props.device?.id) : []
+const deviceGroups = computed(() =>
+  props.device ? useGroupsStore().deviceGroups(props.device?.id) : [],
+)
 </script>
 
 <template>

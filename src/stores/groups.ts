@@ -15,7 +15,6 @@ export const useGroupsStore = defineStore('groups', () => {
     if (userInfo.token) {
       try {
         loadingOverlay.startLoading()
-        console.log("qui")
         groups.value = await getAllDeviceGroups(userInfo.token)
       } finally {
         loadingOverlay.stopLoading()
