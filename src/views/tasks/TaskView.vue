@@ -61,6 +61,7 @@ async function removeTask() {
       >
       <button class="btn btn-ghost text-error text-base" @click="removeTask()">Delete</button>
     </template>
+    <h1 class="text-xl">Instructions</h1>
     <div
       v-if="instructionsStore.instructions.length === 0"
       class="flex text-center text-gray-500 justify-center items-center min-h-[50vh]"

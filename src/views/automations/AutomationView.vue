@@ -65,7 +65,7 @@ async function removeAutomation() {
     <h1 class="text-xl">Trigger</h1>
     <Trigger :trigger="trigger" :edit="false" />
     <hr class="m-4" />
-    <h1 class="text-xl">Actions</h1>
+    <h1 class="text-xl">Instructions</h1>
     <div
       v-if="instructionsStore.instructions.length === 0"
       class="flex text-center text-gray-500 justify-center items-center min-h-[50vh]"
