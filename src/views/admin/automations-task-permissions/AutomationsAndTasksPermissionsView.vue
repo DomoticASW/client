@@ -28,7 +28,7 @@ onMounted(async () => {
   <NavbarLayout title="Manage scripts permissions">
   <div>
     <div>
-      <h1 class="text-2xl font-bold dark:text-white" v-if="!!tasks && tasks.length > 0">Tasks</h1>
+      <h1 class="text-2xl font-bold dark:text-white">Tasks</h1>
       <div>
         <ul class="list rounded-box">
           <RouterLink v-for="task in tasks" :key="task.id" :to="{ name: 'automation-and-task-permission', params: { id: task.id } }">
@@ -47,7 +47,7 @@ onMounted(async () => {
     </div>
     <div>
       <hr class="my-4 border-gray-300" />
-      <h1 class="text-2xl font-bold dark:text-white" v-if="!!automations && automations?.length > 0">Automations</h1>
+      <h1 class="text-2xl font-bold dark:text-white">Automations</h1>
       <div>
         <ul class="list rounded-box">
           <RouterLink v-for="automation in automations" :key="automation.id"

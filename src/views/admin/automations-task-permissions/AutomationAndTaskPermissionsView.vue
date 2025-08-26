@@ -5,10 +5,10 @@
       <details ref="devices-selected-group-dropdown" v-if="burger" class="dropdown">
         <summary class="btn btn-primary mb-2 min-w-32 flex justify-between">
           {{ listSelectedName }}
-          <span class="fa-solid fa-caret-down ps-4"></span>
+          <span class="fa-solid fa-caret-down ps-4" v-if="burger.length > 1" ></span>
         </summary>
         <div class="fixed size-full inset-0 z-999" @click.stop="closeDropdown"></div>
-        <ul
+        <ul v-if="burger.length > 1"
           class="menu dropdown-content rounded-box w-52 p-2 bg-base-100 border border-primary gap-1"
         >
           <li v-for="g in burger" v-bind:key="g">
@@ -21,7 +21,7 @@
       <div>
         <ul class="list rounded-box">
           <div v-for="user in listSelectedItems" :key="user">
-            <li class="list-row" v-if="isNotAdmin(user) ">
+            <li class="list-row" v-if="isNotAdmin(user)">
               <span class="fa-solid fa-user text-xl self-center"></span>
               <div class="list-col-grow flex items-center">
                 {{ user }}
@@ -36,6 +36,9 @@
             </li>
           </div>
         </ul>
+        <div v-if="listSelectedItems?.length === 0" class="flex text-center text-gray-500 justify-center items-center min-h-[30vh]">
+          <p class="text-2xl">No editable users in this list...</p>
+        </div>
       </div>
     </div>
     <hr class="my-4 border-gray-300" />
@@ -59,6 +62,9 @@
             </li>
           </div>
         </ul>
+        <div v-if="usersNotInList?.length === 0 || isAdminList(usersNotInList)" class="flex text-center text-gray-500 justify-center items-center min-h-[30vh]">
+          <p class="text-2xl">No more users to add...</p>
+        </div>
       </div>
     </div>
   </div>
@@ -98,16 +104,19 @@ const users = ref<User[]>([])
 const open = ref(false)
 const dropdown = useTemplateRef('devices-selected-group-dropdown')
 const listSelectedItems = computed(() => {
+  let raw: string[] = []
   switch (listSelectedName.value) {
     case 'Whitelist':
-      return whitelist.value
+      raw = whitelist.value
+      break
     case 'Blacklist':
-      return blacklist.value
+      raw = blacklist.value
+      break
     case 'Editlist':
-      return editlist.value?.users || []
-    default:
-      return []
+      raw = editlist.value?.users || []
+      break
   }
+  return raw.filter(email => isNotAdmin(email))
 })
 const usersNotInList = computed(() => {
   return calculateUsersNotInList(listSelectedItems.value || [], users.value || [])
@@ -231,6 +240,10 @@ function showToastMessage(msg: string) {
 function isNotAdmin(user: string): boolean {
   const u = userFromEmail(user)
   return u?.role === Role.User
+}
+
+function isAdminList(list: User[]): boolean {
+  return list.filter(user => user.role !== Role.Admin).length === 0
 }
 
 function closeDropdown() {
