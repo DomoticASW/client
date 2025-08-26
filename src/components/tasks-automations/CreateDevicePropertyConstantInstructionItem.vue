@@ -7,7 +7,16 @@
     v-if="device && property"
     :class="edit ? 'cursor-pointer transition-all duration-100 hover:bg-primary/10' : ''"
   >
-    <p class="truncate">{{ device.name }}</p>
+    <p class="truncate">
+      {{ device.name }}
+      <button
+        v-if="deviceGroups.length > 0"
+        class="btn btn-primary btn-xs ml-1"
+        @click.stop="openGroupsDialog"
+      >
+        {{ groupsToString() }}
+      </button>
+    </p>
     <p class="font-bold text-center truncate">{{ instruction.name }}</p>
     <p class="text-xs truncate">
       {{ property.name }}
@@ -22,13 +31,26 @@
     </div>
   </InstructionLayout>
 
+  <dialog :id="id + '_groups'" class="modal modal-sm">
+    <div class="modal-box max-w-sm" v-if="device">
+      <h3 class="card-title mb-2">{{ device.name }} groups</h3>
+      <p>The {{ device.name }} is in these groups right now:</p>
+      <p class="font-bold" v-for="group in deviceGroups" :key="group.id">
+        - {{ group.name }}
+      </p>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+      <button>Ok</button>
+    </form>
+  </dialog>
+
   <dialog :id="id + '_info'" class="modal modal-sm">
     <div class="modal-box max-w-sm" v-if="property">
       <h3 class="card-title mb-2">{{ property.name }} type constraints info</h3>
       <div v-if="property.typeConstraints.__brand === 'Enum'">
         <p>Possible values for {{ property.name }} property:</p>
         <p class="font-bold" v-for="value in property.typeConstraints.values" :key="value">
-          {{ value }}
+          - {{ value }}
         </p>
       </div>
       <p v-else-if="property.typeConstraints.__brand !== 'None'">
@@ -112,6 +134,8 @@ import { findDevice } from '@/api/devices-management/requests/devices'
 import { useUserInfoStore } from '@/stores/user-info'
 import { useInstructionsStore } from '@/stores/instructions'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
+import { getAllDeviceGroups } from '@/api/devices-management/requests/device-groups'
+import type { DeviceGroup } from '@/model/devices-management/DeviceGroup'
 
 const props = defineProps<{
   id: string
@@ -126,6 +150,7 @@ const userInfo = useUserInfoStore()
 const instruction = ref(props.instruction.instruction as CreateDevicePropertyConstantInstruction)
 const device = ref<Device>()
 const property = ref<DeviceProperty<unknown>>()
+const deviceGroups = ref<DeviceGroup[]>([])
 
 const variableForm = ref<CreateDevicePropertyConstantInstruction>({
   name: instruction.value.name,
@@ -148,7 +173,17 @@ onMounted(async () => await updateInstruction())
 async function updateInstruction() {
   try {
     loadingOverlay.startLoading()
-    device.value = await findDevice(instruction.value.deviceId, userInfo.token)
+    const groups = await getAllDeviceGroups(userInfo.token)
+    deviceGroups.value = groups.filter((g) =>
+      g.devices.map((d) => d.id).includes(variableForm.value.deviceId),
+    )
+    if (deviceGroups.value.length > 0) {
+      device.value = deviceGroups.value[0].devices.find(
+        (d) => d.id === variableForm.value.deviceId,
+      )!
+    } else {
+      device.value = await findDevice(variableForm.value.deviceId, userInfo.token)
+    }
     property.value = device.value.properties.find(
       (prop) => prop.id === instruction.value.devicePropertyId,
     )
@@ -201,5 +236,14 @@ function closeDialog() {
 function openInfoDialog() {
   const dialog = document.getElementById(props.id.toString() + '_info') as HTMLDialogElement
   dialog.showModal()
+}
+
+function openGroupsDialog() {
+  const dialog = document.getElementById(props.id.toString() + '_groups') as HTMLDialogElement
+  dialog.showModal()
+}
+
+function groupsToString() {
+  return deviceGroups.value[0].name + (deviceGroups.value.length > 1 ? ' + others' : '')
 }
 </script>
