@@ -2,13 +2,13 @@
   <NavbarLayout :title="script?.name" :show-back-button="true">
   <div>
     <div class="relative">
-      <details ref="devices-selected-group-dropdown" v-if="burger" class="dropdown">
-        <summary class="btn btn-primary mb-2 min-w-32 flex justify-between">
+      <details ref="devices-selected-group-dropdown" class="dropdown" v-if="burger.length > 1">
+        <summary class="btn btn-lg btn-primary mb-2 min-w-32 flex justify-between">
           {{ listSelectedName }}
-          <span class="fa-solid fa-caret-down ps-4" v-if="burger.length > 1" ></span>
+          <span class="fa-solid fa-caret-down ps-4"></span>
         </summary>
         <div class="fixed size-full inset-0 z-999" @click.stop="closeDropdown"></div>
-        <ul v-if="burger.length > 1"
+        <ul
           class="menu dropdown-content rounded-box w-52 p-2 bg-base-100 border border-primary gap-1"
         >
           <li v-for="g in burger" v-bind:key="g">
@@ -18,6 +18,7 @@
           </li>
         </ul>
       </details>
+      <h1 class="text-2xl font-bold dark:text-white" v-else>{{ listSelectedName }}</h1>
       <div>
         <ul class="list rounded-box">
           <div v-for="user in listSelectedItems" :key="user">
@@ -37,7 +38,7 @@
           </div>
         </ul>
         <div v-if="listSelectedItems?.length === 0" class="flex text-center text-gray-500 justify-center items-center min-h-[30vh]">
-          <p class="text-2xl">No editable users in this list...</p>
+          <p class="text-2xl">No user other than the admin can edit this task right now</p>
         </div>
       </div>
     </div>
