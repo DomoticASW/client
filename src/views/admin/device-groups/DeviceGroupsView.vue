@@ -90,7 +90,11 @@ onMounted(async () => {
       >
         <li class="list-row hover:bg-primary/20">
           <span class="fa-solid fa-sitemap text-2xl self-center"></span>
-          {{ g.name }}
+          <div>
+            {{ g.name }}
+            <br />
+            <span class="text-xs opacity-60 ml-1">{{ g.devices.length }} devices</span>
+          </div>
           <button
             class="btn btn-circle btn-ghost fa-solid fa-pen"
             @click.prevent="startEditingGroup(g.id)"
