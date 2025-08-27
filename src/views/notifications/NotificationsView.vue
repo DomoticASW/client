@@ -60,7 +60,7 @@ onUnmounted(() => {
     </div>
     <ul class="list rounded-box">
       <li
-        class="indicator list-row grid w-full"
+        class="indicator grid   list-row w-full"
         v-for="(notification, idx) in notifications"
         :key="notification.id"
         :data-index="idx"
@@ -69,16 +69,16 @@ onUnmounted(() => {
         <span v-if="!notification.read" class="fa-solid fa-envelope text-lg self-center"></span>
         <span v-else class="fa-solid fa-envelope-open text-lg self-center"></span>
         <span class="self-center list-col-grow">{{ notification.message }}</span>
-        <span class="self-center text-xs opacity-50">{{
+        <span class="self-end text-xs opacity-50">{{
           formatDate(new Date(notification.date))
         }}</span>
         <button
           type="button"
-          class="btn btn-circle btn-ghost fa-solid fa-close fa-lg !flex"
+          class="btn btn-circle btn-ghost fa-solid fa-close fa-lg self-center"
           @click="deleteNotification(idx)"
           :aria-label="'Delete notification number ' + idx"
         ></button>
-        <span class="indicator-item badge badge-primary" v-if="!notification.read">New</span>
+        <span class="indicator-item badge badge-primary right-23 top-2" v-if="!notification.read">New</span>
       </li>
     </ul>
   </NavbarLayout>

@@ -130,7 +130,7 @@
       <slot name="actions" />
     </div>
   </div>
-  <div class="ml-2 md:ml-0">
+  <div class="mx-2 md:mx-0">
     <div class="w-full max-w-xl mx-auto">
       <slot />
     </div>
