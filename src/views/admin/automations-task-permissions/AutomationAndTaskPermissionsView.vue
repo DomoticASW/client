@@ -38,7 +38,8 @@
           </div>
         </ul>
         <div v-if="listSelectedItems?.length === 0" class="flex text-center text-gray-500 justify-center items-center min-h-[30vh]">
-          <p class="text-2xl">No user other than the admin can edit this task right now</p>
+          <p class="text-2xl" v-if="listSelectedName === 'Editlist'">No user other than the admin can edit this {{ isAutomation ? "automation" : "task" }} right now</p>
+          <p class="text-2xl" v-else>No user is {{listSelectedName.toLowerCase()}}ed for this {{ isAutomation ? "automation" : "task" }} right now</p>
         </div>
       </div>
     </div>
@@ -104,6 +105,7 @@ const listSelectedName = ref('Editlist')
 const users = ref<User[]>([])
 const open = ref(false)
 const dropdown = useTemplateRef('devices-selected-group-dropdown')
+const isAutomation = ref(false)
 const listSelectedItems = computed(() => {
   let raw: string[] = []
   switch (listSelectedName.value) {
@@ -130,6 +132,7 @@ onMounted(async () => {
       userInfo.token,
     )
     script.value = await deserializeBody(res, automationDeserializer)
+    isAutomation.value = true
   } catch {
     getTaskList();
   }
