@@ -68,6 +68,33 @@ async function startTask(taskId: TaskId) {
     <ListSkeleton v-else />
 
     <AddButton name="add-task" />
+    <template #actions>
+      <button
+        class="fa-circle-info fa-solid fa-xl btn btn-ghost btn-circle"
+        onclick="tasks_info.showModal()"
+      ></button>
+    </template>
+
+    <dialog id="tasks_info" class="modal modal-sm">
+      <div class="modal-box max-w-sm">
+        <h2 class="card-title mb-2">Tasks info</h2>
+        <p>
+          Tasks are a sequence of instruction that, when executed, can execute actions on devices
+          and read properties from them.
+        </p>
+        <p class="mt-2">
+          <span class="font-bold">- Execution</span>: A task can be executed only when a user with
+          the right permissions click the "Play" button next to it.
+        </p>
+        <p>
+          <span class="font-bold">Create</span>: Everyone can create tasks, also if they involve
+          devices on wich they don't have permissions.
+        </p>
+      </div>
+      <form method="dialog" class="modal-backdrop">
+        <button>Ok</button>
+      </form>
+    </dialog>
   </NavbarLayout>
 </template>
 
