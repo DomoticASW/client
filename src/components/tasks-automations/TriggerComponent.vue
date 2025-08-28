@@ -158,10 +158,10 @@ onMounted(async () => {
 <template>
   <!-- Buttons to display when the trigger is not set -->
   <div class="grid grid-cols-2 p-4 justify-items-center" v-if="trigger === undefined">
-    <button @click="openDeviceDialog()" class="btn btn-neutral sm:w-50 w-25" type="button">
+    <button @click="openDeviceDialog()" class="btn btn-primary sm:w-50 w-25" type="button">
       Device Event
     </button>
-    <button @click="addEmptyPeriodTrigger()" class="btn btn-neutral sm:w-50 w-25" type="button">
+    <button @click="addEmptyPeriodTrigger()" class="btn btn-primary sm:w-50 w-25" type="button">
       Period
     </button>
   </div>
