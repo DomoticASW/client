@@ -104,6 +104,12 @@ onMounted(async () => {
       </RouterLink>
     </ul>
     <DeviceListSkeleton v-else />
+    <div
+      v-if="groups && groups.length === 0"
+      class="flex text-center text-gray-500 justify-center items-center min-h-[30vh]"
+    >
+      <p class="text-2xl">To create a group click on the button below</p>
+    </div>
     <AddButton @onclick="createGroupModal?.showModal()" />
   </NavbarLayout>
 

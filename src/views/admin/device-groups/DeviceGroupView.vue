@@ -101,11 +101,19 @@ onMounted(async () => {
       </li>
     </ul>
     <DeviceRowSkeleton v-else />
+    <div
+      v-if="group && group.devices.length === 0 && devices && devices.length > 0"
+      class="flex text-center text-gray-500 justify-center items-center min-h-[30vh]"
+    >
+      <p class="text-2xl">
+        This group has no device yet, you can add one from the list of registered devices below
+      </p>
+    </div>
 
-    <div class="divider"></div>
+    <div v-if="!devicesNotInGroup || devicesNotInGroup.length != 0" class="divider"></div>
 
-    <h2 v-if="devices" class="text-xl">Devices not in group</h2>
-    <div v-else class="skeleton h-4 w-1/2"></div>
+    <div v-if="!devicesNotInGroup" class="skeleton h-4 w-1/2"></div>
+    <h2 v-else-if="devicesNotInGroup.length != 0" class="text-xl">Devices not in group</h2>
 
     <ul v-if="devices" class="list">
       <li v-for="d in devicesNotInGroup" v-bind:key="d.id" class="list-row">
@@ -124,6 +132,12 @@ onMounted(async () => {
       </li>
     </ul>
     <DeviceRowSkeleton v-else :nRows="5" />
+    <div
+      v-if="devices && devices.length == 0"
+      class="flex text-center text-gray-500 justify-center items-center min-h-[30vh]"
+    >
+      <p class="text-2xl">You have not yet registered any device to the system... <br /></p>
+    </div>
   </NavbarLayout>
 </template>
 
