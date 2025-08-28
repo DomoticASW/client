@@ -10,9 +10,9 @@ import SuccessPresenter from './components/SuccessPresenter.vue'
     <ErrorPresenter>
         <LoadingOverlay>
           <div class="h-full w-full max-w-5xl">
+            <RouterView />
             <SuccessPresenter>
             </SuccessPresenter>
-            <RouterView />
           </div>
         </LoadingOverlay>
 
