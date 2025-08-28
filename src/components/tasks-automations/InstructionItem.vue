@@ -8,6 +8,7 @@
     :instruction="instruction"
     :colors="colors"
     :edit="edit"
+    :depth="depth ?? 0"
   />
   <ConstantInstructionItem
     v-else-if="instruction.type === InstructionType.CreateConstantInstruction"
@@ -65,6 +66,7 @@ import StartTaskInstructionItem from './StartTaskInstructionItem.vue'
 defineProps<{
   id: string
   instruction: Instruction
+  depth?: number
   edit: boolean
 }>()
 

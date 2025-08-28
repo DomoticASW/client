@@ -1,54 +1,62 @@
 <template>
   <!-- If card -->
-  <InstructionLayout
-    :colors="colors"
-    :edit="edit"
-    :instruction="props.instruction"
-  >
+  <InstructionLayout :colors="colors" :edit="edit" :instruction="props.instruction" :depth="depth">
     <p class="self-center">If</p>
     <p class="truncate col-span-4 font-bold text-center" v-if="!edit">
       {{ instruction.condition.leftConstantName }}
     </p>
     <p class="truncate font-bold col-span-2 text-center" v-if="!edit">{{ operatorSymbol }}</p>
-    <p class="truncate font-bold col-span-4 text-center" v-if="!edit">{{ instruction.condition.rightConstantName }}</p>
+    <p class="truncate font-bold col-span-4 text-center" v-if="!edit">
+      {{ instruction.condition.rightConstantName }}
+    </p>
     <input
       v-if="edit"
       type="text"
-      class="input input-primary col-span-3 w-17 md:w-25 place-self-center h-7 text-center"
+      class="input input-primary place-self-center h-7 text-center"
       placeholder="Constant name"
+      :class="depth > 1 ? 'w-full col-span-3' : 'w-17 md:w-25 col-span-3'"
       v-model="instruction.condition.leftConstantName"
     />
-    <select
+    <label
       v-if="edit"
-      v-model="instruction.condition.conditionOperatorType"
-      class="select select-primary col-span-3 w-17 md:w-20 place-self-center h-7"
+      for="negate"
+      class="label text-sm md:text-base text-base-content place-self-center"
+      :class="depth > 1 ? 'row-start-2 col-start-2 mr-3' : 'col-span-2'"
     >
-      <option v-for="operator in ConditionOperatorType" :key="operator" :value="operator">
-        {{ getOperator(operator) }}
-      </option>
-    </select>
-    <label v-if="edit" for="negate" class="label text-sm md:text-base text-base-content col-span-2 place-self-center">
       Not
       <input
         name="negate"
         id="negate"
         type="checkbox"
-        class="checkbox checkbox-primary"
+        class="checkbox checkbox-primary checkbox-sm md:checkbox-md"
         v-model="instruction.condition.negate"
       />
     </label>
+    <select
+      v-if="edit"
+      v-model="instruction.condition.conditionOperatorType"
+      class="select select-primary w-17 md:w-20 place-self-center h-7"
+      :class="depth > 1 ? 'row-start-2 col-start-3 ml-1' : 'col-span-3'"
+    >
+      <option v-for="operator in ConditionOperatorType" :key="operator" :value="operator">
+        {{ getOperator(operator) }}
+      </option>
+    </select>
     <input
       v-if="edit"
       type="text"
-      class="input input-primary w-17 md:w-25 col-span-3 place-self-center h-7 text-center"
+      class="input input-primary place-self-center h-7 text-center"
+      :class="
+        depth > 1 ? 'row-start-3 col-start-2 col-span-3 w-full' : 'col-span-3 w-17 md:w-25'
+      "
       placeholder="Constant name"
       v-model="instruction.condition.rightConstantName"
     />
   </InstructionLayout>
 
   <div class="grid grid-cols-24">
-    <div class="row-span-full bg-secondary w-[2px] rounded-3xl"></div>
-    <div class="col-span-23 -mt-2 -mb-2">
+    <div class="row-span-full bg-secondary w-[2px] rounded-3xl" v-if="depth <= 3"></div>
+    <div class="-mt-2 -mb-2" :class="depth <= 3 ? 'col-span-23' : 'col-span-full'">
       <!-- Then instructions -->
       <InstructionItem
         v-for="(ins, i) in instruction.thenInstructions"
@@ -56,6 +64,7 @@
         :id="id + '-then' + i.toString()"
         :instruction="ins"
         :edit="edit"
+        :depth="depth + 1"
       />
     </div>
   </div>
@@ -66,14 +75,15 @@
       <div class="card-body p-2 text-base">Else</div>
     </div>
     <div class="grid grid-cols-24">
-      <div class="row-span-full bg-secondary w-[2px] rounded-3xl"></div>
-      <div class="col-span-23 -mt-2 -mb-2">
+      <div class="row-span-full bg-secondary w-[2px] rounded-3xl" v-if="depth <= 3"></div>
+      <div class="-mt-2 -mb-2" :class="depth <= 3 ? 'col-span-23' : 'col-span-full'">
         <InstructionItem
           v-for="(ins, i) in instruction.elseInstructions"
           :key="id + '-else-' + i.toString()"
           :id="id + '-else' + i.toString()"
           :instruction="ins"
           :edit="edit"
+          :depth="depth + 1"
         />
       </div>
     </div>
@@ -102,6 +112,7 @@ const props = defineProps<{
   instruction: Instruction
   colors: string
   edit: boolean
+  depth: number
 }>()
 
 const instruction = ref(props.instruction.instruction as IfInstruction | IfElseInstruction)
