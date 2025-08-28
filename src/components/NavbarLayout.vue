@@ -1,6 +1,6 @@
 <template>
   <div class="navbar py-0 mb-4 bg-base-200/70 shadow backdrop-blur sticky top-0 z-30 lg:rounded-xl md:mt-1">
-    <div class="navbar-start">
+    <div class="navbar-start w-full md:w-[50%]">
       <template v-if="showBackButton">
         <button
           type="button"
