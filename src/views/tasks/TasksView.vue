@@ -79,17 +79,19 @@ async function startTask(taskId: TaskId) {
       <div class="modal-box max-w-sm">
         <h2 class="card-title mb-2">Tasks info</h2>
         <p>
-          Tasks are a sequence of instruction that, when executed, can execute actions on devices
+          Tasks are a sequence of instructions that, when executed, can execute actions on devices
           and read properties from them.
         </p>
-        <p class="mt-2">
-          <span class="font-bold">- Execution</span>: A task can be executed only when a user with
-          the right permissions click the "Play" button next to it.
-        </p>
-        <p>
-          <span class="font-bold">Create</span>: Everyone can create tasks, also if they involve
-          devices on wich they don't have permissions.
-        </p>
+        <ul class="list-disc list-inside">
+          <li>
+            <span class="font-bold">Execution</span>: A task can be executed only when a user with
+            the right permissions click the "Play" button next to it.
+          </li>
+          <li>
+            <span class="font-bold">Creation</span>: Everyone can create tasks, also if they involve
+            devices on wich they don't have permissions.
+          </li>
+        </ul>
       </div>
       <form method="dialog" class="modal-backdrop">
         <button>Ok</button>
