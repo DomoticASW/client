@@ -9,6 +9,8 @@ import { useErrorPresenterStore } from '@/stores/error-presenter'
 import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
 import AddButton from '@/components/AddButton.vue'
 import NavbarLayout from '@/components/NavbarLayout.vue'
+import DeviceGroupsButton from '@/components/DeviceGroupsButton.vue'
+import DeviceGroupsDialog from '@/components/DeviceGroupsDialog.vue'
 
 const userInfo = useUserInfoStore()
 const loadingOverlay = useLoadingOverlayStore()
@@ -72,8 +74,9 @@ onMounted(async () => {
           <span class="fa-solid fa-microchip text-2xl self-center"></span>
           <div>
             {{ d.name }}
+            <DeviceGroupsButton :id="d.id" :device="d" />
             <br />
-            <span class="text-xs">id: {{ d.id }}</span>
+            <span class="text-xs ml-1 opacity-60">id: {{ d.id }}</span>
           </div>
           <button
             class="btn btn-circle btn-ghost fa-solid fa-pen"
@@ -83,6 +86,7 @@ onMounted(async () => {
             class="btn btn-circle btn-ghost fa-solid fa-trash"
             v-on:click="removeDevice(d.id)"
           ></button>
+          <DeviceGroupsDialog :id="d.id" :device="d" />
         </li>
       </ul>
       <DeviceListSkeleton v-else />

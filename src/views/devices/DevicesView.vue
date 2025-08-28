@@ -10,6 +10,8 @@ import { getAllDevices } from '@/api/devices-management/requests/devices'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import NavbarLayout from '@/components/NavbarLayout.vue'
 import router from '@/router'
+import DeviceGroupsButton from '@/components/DeviceGroupsButton.vue'
+import DeviceGroupsDialog from '@/components/DeviceGroupsDialog.vue'
 
 const userInfo = useUserInfoStore()
 const loadingOverlay = useLoadingOverlayStore()
@@ -88,17 +90,20 @@ onMounted(async () => {
     <div v-else class="skeleton h-8 w-32"></div>
 
     <ul v-if="devicesToShow" class="list">
-      <RouterLink
-        v-for="d in devicesToShow"
-        v-bind:key="d.id"
-        :to="{ name: 'device', params: { id: d.id } }"
-      >
-        <li class="list-row hover:bg-primary/20">
-          <span class="fa-solid fa-microchip text-2xl self-center"></span>
-          {{ d.name }}
-          <span class="fa-solid fa-chevron-right opacity-30 self-center"></span>
-        </li>
-      </RouterLink>
+      <div v-for="d in devicesToShow" v-bind:key="d.id">
+        <RouterLink :to="{ name: 'device', params: { id: d.id } }">
+          <li class="list-row hover:bg-primary/20">
+            <span class="fa-solid fa-microchip text-2xl self-center"></span>
+            <div>
+              {{ d.name }}
+              <br />
+              <DeviceGroupsButton :id="d.id" :device="d" />
+            </div>
+            <span class="fa-solid fa-chevron-right opacity-30 self-center"></span>
+          </li>
+        </RouterLink>
+        <DeviceGroupsDialog :id="d.id" :device="d" />
+      </div>
     </ul>
     <DeviceListSkeleton v-else />
   </NavbarLayout>
