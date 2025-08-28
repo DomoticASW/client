@@ -18,7 +18,7 @@
           </li>
         </ul>
       </details>
-      <h1 class="text-2xl font-bold dark:text-white" v-else>{{ listSelectedName }}</h1>
+      <h2 class="text-2xl font-bold dark:text-white" v-else>{{ listSelectedName }}</h2>
       <div>
         <ul class="list rounded-box">
           <div v-for="user in listSelectedItems" :key="user">
@@ -45,7 +45,7 @@
     </div>
     <hr class="my-4 border-gray-300" />
     <div>
-      <h1 class="text-2xl font-bold dark:text-white">Users</h1>
+      <h2 class="text-2xl font-bold dark:text-white">Users</h2>
       <div>
         <ul class="list rounded-box">
           <div v-for="user in usersNotInList" :key="user.email">
