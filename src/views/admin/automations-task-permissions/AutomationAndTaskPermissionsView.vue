@@ -1,5 +1,80 @@
+<template>
+  <NavbarLayout :title="script?.name" :show-back-button="true">
+  <div>
+    <div class="relative">
+      <details ref="devices-selected-group-dropdown" class="dropdown" v-if="burger.length > 1">
+        <summary class="btn btn-lg btn-primary mb-2 min-w-32 flex justify-between">
+          {{ listSelectedName }}
+          <span class="fa-solid fa-caret-down ps-4"></span>
+        </summary>
+        <div class="fixed size-full inset-0 z-999" @click.stop="closeDropdown"></div>
+        <ul
+          class="menu dropdown-content rounded-box w-52 p-2 bg-base-100 border border-primary gap-1"
+        >
+          <li v-for="g in burger" v-bind:key="g">
+            <a @click="select(g)" :class="{ 'menu-active': g == listSelectedName }">
+              {{ g }}
+            </a>
+          </li>
+        </ul>
+      </details>
+      <h2 class="text-2xl font-bold dark:text-white" v-else>{{ listSelectedName }}</h2>
+      <div>
+        <ul class="list rounded-box">
+          <div v-for="user in listSelectedItems" :key="user">
+            <li class="list-row" v-if="isNotAdmin(user)">
+              <span class="fa-solid fa-user text-xl self-center"></span>
+              <div class="list-col-grow flex items-center">
+                {{ user }}
+              </div>
+              <button
+                class="btn btn-circle btn-ghost fa-solid fa-xmark"
+                type="button"
+                :aria-label="'Remove user: ' + user"
+                @click="removeUser(user)"
+              >
+              </button>
+            </li>
+          </div>
+        </ul>
+        <div v-if="listSelectedItems?.length === 0" class="flex text-center text-gray-500 justify-center items-center min-h-[30vh]">
+          <p class="text-2xl" v-if="listSelectedName === 'Editlist'">No user other than the admin can edit this {{ isAutomation ? "automation" : "task" }} right now</p>
+          <p class="text-2xl" v-else>No user is {{listSelectedName.toLowerCase()}}ed for this {{ isAutomation ? "automation" : "task" }} right now</p>
+        </div>
+      </div>
+    </div>
+    <hr class="my-4 border-gray-300" />
+    <div>
+      <h2 class="text-2xl font-bold dark:text-white">Users</h2>
+      <div>
+        <ul class="list rounded-box">
+          <div v-for="user in usersNotInList" :key="user.email">
+            <li class="list-row" v-if="user.role !== Role.Admin">
+              <span class="fa-solid fa-user text-xl self-center"></span>
+              <div class="list-col-grow flex items-center">
+                {{ user.nickname }}
+              </div>
+              <button
+                class="btn btn-circle btn-ghost fa-solid fa-plus"
+                type="button"
+                :aria-label="'Add user: ' + user.nickname"
+                @click="addUser(user)"
+              >
+              </button>
+            </li>
+          </div>
+        </ul>
+        <div v-if="usersNotInList?.length === 0 || isAdminList(usersNotInList)" class="flex text-center text-gray-500 justify-center items-center min-h-[30vh]">
+          <p class="text-2xl">No more users to add...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  </NavbarLayout>
+</template>
+
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, useTemplateRef } from 'vue'
 import NavbarLayout from '@/components/NavbarLayout.vue';
 import type { EditList } from '@/model/permissions-management/EditList'
 import type { TaskList } from '@/model/permissions-management/TaskList'
@@ -29,17 +104,22 @@ const burger = ref(['Editlist'])
 const listSelectedName = ref('Editlist')
 const users = ref<User[]>([])
 const open = ref(false)
+const dropdown = useTemplateRef('devices-selected-group-dropdown')
+const isAutomation = ref(false)
 const listSelectedItems = computed(() => {
+  let raw: string[] = []
   switch (listSelectedName.value) {
     case 'Whitelist':
-      return whitelist.value
+      raw = whitelist.value
+      break
     case 'Blacklist':
-      return blacklist.value
+      raw = blacklist.value
+      break
     case 'Editlist':
-      return editlist.value?.users || []
-    default:
-      return []
+      raw = editlist.value?.users || []
+      break
   }
+  return raw.filter(email => isNotAdmin(email))
 })
 const usersNotInList = computed(() => {
   return calculateUsersNotInList(listSelectedItems.value || [], users.value || [])
@@ -52,6 +132,7 @@ onMounted(async () => {
       userInfo.token,
     )
     script.value = await deserializeBody(res, automationDeserializer)
+    isAutomation.value = true
   } catch {
     getTaskList();
   }
@@ -88,65 +169,55 @@ async function getTaskList() {
   burger.value.push('Whitelist', 'Blacklist')
 }
 
-function addUser(user: User) {
+async function addUser(user: User) {
   const list = listSelectedName.value.toLowerCase()
   try {
     loadingOverlay.startLoading()
-    authorizedRequest(`/api/permissions/${list}/${route.params.id}`, userInfo.token, {
+    await authorizedRequest(`/api/permissions/${list}/${route.params.id}`, userInfo.token, {
       method: 'PATCH',
       body: JSON.stringify({ email: user.email }),
     })
-      .then(() => {
-        if (listSelectedName.value === 'Editlist' && editlist.value) {
-          if (!editlist.value.users) {
-            editlist.value.users = []
-          }
-          editlist.value.users.push(user.email)
-        } else if (listSelectedName.value === 'Whitelist' && taskList.value) {
-          taskList.value.whitelist.push(user.email)
-        } else if (listSelectedName.value === 'Blacklist' && taskList.value) {
-          taskList.value.blacklist.push(user.email)
-        }
-        showToastMessage(`${user.nickname} added to the ${listSelectedName.value}.`)
-      })
-      .catch((error) => {
-        console.error('Error adding user:', error)
-      })
+    if (listSelectedName.value === 'Editlist' && editlist.value) {
+      if (!editlist.value.users) {
+        editlist.value.users = []
+      }
+      editlist.value.users.push(user.email)
+    } else if (listSelectedName.value === 'Whitelist' && taskList.value) {
+      taskList.value.whitelist.push(user.email)
+    } else if (listSelectedName.value === 'Blacklist' && taskList.value) {
+      taskList.value.blacklist.push(user.email)
+    }
+    showToastMessage(`${user.nickname} added to the ${listSelectedName.value}.`)
   } finally {
     loadingOverlay.stopLoading();
   }
 }
 
-function removeUser(userEmail: string) {
+async function removeUser(userEmail: string) {
   const list = listSelectedName.value.toLowerCase()
   try {
     loadingOverlay.startLoading();
-    authorizedRequest(`/api/permissions/${list}/${route.params.id}`, userInfo.token, {
+    await authorizedRequest(`/api/permissions/${list}/${route.params.id}`, userInfo.token, {
       method: 'DELETE',
       body: JSON.stringify({ email: userEmail }),
     })
-      .then(() => {
-        if (listSelectedName.value === 'Editlist' && editlist.value?.users) {
-          const index = editlist.value.users.indexOf(userEmail)
-          if (index > -1) {
-            editlist.value.users.splice(index, 1)
-          }
-        } else if (listSelectedName.value === 'Whitelist' && taskList.value) {
-          const index = taskList.value.whitelist.indexOf(userEmail)
-          if (index > -1) {
-            taskList.value.whitelist.splice(index, 1)
-          }
-        } else if (listSelectedName.value === 'Blacklist' && taskList.value) {
-          const index = taskList.value.blacklist.indexOf(userEmail)
-          if (index > -1) {
-            taskList.value.blacklist.splice(index, 1)
-          }
-        }
-        showToastMessage(`${userFromEmail(userEmail)?.nickname ?? "User"} removed from the ${listSelectedName.value}.`)
-      })
-      .catch((error) => {
-        console.error('Error removing user:', error)
-      })
+    if (listSelectedName.value === 'Editlist' && editlist.value?.users) {
+      const index = editlist.value.users.indexOf(userEmail)
+      if (index > -1) {
+        editlist.value.users.splice(index, 1)
+      }
+    } else if (listSelectedName.value === 'Whitelist' && taskList.value) {
+      const index = taskList.value.whitelist.indexOf(userEmail)
+      if (index > -1) {
+        taskList.value.whitelist.splice(index, 1)
+      }
+    } else if (listSelectedName.value === 'Blacklist' && taskList.value) {
+      const index = taskList.value.blacklist.indexOf(userEmail)
+      if (index > -1) {
+        taskList.value.blacklist.splice(index, 1)
+      }
+    }
+    showToastMessage(`${userFromEmail(userEmail)?.nickname ?? "User"} removed from the ${listSelectedName.value}.`)
   } finally {
     loadingOverlay.stopLoading();
   }
@@ -155,6 +226,7 @@ function removeUser(userEmail: string) {
 function select(option: string) {
   open.value = false
   listSelectedName.value = option
+  closeDropdown()
 }
 
 function calculateUsersNotInList(list: string[], users: User[]): User[] {
@@ -168,86 +240,18 @@ function userFromEmail(email: string): User | undefined {
 function showToastMessage(msg: string) {
   successPresenter.showSuccess(presentSuccess(msg, "", 5000))
 }
+
+function isNotAdmin(user: string): boolean {
+  const u = userFromEmail(user)
+  return u?.role === Role.User
+}
+
+function isAdminList(list: User[]): boolean {
+  return list.filter(user => user.role !== Role.Admin).length === 0
+}
+
+function closeDropdown() {
+  dropdown.value!.removeAttribute('open')
+}
 </script>
-
-<template>
-  <NavbarLayout :title="script?.name" :show-back-button="true">
-  <div>
-    <div class="relative">
-      <div class="flex items-center space-x-2">
-        <h1 class="text-2xl font-bold dark:text-white">{{ listSelectedName }}</h1>
-        <div v-if="burger.length > 1">
-          <button class="btn btn-circle btn-ghost fa-solid fa-angle-down" type="button" @click="open = !open"></button>
-        </div>
-      </div>
-      <transition
-        name="slide"
-        enter-active-class="transition duration-200 ease-out"
-        leave-active-class="transition duration-150 ease-in"
-        enter-from-class="opacity-0 -translate-y-2"
-        enter-to-class="opacity-100 translate-y-0"
-        leave-from-class="opacity-100 translate-y-0"
-        leave-to-class="opacity-0 -translate-y-2"
-      >
-        <div
-          v-if="open"
-          class="absolute left-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10"
-        >
-          <ul>
-            <li
-              @click="select(list)"
-              class="list-row px-4 py-2 hover:bg-gray-100 cursor-pointer"
-              v-for="list in burger"
-              :key="list"
-            >
-              {{ list }}
-            </li>
-          </ul>
-        </div>
-      </transition>
-      <div>
-        <ul class="list rounded-box">
-          <li class="list-row" v-for="user in listSelectedItems" :key="user">
-            <span class="fa-solid fa-user text-xl self-center"></span>
-            <div class="list-col-grow flex items-center">
-              {{ user }}
-            </div>
-            <button
-              class="btn btn-circle btn-ghost fa-solid fa-xmark"
-              type="button"
-              :aria-label="'Remove user: ' + user"
-              @click="removeUser(user)"
-            >
-            </button>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <hr class="my-4 border-gray-300" />
-    <div>
-      <h1 class="text-2xl font-bold dark:text-white">Users</h1>
-      <div>
-        <ul class="list rounded-box">
-          <li class="list-row" v-for="user in usersNotInList" :key="user.email">
-            <span class="fa-solid fa-user text-xl self-center"></span>
-            <div class="list-col-grow flex items-center">
-              {{ user.nickname }}
-            </div>
-            <div v-if="user.role === Role.User">
-              <button
-                class="btn btn-circle btn-ghost fa-solid fa-plus"
-                type="button"
-                :aria-label="'Add user: ' + user.nickname"
-                @click="addUser(user)"
-              >
-              </button>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  </NavbarLayout>
-</template>
-
 <style></style>
