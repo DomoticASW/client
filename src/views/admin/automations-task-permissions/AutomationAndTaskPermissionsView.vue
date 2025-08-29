@@ -80,10 +80,10 @@
       <div class="modal-box max-w-sm">
         <h2 class="card-title mb-2">Scripts permissions info</h2>
         <p>
-          In this page, an admin can modify the editlist (task/automation), whitelist and blacklist (only for tasks).
+          In this page, you can modify the editlist (task/automation), whitelist and blacklist (only for tasks).
         </p>
         <p>
-          The admins are not showed in these lists since they already have every permission to modify and execute every task and automation.
+          You are not showed in these lists since they already have every permission to modify and execute every task and automation.
         </p>
         <ul class="list-disc list-inside">
           <li>
@@ -91,11 +91,11 @@
           </li>
           <li>
             <span class="font-bold">Whitelist</span>: a whitelisted user can execute the task
-              even if he doesn't have the permissions for executing devices inside it.
+              even if he doesn't have the permissions for user-device permissions inside it.
           </li>
           <li>
             <span class="font-bold">Blacklist</span>: a blacklisted user can't execute the task
-              even if he has the permissions for executing devices inside it.
+              even if he has the permissions for user-device permissions inside it.
           </li>
         </ul>
         <p> A blacklisted user can't be added in the whitelist and vice versa.</p>
