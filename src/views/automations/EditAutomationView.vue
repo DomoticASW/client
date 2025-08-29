@@ -19,6 +19,7 @@ import DeviceActionPropertyDialog from '@/components/tasks-automations/DeviceAct
 import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
 import { useErrorPresenterStore } from '@/stores/error-presenter'
 import InfoDialogs from '@/components/tasks-automations/InfoDialogs.vue'
+import { useDevicesStore } from '@/stores/devices'
 
 const props = defineProps<{ id?: string }>()
 const userInfo = useUserInfoStore()
@@ -31,6 +32,7 @@ const successPresenter = useSuccessPresenterStore()
 const errorPresenter = useErrorPresenterStore()
 
 onMounted(async () => {
+  await useDevicesStore().updateDevices()
   if (props.id) {
     try {
       loadingOverlay.startLoading()

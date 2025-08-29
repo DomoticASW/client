@@ -10,6 +10,7 @@ import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import NavbarLayout from '@/components/NavbarLayout.vue'
 import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
 import { useErrorPresenterStore } from '@/stores/error-presenter'
+import { useDevicesStore } from '@/stores/devices'
 
 const props = defineProps<{ id: string }>()
 const userInfo = useUserInfoStore()
@@ -22,6 +23,7 @@ const taskName = ref<string>('')
 const taskId = ref<TaskId>()
 
 onMounted(async () => {
+  await useDevicesStore().updateDevices()
   try {
     loadingOverlay.startLoading()
     const task = await findTask(TaskId(props.id), userInfo.token)

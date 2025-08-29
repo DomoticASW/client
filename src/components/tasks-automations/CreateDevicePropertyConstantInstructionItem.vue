@@ -121,6 +121,7 @@ import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import DeviceNameAndGroup from '../DeviceNameAndGroup.vue'
 import DeviceGroupsDialog from '../DeviceGroupsDialog.vue'
 import { useGroupsStore } from '@/stores/groups'
+import { useDevicesStore } from '@/stores/devices'
 
 const props = defineProps<{
   id: string
@@ -135,6 +136,8 @@ const userInfo = useUserInfoStore()
 const instruction = ref(props.instruction.instruction as CreateDevicePropertyConstantInstruction)
 const device = ref<Device>()
 const property = ref<DeviceProperty<unknown>>()
+const devicesStore = useDevicesStore()
+const groupsStore = useGroupsStore()
 
 const variableForm = ref<CreateDevicePropertyConstantInstruction>({
   name: instruction.value.name,
@@ -157,13 +160,13 @@ onMounted(async () => await updateInstruction())
 async function updateInstruction() {
   try {
     loadingOverlay.startLoading()
-    const deviceGroups = useGroupsStore().deviceGroups(instruction.value.deviceId)
+    const deviceGroups = groupsStore.deviceGroups(instruction.value.deviceId)
     if (deviceGroups.length > 0) {
-      device.value = useGroupsStore().getDeviceFromGroups(instruction.value.deviceId)!
+      device.value = groupsStore.getDeviceFromGroups(instruction.value.deviceId)!
     } else {
-      device.value = await findDevice(instruction.value.deviceId, userInfo.token)
+      device.value = devicesStore.getDevice(instruction.value.deviceId)
     }
-    property.value = device.value.properties.find(
+    property.value = device.value?.properties.find(
       (prop) => prop.id === instruction.value.devicePropertyId,
     )
   } finally {
