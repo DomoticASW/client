@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 import { useUserInfoStore } from "./user-info";
 import { ref } from "vue";
-import { useLoadingOverlayStore } from "./loading-overlay";
 import type { User } from "@/model/users-management/User";
 import { getAllUsers } from "@/api/users-management/requests/users";
 
@@ -10,15 +9,7 @@ export const useUsersStore = defineStore('users', () => {
   const users = ref<User[]>()
 
   async function updateUsers() {
-    const loadingOverlay = useLoadingOverlayStore()
-    if (userInfo.token) {
-      try {
-        loadingOverlay.startLoading()
-        users.value = await getAllUsers(userInfo.token)
-      } finally {
-        loadingOverlay.stopLoading()
-      }
-    }
+    users.value = await getAllUsers(userInfo.token)
   }
 
   function getUser(email: string) {

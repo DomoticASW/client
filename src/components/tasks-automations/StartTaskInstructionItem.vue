@@ -17,11 +17,8 @@
 import type { Instruction, StartTaskInstruction } from '@/model/scripts/Instruction'
 import InstructionLayout from './InstructionLayout.vue'
 import { onMounted, ref, watch } from 'vue'
-import { useUserInfoStore } from '@/stores/user-info'
-import { useLoadingOverlayStore } from '@/stores/loading-overlay'
-import { getAllTasks } from '@/api/scripts/requests/tasks'
 import { type Task } from '@/model/scripts/Script'
-const userInfo = useUserInfoStore()
+import { useTasksStore } from '@/stores/tasks'
 
 const props = defineProps<{
   instruction: Instruction
@@ -32,16 +29,10 @@ const props = defineProps<{
 const taskName = ref<string>()
 const tasks = ref<Task[]>()
 
-const loadingOverlay = useLoadingOverlayStore()
 
-onMounted(async () => {
-  try {
-    loadingOverlay.startLoading()
-    tasks.value = await getAllTasks(userInfo.token)
+onMounted(() => {
+    tasks.value = useTasksStore().tasks
     updateTaskName(props.instruction.instruction as StartTaskInstruction)
-  } finally {
-    loadingOverlay.stopLoading()
-  }
 })
 
 watch(
@@ -52,6 +43,6 @@ watch(
 )
 
 async function updateTaskName(instruction: StartTaskInstruction) {
-  taskName.value = tasks.value?.find((t) => t.id === instruction.taskId)?.name
+  taskName.value = useTasksStore().getTask(instruction.taskId)?.name
 }
 </script>

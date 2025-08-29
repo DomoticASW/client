@@ -2,7 +2,6 @@ import { defineStore } from "pinia"
 import { useUserInfoStore } from "./user-info"
 import { ref } from "vue"
 import type { Device, DeviceId } from "@/model/devices-management/Device";
-import { useLoadingOverlayStore } from "./loading-overlay";
 import { getAllDevices } from "@/api/devices-management/requests/devices";
 
 export const useDevicesStore = defineStore('devices', () => {
@@ -10,15 +9,7 @@ export const useDevicesStore = defineStore('devices', () => {
   const devices = ref<Device[]>()
 
   async function updateDevices() {
-    const loadingOverlay = useLoadingOverlayStore()
-    if (userInfo.token) {
-      try {
-        loadingOverlay.startLoading()
-        devices.value = await getAllDevices(userInfo.token)
-      } finally {
-        loadingOverlay.stopLoading()
-      }
-    }
+    devices.value = await getAllDevices(userInfo.token)
   }
 
   function getDevice(deviceId: DeviceId) {

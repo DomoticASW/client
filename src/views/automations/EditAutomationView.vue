@@ -21,6 +21,7 @@ import { useErrorPresenterStore } from '@/stores/error-presenter'
 import InfoDialogs from '@/components/tasks-automations/InfoDialogs.vue'
 import { useDevicesStore } from '@/stores/devices'
 import { useUsersStore } from '@/stores/users'
+import { useTasksStore } from '@/stores/tasks'
 
 const props = defineProps<{ id?: string }>()
 const userInfo = useUserInfoStore()
@@ -33,11 +34,12 @@ const successPresenter = useSuccessPresenterStore()
 const errorPresenter = useErrorPresenterStore()
 
 onMounted(async () => {
-  await useDevicesStore().updateDevices()
-  await useUsersStore().updateUsers()
   if (props.id) {
     try {
       loadingOverlay.startLoading()
+      await useDevicesStore().updateDevices()
+      await useUsersStore().updateUsers()
+      await useTasksStore().updateTasks()
       const automation = await findAutomation(AutomationId(props.id), userInfo.token)
       instructionsStore.instructions = automation.instructions
       automationName.value = automation.name
@@ -146,6 +148,6 @@ function showToastMessage(msg: string) {
     <div class="pb-4"></div>
     <InstructionItems :openDialog="openDialog" :closeDialog="closeDialog" />
     <DeviceActionPropertyDialog :selected-device="selectedDevice" :close-dialog="closeDialog" />
-    <InfoDialogs/>
+    <InfoDialogs />
   </NavbarLayout>
 </template>

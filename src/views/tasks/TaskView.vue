@@ -12,6 +12,7 @@ import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-prese
 import { useErrorPresenterStore } from '@/stores/error-presenter'
 import { useDevicesStore } from '@/stores/devices'
 import { useUsersStore } from '@/stores/users'
+import { useTasksStore } from '@/stores/tasks'
 
 const props = defineProps<{ id: string }>()
 const userInfo = useUserInfoStore()
@@ -24,10 +25,11 @@ const taskName = ref<string>('')
 const taskId = ref<TaskId>()
 
 onMounted(async () => {
-  await useDevicesStore().updateDevices()
-  await useUsersStore().updateUsers()
   try {
     loadingOverlay.startLoading()
+    await useDevicesStore().updateDevices()
+    await useUsersStore().updateUsers()
+    await useTasksStore().updateTasks()
     const task = await findTask(TaskId(props.id), userInfo.token)
     instructionsStore.instructions = task.instructions
     taskName.value = task.name
