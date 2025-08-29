@@ -1,3 +1,66 @@
+## [0.3.0](https://github.com/DomoticASW/client/compare/0.2.0...0.3.0) (2025-08-29)
+
+### Features
+
+* add device groups under DeviceView ([a7dd5ad](https://github.com/DomoticASW/client/commit/a7dd5ad751a0313990c8945e5b93dd7a7e54033d))
+* add devices groups list in every page ([6dcc6bf](https://github.com/DomoticASW/client/commit/6dcc6bf315ab4027c4ace66f6ca24df0e99a5017))
+* add info messages for empty lists ([f26066d](https://github.com/DomoticASW/client/commit/f26066dc1d2f28e14dd9ae661a308a8045d223b1))
+
+### Bug Fixes
+
+* add v-model.number to numeric v-models ([6e91c6b](https://github.com/DomoticASW/client/commit/6e91c6b4b37a1c4d704f8516e90829e972da9bef))
+* change of grid layout on nested if just if on edit mode ([ddd5573](https://github.com/DomoticASW/client/commit/ddd55730d4698fb6b729b829400446717780ac7f))
+* device properties and actions instructions were not moving correctly ([32665c3](https://github.com/DomoticASW/client/commit/32665c3f86b937bc52da8b0abd6fbb6534b28de2))
+* fix issue of success presenter ([cd85a60](https://github.com/DomoticASW/client/commit/cd85a605a4f68e22adc6c7f03516b5724e8222b3))
+* fix text of empty list case ([1bb1a25](https://github.com/DomoticASW/client/commit/1bb1a25d4deda537fe26a3a86ae2f8a180171d10))
+* now notifications show right user ([78617d6](https://github.com/DomoticASW/client/commit/78617d6a72c9b8ce0585dc2d98357adba89748ba))
+* now tasks update the task name in the right way ([b2a2057](https://github.com/DomoticASW/client/commit/b2a2057a624438ed83bb39672844e33e4c97adb1))
+* now the navbar title has a bit more of width ([01176fb](https://github.com/DomoticASW/client/commit/01176fb848ccf706690490bf952dc12c6719c6d3))
+* refactor dropdown and fix various bugs ([4168efb](https://github.com/DomoticASW/client/commit/4168efb6702325e098938026d1d260630cc1596c))
+
+### General maintenance
+
+* add automations info ([3f1b9e8](https://github.com/DomoticASW/client/commit/3f1b9e8ec872ddf85cdde8de9280c2f4076b0305))
+* add device number under group ([8dda6de](https://github.com/DomoticASW/client/commit/8dda6de6dfb45e2cb6928202e84a200c6d23b72e))
+* add icons to tasks and automations lists ([2fc2ce5](https://github.com/DomoticASW/client/commit/2fc2ce586d306fdb16351aefccd0d0fb1f906289))
+* add info about instructions ([d79ea22](https://github.com/DomoticASW/client/commit/d79ea227359576d6762058b275fe65bff809ae11))
+* add info button for tasks ([da12965](https://github.com/DomoticASW/client/commit/da129655de390eacdd2b2ba48a23bec2f46fcb28))
+* add more info on device action property dialog ([b21f601](https://github.com/DomoticASW/client/commit/b21f601cf568d0a5ce959a0321e8739bba83447a))
+* add no instructions notify text to tasks and automations pages ([3b53530](https://github.com/DomoticASW/client/commit/3b53530f954212e836e77e13221341d1571e46b1))
+* add skeleton to tasks and automations pages ([5d82c5d](https://github.com/DomoticASW/client/commit/5d82c5d025585dd9a3f82f42c0a227e271365516))
+* add some styiling to info about device action property ([2201dba](https://github.com/DomoticASW/client/commit/2201dba8ecbcd1378c591379ad1aaa22ae068e55))
+* better new label notifications ([a078142](https://github.com/DomoticASW/client/commit/a078142777f1b0cbcc82700679cd361e15acceb4))
+* diveded dialog and name + groups into two components ([ceaa2f8](https://github.com/DomoticASW/client/commit/ceaa2f8c674b152a3874aae7e3d97b61cd6e091a))
+* invert not with operator on ifs ([529b350](https://github.com/DomoticASW/client/commit/529b350ba5f4f77104ab244366626c89acee1983))
+* move devices instructions under other instructions in dialog ([e15a513](https://github.com/DomoticASW/client/commit/e15a5138006603a96a3124dcd5f6790597399adc))
+* nested ifs are better rendered now ([d6dfab2](https://github.com/DomoticASW/client/commit/d6dfab208c24e9960e6a4ee2c64ef71a80bb5c6a))
+* now devices have their groups near them in property instructions ([939c0db](https://github.com/DomoticASW/client/commit/939c0db6b500840c54fca3405baba6e39ee96aaf))
+* now ifs indentation grows up to 4 then stop ([a12c5ad](https://github.com/DomoticASW/client/commit/a12c5ad9c09d1bdc5f1551f6cd40a5ef621b4866))
+* now shows groups near device action instructions ([74fa1ae](https://github.com/DomoticASW/client/commit/74fa1ae068ab4cb159030b4bee5484118935695a))
+* set some computed properties ([ac081d1](https://github.com/DomoticASW/client/commit/ac081d1b98ba7b753ae2491231270eec969ffd2a))
+* uniform devices-related dialogs layout ([eee6d15](https://github.com/DomoticASW/client/commit/eee6d15f147e1bfb7a74c1387744c2e17dc8eaa1))
+* uniform event trigger dialog layout ([1fd1458](https://github.com/DomoticASW/client/commit/1fd14587b7b221016204b99f8008db6028c08c0d))
+* uniform instructions-related dialogs layout ([c298a86](https://github.com/DomoticASW/client/commit/c298a86a660ebb0bf87f4c38a46204878ca29cfa))
+* uniform tasks and automations pages ([f4d1ccb](https://github.com/DomoticASW/client/commit/f4d1ccb8ea1e6b6ca204ba35267729cdd521d00d))
+* yes to the right in device offline notification dialog ([4daf0de](https://github.com/DomoticASW/client/commit/4daf0def42e0bd6583463e93934d6b1026c3858e))
+
+### Style improvements
+
+* add text for empty lists ([cffcd0a](https://github.com/DomoticASW/client/commit/cffcd0a0e4ec7d50ab1856be863ef4f499e6d19e))
+* add text for empty lists ([2e00f25](https://github.com/DomoticASW/client/commit/2e00f258897361e3689a161aaae00f50079e7af7))
+
+### Refactoring
+
+* move update of group store before of app.mount([#app](https://github.com/DomoticASW/client/issues/app)) ([f3a1aff](https://github.com/DomoticASW/client/commit/f3a1aff54afb156ead40bbfdc53f6384d770449f))
+* move watch after onMounted and tasks list can be undefined ([31f6788](https://github.com/DomoticASW/client/commit/31f6788ed278ffc90234ed18b5449dddd4b53fe5))
+* moved update groups outside login using subscribe to userInfoStore ([7f95bc9](https://github.com/DomoticASW/client/commit/7f95bc920b7ef8fd39b2f3ac91d393cc3c803b8d))
+* now the device groups store is initialized just on page refresh and login ([f54265f](https://github.com/DomoticASW/client/commit/f54265fe40524b116a94a71b8b7975574989f267))
+* refactoring html element for achecker ([8863656](https://github.com/DomoticASW/client/commit/8863656d0982bca9c406da7b69c20ade9127ed45))
+* refactoring style of script permissions ([c83ee04](https://github.com/DomoticASW/client/commit/c83ee0450e201520c0de13409f7feb17861fc1d1))
+* trigger buttons have same color of other buttons ([f14c6cd](https://github.com/DomoticASW/client/commit/f14c6cdd63e8498e8522a7004f4c0fc72b79c7ab))
+* uniform info dialogs of instructions to info dialogs of tasks/automations ([feb7a2c](https://github.com/DomoticASW/client/commit/feb7a2cd9f064cdbc53cb53204c70985576751d6))
+* use of a store for the device groups ([a8657f8](https://github.com/DomoticASW/client/commit/a8657f8385a7af54da73a1c4e3fb7ac1e87536cf))
+
 ## [0.2.0](https://github.com/DomoticASW/client/compare/0.1.0...0.2.0) (2025-08-25)
 
 ### Features
