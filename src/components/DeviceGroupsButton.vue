@@ -15,8 +15,7 @@ const deviceGroups = computed(() =>
 )
 
 function openGroupsDialog() {
-  const dialog = document.getElementById(props.id.toString() + '_groups') as HTMLDialogElement
-  dialog.showModal()
+  useGroupsStore().deviceGroups(props.device.id, true)
 }
 
 function groupsToString() {

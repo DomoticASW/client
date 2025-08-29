@@ -14,9 +14,6 @@ import DeviceActionPropertyDialog from '@/components/tasks-automations/DeviceAct
 import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
 import { useErrorPresenterStore } from '@/stores/error-presenter'
 import InfoDialogs from '@/components/tasks-automations/InfoDialogs.vue'
-import { useDevicesStore } from '@/stores/devices'
-import { useUsersStore } from '@/stores/users'
-import { useTasksStore } from '@/stores/tasks'
 
 const props = defineProps<{ id?: string }>()
 const userInfo = useUserInfoStore()
@@ -31,9 +28,6 @@ onMounted(async () => {
   if (props.id) {
     try {
       loadingOverlay.startLoading()
-      await useDevicesStore().updateDevices()
-      await useUsersStore().updateUsers()
-      await useTasksStore().updateTasks()
       const task = await findTask(TaskId(props.id), userInfo.token)
       instructionsStore.instructions = task.instructions
       taskName.value = task.name

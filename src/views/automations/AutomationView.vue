@@ -11,9 +11,6 @@ import Route from '@/router/index'
 import NavbarLayout from '@/components/NavbarLayout.vue'
 import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
 import { useErrorPresenterStore } from '@/stores/error-presenter'
-import { useDevicesStore } from '@/stores/devices'
-import { useUsersStore } from '@/stores/users'
-import { useTasksStore } from '@/stores/tasks'
 
 const props = defineProps<{ id: string }>()
 const userInfo = useUserInfoStore()
@@ -27,9 +24,6 @@ const errorPresenter = useErrorPresenterStore()
 onMounted(async () => {
   try {
     loadingOverlay.startLoading()
-    await useDevicesStore().updateDevices()
-    await useUsersStore().updateUsers()
-    await useTasksStore().updateTasks()
     const automation = await findAutomation(AutomationId(props.id), userInfo.token)
     instructionsStore.instructions = automation.instructions
     automationName.value = automation.name

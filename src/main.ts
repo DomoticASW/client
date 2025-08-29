@@ -11,6 +11,9 @@ import { useNotificationsStore } from './stores/notifications'
 import { useGroupsStore } from './stores/groups'
 import { useLoadingOverlayStore } from './stores/loading-overlay'
 import { isGetUserInfoDTO } from './api/users-management/dtos/GetUserInfoDTO'
+import { useDevicesStore } from './stores/devices'
+import { useUsersStore } from './stores/users'
+import { useTasksStore } from './stores/tasks'
 
 const app = createApp(App)
 
@@ -43,10 +46,16 @@ app.config.errorHandler = (err) => {
 }
 
 userInfo.$subscribe(async () => {
-  useGroupsStore().updateGroups()
+  await useGroupsStore().updateGroups()
+  await useDevicesStore().updateDevices()
+  await useUsersStore().updateUsers()
+  await useTasksStore().updateTasks()
 })
 
 useGroupsStore().updateGroups()
+useDevicesStore().updateDevices()
+useUsersStore().updateUsers()
+useTasksStore().updateTasks()
 
 // During development it's possible to set a VITE_USER_INFO object to skip login:
 // VITE_USER_INFO='{"email": "a@email.com", "nickname": "Foo", "token": "blablabla", "role": "Admin" }' npm run dev

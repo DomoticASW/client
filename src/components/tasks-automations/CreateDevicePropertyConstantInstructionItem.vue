@@ -22,8 +22,6 @@
     </div>
   </InstructionLayout>
 
-  <DeviceGroupsDialog :id="id" :device="device" />
-
   <dialog :id="id + '_info'" class="modal modal-sm">
     <div class="modal-box max-w-sm" v-if="property">
       <h3 class="card-title mb-2">{{ property.name }} type constraints info</h3>
@@ -119,7 +117,6 @@ import { useUserInfoStore } from '@/stores/user-info'
 import { useInstructionsStore } from '@/stores/instructions'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import DeviceNameAndGroup from '../DeviceNameAndGroup.vue'
-import DeviceGroupsDialog from '../DeviceGroupsDialog.vue'
 import { useGroupsStore } from '@/stores/groups'
 import { useDevicesStore } from '@/stores/devices'
 

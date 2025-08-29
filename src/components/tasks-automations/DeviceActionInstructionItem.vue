@@ -25,8 +25,6 @@
     </template>
   </InstructionLayout>
 
-  <DeviceGroupsDialog :id="id" :device="device" />
-
   <dialog :id="id" class="modal" v-if="device && action">
     <div class="modal-box max-w-sm">
       <h3 class="card-title mx-2 mb-2">Device action</h3>
@@ -155,7 +153,6 @@ import { useInstructionsStore } from '@/stores/instructions'
 import { Type } from '@/model/Type'
 import { getDefaultInput } from './emptyInstructions'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
-import DeviceGroupsDialog from '../DeviceGroupsDialog.vue'
 import DeviceNameAndGroup from '../DeviceNameAndGroup.vue'
 import { useGroupsStore } from '@/stores/groups'
 import { useDevicesStore } from '@/stores/devices'
