@@ -296,11 +296,11 @@ onMounted(async () => await updateInstruction())
 async function updateInstruction() {
   try {
     loadingOverlay.startLoading()
-    const deviceGroups = useGroupsStore().deviceGroups(variableForm.value.deviceId)
+    const deviceGroups = useGroupsStore().deviceGroups(instruction.value.deviceId)
     if (deviceGroups.length > 0) {
-      device.value = useGroupsStore().getDeviceFromGroups(variableForm.value.deviceId)!
+      device.value = useGroupsStore().getDeviceFromGroups(instruction.value.deviceId)!
     } else {
-      device.value = await findDevice(variableForm.value.deviceId, userInfo.token)
+      device.value = await findDevice(instruction.value.deviceId, userInfo.token)
     }
     action.value = device.value.actions.find((act) => act.id === instruction.value.deviceActionId)
     selectedAction.value = action.value
