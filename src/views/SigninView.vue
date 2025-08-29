@@ -9,7 +9,7 @@
         <div class="form-control">
           <span class="label-text">Nickname</span>
           <label class="input validator w-full">
-            <i class="fa-regular fa-user opacity-50"></i>
+            <span class="fa-regular fa-user opacity-50"></span>
             <input
               v-model="form.nickname"
               type="text"
@@ -30,7 +30,7 @@
         <div class="form-control">
           <span class="label-text">Email</span><br />
           <label class="input validator w-full">
-            <i class="fa-regular fa-envelope opacity-50"></i>
+            <span class="fa-regular fa-envelope opacity-50"></span>
             <input
               v-model="form.email"
               type="email"
@@ -52,7 +52,7 @@
           <span class="label-text">Password</span>
           <div class="relative">
             <label class="input validator w-full">
-              <i class="fa-solid fa-key opacity-50"></i>
+              <span class="fa-solid fa-key opacity-50"></span>
               <input
                 v-model="form.password"
                 :type="showPassword ? 'text' : 'password'"
@@ -65,7 +65,7 @@
                 class="absolute inset-y-0 right-0 flex items-center justify-center w-10 text-gray-500 hover:text-gray-700"
                 @click="showPassword = !showPassword"
               >
-                <i :class="showPassword ? 'fa-eye-slash' : 'fa-eye'" class="fas"></i>
+                <span :class="showPassword ? 'fa-eye-slash' : 'fa-eye'" class="fas"></span>
               </button>
             </label>
           </div>
@@ -82,7 +82,7 @@
           <span class="label-text">Confirm password</span>
           <div class="relative">
             <label class="input validator w-full">
-              <i class="fa-solid fa-key opacity-50"></i>
+              <span class="fa-solid fa-key opacity-50"></span>
               <input
                 v-model="form.confirmPassword"
                 :type="showConfirmPassword ? 'text' : 'password'"
@@ -95,7 +95,7 @@
                 class="absolute inset-y-0 right-0 flex items-center justify-center w-10 text-gray-500 hover:text-gray-700"
                 @click="showConfirmPassword = !showConfirmPassword"
               >
-                <i :class="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'" class="fas"></i>
+                <span :class="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'" class="fas"></span>
               </button>
             </label>
           </div>
