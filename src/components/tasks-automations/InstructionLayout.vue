@@ -1,46 +1,48 @@
 <template>
-    <div :class="['card card-sm my-2', colors, props.class]">
-      <div
-        class="card-body text-base grid px-4"
-        :class="
-          instruction.type === InstructionType.IfInstruction ||
-          instruction.type === InstructionType.IfElseInstruction
-            ? 'grid-cols-12'
-            : instruction.type === InstructionType.WaitInstruction && edit
-              ? 'grid-cols-3'
-              : 'grid-cols-2'
-        "
-      >
-        <template v-if="edit">
-          <button
-            class="btn btn-xs btn-square btn-primary fa-solid fa-angle-up col-end-1 mr-2"
-            @click="instructionsStore.moveInstruction(props.instruction, 'up')"
-            @click.stop
-          ></button>
-          <button
-            class="btn btn-xs btn-square btn-primary fa-solid fa-angle-down row-start-2"
-            @click="instructionsStore.moveInstruction(props.instruction, 'down')"
-            @click.stop
-          ></button>
-        </template>
-        <slot></slot>
-        <template v-if="edit">
-          <button
-            class="btn btn-square fa-solid btn-primary fa-xmark row-start-1 place-self-center row-span-2 ml-2"
-            :class="
-              instruction.type === InstructionType.IfInstruction ||
-              instruction.type === InstructionType.IfElseInstruction
-                ? 'ml-4 col-start-13'
-                : instruction.type === InstructionType.WaitInstruction && edit
-                  ? 'col-start-4'
-                  : 'col-start-3'
-            "
-            @click="instructionsStore.removeInstruction(props.instruction)"
-            @click.stop
-          ></button>
-        </template>
-      </div>
+  <div :class="['card card-sm my-2', colors, props.class]">
+    <div
+      class="card-body text-base grid px-4"
+      :class="
+        instruction.type === InstructionType.IfInstruction ||
+        instruction.type === InstructionType.IfElseInstruction
+          ? depth && depth > 1 && edit
+            ? 'grid-cols-3'
+            : 'grid-cols-12'
+          : instruction.type === InstructionType.WaitInstruction && edit
+            ? 'grid-cols-3'
+            : 'grid-cols-2'
+      "
+    >
+      <template v-if="edit">
+        <button
+          class="btn btn-xs btn-square btn-primary fa-solid fa-angle-up col-end-1 mr-2"
+          @click="instructionsStore.moveInstruction(props.instruction, 'up')"
+          @click.stop
+        ></button>
+        <button
+          class="btn btn-xs btn-square btn-primary fa-solid fa-angle-down row-start-2"
+          @click="instructionsStore.moveInstruction(props.instruction, 'down')"
+          @click.stop
+        ></button>
+      </template>
+      <slot></slot>
+      <template v-if="edit">
+        <button
+          class="btn btn-square fa-solid btn-primary fa-xmark row-start-1 place-self-center row-span-2 ml-2"
+          :class="
+            instruction.type === InstructionType.IfInstruction ||
+            instruction.type === InstructionType.IfElseInstruction
+              ? 'ml-4 col-start-13'
+              : instruction.type === InstructionType.WaitInstruction && edit
+                ? 'col-start-4'
+                : 'col-start-3'
+          "
+          @click="instructionsStore.removeInstruction(props.instruction)"
+          @click.stop
+        ></button>
+      </template>
     </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -52,6 +54,7 @@ const props = defineProps<{
   colors: string
   edit: boolean
   class?: string
+  depth?: number
 }>()
 
 const instructionsStore = useInstructionsStore()

@@ -2,23 +2,28 @@
 import router from '@/router'
 import { computed, onMounted, ref } from 'vue'
 import DeviceRowSkeleton from '@/components/admin/manage-devices/DeviceListSkeleton.vue'
-import { DeviceGroupId, type DeviceGroup } from '@/model/devices-management/DeviceGroup'
+import { DeviceGroupId } from '@/model/devices-management/DeviceGroup'
 import type { Device, DeviceId } from '@/model/devices-management/Device'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import { useUserInfoStore } from '@/stores/user-info'
+import { useGroupsStore } from '@/stores/groups'
 import * as api from '@/api/devices-management/requests/device-groups'
 import * as devicesApi from '@/api/devices-management/requests/devices'
 import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
 import NavbarLayout from '@/components/NavbarLayout.vue'
+import DeviceGroupsButton from '@/components/DeviceGroupsButton.vue'
+import DeviceGroupsDialog from '@/components/DeviceGroupsDialog.vue'
 
 const props = defineProps({ id: { type: String, required: true } })
 const groupId = DeviceGroupId(props.id)
 const userInfo = useUserInfoStore()
+const groupsStore = useGroupsStore()
 const loadingOverlay = useLoadingOverlayStore()
 const successPresenter = useSuccessPresenterStore()
 
-const group = ref<DeviceGroup | undefined>(undefined)
 const devices = ref<Device[] | undefined>(undefined)
+
+const group = computed(() => groupsStore.groups.find((g) => g.id === groupId))
 
 const devicesNotInGroup = computed(() => {
   if (group.value && devices.value)
@@ -67,7 +72,7 @@ async function deleteGroup() {
 }
 
 onMounted(async () => {
-  group.value = await api.findDeviceGroup(groupId, userInfo.token)
+  groupsStore.updateGroups()
 })
 onMounted(async () => {
   devices.value = await devicesApi.getAllDevices(userInfo.token)
@@ -84,34 +89,55 @@ onMounted(async () => {
         <span class="fa-solid fa-microchip text-2xl self-center"></span>
         <div>
           {{ d.name }}
+          <DeviceGroupsButton :id="d.id" :device="d" />
           <br />
-          <span class="text-xs">id: {{ d.id }}</span>
+          <span class="text-xs ml-1 opacity-60">id: {{ d.id }}</span>
         </div>
         <button
           class="btn btn-circle btn-ghost fa-solid fa-remove"
           @click="removeDeviceFromGroup(d.id)"
         ></button>
+        <DeviceGroupsDialog :id="d.id" :device="d" />
       </li>
     </ul>
     <DeviceRowSkeleton v-else />
+    <div
+      v-if="group && group.devices.length === 0 && devices && devices.length > 0"
+      class="flex text-center text-gray-500 justify-center items-center min-h-[30vh]"
+    >
+      <p class="text-2xl">
+        This group has no device yet, you can add one from the list of registered devices below
+      </p>
+    </div>
 
-    <div class="divider"></div>
+    <div v-if="!devicesNotInGroup || devicesNotInGroup.length != 0" class="divider"></div>
 
-    <h2 v-if="devices" class="text-xl">Devices not in group</h2>
-    <div v-else class="skeleton h-4 w-1/2"></div>
+    <div v-if="!devicesNotInGroup" class="skeleton h-4 w-1/2"></div>
+    <h2 v-else-if="devicesNotInGroup.length != 0" class="text-xl">Devices not in group</h2>
 
     <ul v-if="devices" class="list">
       <li v-for="d in devicesNotInGroup" v-bind:key="d.id" class="list-row">
         <span class="fa-solid fa-microchip text-2xl self-center"></span>
         <div>
           {{ d.name }}
+          <DeviceGroupsButton :id="d.id" :device="d" />
           <br />
-          <span class="text-xs">id: {{ d.id }}</span>
+          <span class="text-xs ml-1 opacity-60">id: {{ d.id }}</span>
         </div>
-        <button class="btn btn-circle btn-ghost fa-solid fa-add" @click="addDeviceToGroup(d.id)"></button>
+        <button
+          class="btn btn-circle btn-ghost fa-solid fa-add"
+          @click="addDeviceToGroup(d.id)"
+        ></button>
+        <DeviceGroupsDialog :id="d.id" :device="d" />
       </li>
     </ul>
     <DeviceRowSkeleton v-else :nRows="5" />
+    <div
+      v-if="devices && devices.length == 0"
+      class="flex text-center text-gray-500 justify-center items-center min-h-[30vh]"
+    >
+      <p class="text-2xl">You have not yet registered any device to the system... <br /></p>
+    </div>
   </NavbarLayout>
 </template>
 

@@ -7,7 +7,7 @@
     v-if="device && property"
     :class="edit ? 'cursor-pointer transition-all duration-100 hover:bg-primary/10' : ''"
   >
-    <p class="truncate">{{ device.name }}</p>
+    <DeviceNameAndGroup :id="id" :device="device" />
     <p class="font-bold text-center truncate">{{ instruction.name }}</p>
     <p class="text-xs truncate">
       {{ property.name }}
@@ -22,14 +22,18 @@
     </div>
   </InstructionLayout>
 
+  <DeviceGroupsDialog :id="id" :device="device" />
+
   <dialog :id="id + '_info'" class="modal modal-sm">
     <div class="modal-box max-w-sm" v-if="property">
       <h3 class="card-title mb-2">{{ property.name }} type constraints info</h3>
       <div v-if="property.typeConstraints.__brand === 'Enum'">
         <p>Possible values for {{ property.name }} property:</p>
-        <p class="font-bold" v-for="value in property.typeConstraints.values" :key="value">
-          {{ value }}
-        </p>
+        <ul class="list-inside list-disc">
+          <li class="font-bold" v-for="value in property.typeConstraints.values" :key="value">
+            {{ value }}
+          </li>
+        </ul>
       </div>
       <p v-else-if="property.typeConstraints.__brand !== 'None'">
         The {{ property.name }} property has a minimum value of
@@ -48,7 +52,7 @@
       </p>
       <div class="modal-action mt-2">
         <form method="dialog">
-          <button class="btn">Ok</button>
+          <button class="btn btn-primary">Ok</button>
         </form>
       </div>
     </div>
@@ -90,12 +94,14 @@
           name="constant_name"
           id="constant_name"
         />
-        <div class="modal-action grid grid-cols-3 w-full">
-          <button type="button" class="btn col-start-1" @click="closeDialog">Close</button>
-          <button type="submit" class="btn col-start-3 btn-primary">Confirm</button>
+        <div class="modal-action w-full">
+          <button type="submit" class="btn btn-primary">Confirm</button>
         </div>
       </form>
     </div>
+    <form method="dialog" class="modal-backdrop">
+      <button>Close</button>
+    </form>
   </dialog>
 </template>
 
@@ -112,6 +118,9 @@ import { findDevice } from '@/api/devices-management/requests/devices'
 import { useUserInfoStore } from '@/stores/user-info'
 import { useInstructionsStore } from '@/stores/instructions'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
+import DeviceNameAndGroup from '../DeviceNameAndGroup.vue'
+import DeviceGroupsDialog from '../DeviceGroupsDialog.vue'
+import { useGroupsStore } from '@/stores/groups'
 
 const props = defineProps<{
   id: string
@@ -148,7 +157,12 @@ onMounted(async () => await updateInstruction())
 async function updateInstruction() {
   try {
     loadingOverlay.startLoading()
-    device.value = await findDevice(instruction.value.deviceId, userInfo.token)
+    const deviceGroups = useGroupsStore().deviceGroups(instruction.value.deviceId)
+    if (deviceGroups.length > 0) {
+      device.value = useGroupsStore().getDeviceFromGroups(instruction.value.deviceId)!
+    } else {
+      device.value = await findDevice(instruction.value.deviceId, userInfo.token)
+    }
     property.value = device.value.properties.find(
       (prop) => prop.id === instruction.value.devicePropertyId,
     )

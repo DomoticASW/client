@@ -56,7 +56,7 @@
           :type="variableType().type"
           :class="['mt-2 mx-2', variableType().class]"
           :step="variableForm.type === Type.DoubleType ? 'any' : '1'"
-          v-model="variableForm.value"
+          v-model.number="variableForm.value"
           name="value"
           id="value"
         />
@@ -84,14 +84,14 @@
           name="value"
           id="value"
         />
-        <div class="modal-action grid grid-cols-3 w-full">
-          <button type="button" class="btn col-start-1" @click="closeDialog">
-            Close
-          </button>
+        <div class="modal-action w-full">
           <button type="submit" class="btn col-start-3 btn-primary">Confirm</button>
         </div>
       </form>
     </div>
+    <form method="dialog" class="modal-backdrop">
+      <button>Close</button>
+    </form>
   </dialog>
 </template>
 

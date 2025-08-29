@@ -15,6 +15,8 @@ import ValueIOControl from '@/components/devices/ValueIOControl.vue'
 import { io } from 'socket.io-client'
 import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
 import NavbarLayout from '@/components/NavbarLayout.vue'
+import DeviceGroupsButton from '@/components/DeviceGroupsButton.vue'
+import DeviceGroupsDialog from '@/components/DeviceGroupsDialog.vue'
 const props = defineProps({ id: { type: String, required: true } })
 const deviceId = DeviceId(props.id)
 const userInfo = useUserInfoStore()
@@ -135,6 +137,11 @@ onUnmounted(() => {
       ></button>
       <div v-else class="skeleton h-10 w-10 rounded-full"></div>
     </template>
+    <div class="flex justify-center items-center">
+      <span class="mr-2">Groups:</span>
+      <DeviceGroupsButton v-if="device" :id="device.id" :device="device" />
+      <DeviceGroupsDialog v-if="device" :id="device.id" :device="device" />
+    </div>
     <ul v-if="device" class="list">
       <li v-for="p in device.properties" v-bind:key="p.id" class="list-row items-center">
         <span class="list-col-grow"> {{ p.name }} </span>
@@ -162,27 +169,30 @@ onUnmounted(() => {
   </NavbarLayout>
 
   <!-- Dialog for offline notifications subscription -->
-  <dialog ref="offline-notifications-modal" class="modal modal-bottom sm:modal-middle">
-    <div class="modal-box">
-      <h3 class="text-lg font-bold">Device offline notifications</h3>
+  <dialog ref="offline-notifications-modal" class="modal modal-middle">
+    <div class="modal-box max-w-sm">
+      <h3 class="card-title mb-2 mx-auto justify-center">Device offline notifications</h3>
       <p>Do you want to receive a notification when this device goes offline?</p>
       <form method="dialog">
         <div class="modal-action">
-          <button class="btn btn-primary" v-on:click="subscribeForOfflineNotifications(true)">
-            Yes
-          </button>
           <button class="btn btn-primary" v-on:click="subscribeForOfflineNotifications(false)">
             No
+          </button>
+          <button class="btn btn-primary" v-on:click="subscribeForOfflineNotifications(true)">
+            Yes
           </button>
         </div>
       </form>
     </div>
+    <form method="dialog" class="modal-backdrop">
+      <button>Cancel</button>
+    </form>
   </dialog>
 
   <!-- Dialog for action input -->
-  <dialog ref="action-input-modal" class="modal modal-bottom sm:modal-middle">
-    <div class="modal-box">
-      <h3 class="text-lg font-bold">Action input</h3>
+  <dialog ref="action-input-modal" class="modal modal-middle">
+    <div class="modal-box max-w-sm">
+      <h3 class="card-title mb-2 mx-auto justify-center">Action input</h3>
       <ValueIOControl
         v-if="executingAction"
         :typeConstraints="executingAction!.inputTypeConstraints"
@@ -198,9 +208,11 @@ onUnmounted(() => {
         >
           Execute
         </button>
-        <button class="btn btn-primary btn-soft" v-on:click="onCancelExecuteAction">Cancel</button>
       </div>
     </div>
+    <form method="dialog" class="modal-backdrop">
+      <button @click="onCancelExecuteAction">Cancel</button>
+    </form>
   </dialog>
 </template>
 

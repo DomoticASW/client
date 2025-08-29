@@ -13,6 +13,7 @@ import type { Device } from '@/model/devices-management/Device'
 import DeviceActionPropertyDialog from '@/components/tasks-automations/DeviceActionPropertyDialog.vue'
 import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
 import { useErrorPresenterStore } from '@/stores/error-presenter'
+import InfoDialogs from '@/components/tasks-automations/InfoDialogs.vue'
 
 const props = defineProps<{ id?: string }>()
 const userInfo = useUserInfoStore()
@@ -98,6 +99,13 @@ function showToastMessage(msg: string) {
       <input type="text" placeholder="Task name" class="input w-full" v-model="taskName" />
     </div>
     <hr class="m-4" />
+    <h1 class="text-xl">Instructions</h1>
+    <div
+      v-if="instructionsStore.instructions.length === 0"
+      class="flex text-center text-gray-500 justify-center items-center min-h-[50vh]"
+    >
+      <p class="text-2xl">No instructions yet...</p>
+    </div>
     <InstructionItem
       v-for="(instruction, index) in instructionsStore.instructions"
       :key="index"
@@ -108,5 +116,6 @@ function showToastMessage(msg: string) {
     <div class="pb-4"></div>
     <InstructionItems :openDialog="openDialog" :closeDialog="closeDialog" />
     <DeviceActionPropertyDialog :selected-device="selectedDevice" :close-dialog="closeDialog" />
+    <InfoDialogs />
   </NavbarLayout>
 </template>
