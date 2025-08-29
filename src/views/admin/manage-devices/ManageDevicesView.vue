@@ -104,12 +104,15 @@ onMounted(async () => {
     <dialog ref="edit-device-name-modal" class="modal modal-middle">
       <div class="modal-box max-w-sm">
         <h3 class="card-title mb-2 mx-auto justify-center">Change the device name</h3>
-        <input
-          type="text"
-          placeholder="Device name"
-          class="input w-full"
-          v-model="deviceEditingName"
-        />
+        <label>
+          <span class="hidden">Device name</span>
+          <input
+            type="text"
+            placeholder="Device name"
+            class="input w-full"
+            v-model="deviceEditingName"
+          />
+        </label>
         <div class="modal-action">
           <button class="btn btn-primary" v-on:click="saveEditingDevice()">Save</button>
         </div>
