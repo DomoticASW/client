@@ -117,12 +117,14 @@ onMounted(async () => {
   <dialog ref="create-group-modal" class="modal modal-middle">
     <div class="modal-box max-w-sm">
       <h3 class="card-title mb-2 mx-auto justify-center">Create a new group</h3>
-      <input
-        type="text"
-        placeholder="Group name"
-        class="input w-full"
-        v-model="groupCreatingName"
-      />
+      <label>
+        <span class="hidden">Group name</span>
+        <input
+          type="text"
+          placeholder="Group name"
+          class="input w-full"
+          v-model="groupCreatingName"
+      /></label>
       <div class="modal-action">
         <button
           class="btn btn-primary"
@@ -142,7 +144,15 @@ onMounted(async () => {
   <dialog ref="edit-group-name-modal" class="modal modal-middle">
     <div class="modal-box max-w-sm">
       <h3 class="card-title mb-2 mx-auto justify-center">Change the group name</h3>
-      <input type="text" placeholder="Group name" class="input w-full" v-model="groupEditingName" />
+      <label>
+        <span class="hidden">Group name</span>
+        <input
+          type="text"
+          placeholder="Group name"
+          class="input w-full"
+          v-model="groupEditingName"
+        />
+      </label>
       <div class="modal-action">
         <button
           class="btn btn-primary"
