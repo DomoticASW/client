@@ -7,10 +7,7 @@
     v-if="device && property"
     :class="edit ? 'cursor-pointer transition-all duration-100 hover:bg-primary/10' : ''"
   >
-    <DeviceNameAndGroup
-      :id="id"
-      :device="device"
-    />
+    <DeviceNameAndGroup :id="id" :device="device" />
     <p class="font-bold text-center truncate">{{ instruction.name }}</p>
     <p class="text-xs truncate">
       {{ property.name }}
@@ -32,9 +29,11 @@
       <h3 class="card-title mb-2">{{ property.name }} type constraints info</h3>
       <div v-if="property.typeConstraints.__brand === 'Enum'">
         <p>Possible values for {{ property.name }} property:</p>
-        <p class="font-bold" v-for="value in property.typeConstraints.values" :key="value">
-          - {{ value }}
-        </p>
+        <ul class="list-inside list-disc">
+          <li class="font-bold" v-for="value in property.typeConstraints.values" :key="value">
+            {{ value }}
+          </li>
+        </ul>
       </div>
       <p v-else-if="property.typeConstraints.__brand !== 'None'">
         The {{ property.name }} property has a minimum value of
@@ -217,5 +216,4 @@ function openInfoDialog() {
   const dialog = document.getElementById(props.id.toString() + '_info') as HTMLDialogElement
   dialog.showModal()
 }
-
 </script>
