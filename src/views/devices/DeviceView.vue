@@ -148,6 +148,7 @@ onUnmounted(() => {
         <ValueIOControl
           :typeConstraints="p.typeConstraints"
           :isInput="p.setter !== undefined"
+          :accessibility-label="p.name"
           v-model="p.value"
           @input="(input) => onPropertyInput(p, input)"
         />
@@ -197,6 +198,7 @@ onUnmounted(() => {
         v-if="executingAction"
         :typeConstraints="executingAction!.inputTypeConstraints"
         :isInput="true"
+        :accessibility-label="executingAction!.name"
         v-model="executingActionInput"
         v-model:isInputValid="isExecutingActionInputValid"
       />
