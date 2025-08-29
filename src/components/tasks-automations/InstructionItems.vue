@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import { getAllDeviceGroups } from '@/api/devices-management/requests/device-groups'
-import { getAllDevices } from '@/api/devices-management/requests/devices'
 import { type Device } from '@/model/devices-management/Device'
 import type { DeviceGroup } from '@/model/devices-management/DeviceGroup'
 import { InstructionType } from '@/model/scripts/Instruction'
-import { useUserInfoStore } from '@/stores/user-info'
 import { onMounted, ref, useTemplateRef } from 'vue'
 import AddButton from '../AddButton.vue'
 import {
@@ -16,8 +13,9 @@ import {
   EmptyConstantInstruction,
 } from './emptyInstructions'
 import { useInstructionsStore } from '@/stores/instructions'
+import { useGroupsStore } from '@/stores/groups'
+import { useDevicesStore } from '@/stores/devices'
 
-const userInfo = useUserInfoStore()
 const instructionsStore = useInstructionsStore()
 
 const modal = useTemplateRef('add-instruction-modal')
@@ -30,9 +28,9 @@ defineProps<{
   closeDialog: () => void
 }>()
 
-onMounted(async () => {
-  groups.value = await getAllDeviceGroups(userInfo.token)
-  devices.value = await getAllDevices(userInfo.token)
+onMounted(() => {
+  groups.value = useGroupsStore().groups
+  devices.value = useDevicesStore().devices
 })
 
 function addIfInstruction() {

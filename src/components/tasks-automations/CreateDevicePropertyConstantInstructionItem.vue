@@ -150,14 +150,14 @@ watch(
   () => props.instruction,
   async (val) => {
     instruction.value = val.instruction as CreateDevicePropertyConstantInstruction
-    await updateInstruction()
+    updateInstruction()
   },
   { immediate: true },
 )
 
-onMounted(async () => await updateInstruction())
+onMounted(() => updateInstruction())
 
-async function updateInstruction() {
+function updateInstruction() {
   try {
     loadingOverlay.startLoading()
     const deviceGroups = groupsStore.deviceGroups(instruction.value.deviceId)
