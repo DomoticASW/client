@@ -90,6 +90,15 @@ onMounted(async () => {
         </li>
       </ul>
       <DeviceListSkeleton v-else />
+      <div
+        v-if="devices && devices.length === 0"
+        class="flex text-center text-gray-500 justify-center items-center min-h-[30vh]"
+      >
+        <p class="text-2xl">
+          You have not yet registered any device to the system... <br />
+          To add one click on the button below
+        </p>
+      </div>
       <AddButton name="add-device" />
     </NavbarLayout>
 

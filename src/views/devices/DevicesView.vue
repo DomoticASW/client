@@ -106,6 +106,17 @@ onMounted(async () => {
       </div>
     </ul>
     <DeviceListSkeleton v-else />
+    <div
+      v-if="devicesToShow && devicesToShow.length === 0"
+      class="flex text-center text-gray-500 justify-center items-center min-h-[30vh]"
+    >
+      <p v-if="devices && devices.length == 0" class="text-2xl">
+        The admin has not yet registered any device to the system...
+      </p>
+      <p v-else class="text-2xl">
+        This group is currently empty, only the admin can add devices to it...
+      </p>
+    </div>
   </NavbarLayout>
 </template>
 
