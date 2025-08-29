@@ -15,6 +15,7 @@ import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-prese
 import { useErrorPresenterStore } from '@/stores/error-presenter'
 import InfoDialogs from '@/components/tasks-automations/InfoDialogs.vue'
 import { useDevicesStore } from '@/stores/devices'
+import { useUsersStore } from '@/stores/users'
 
 const props = defineProps<{ id?: string }>()
 const userInfo = useUserInfoStore()
@@ -27,6 +28,7 @@ const errorPresenter = useErrorPresenterStore()
 
 onMounted(async () => {
   await useDevicesStore().updateDevices()
+  await useUsersStore().updateUsers()
   if (props.id) {
     try {
       loadingOverlay.startLoading()
