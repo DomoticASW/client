@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Device } from '@/model/devices-management/Device'
 import { useGroupsStore } from '@/stores/groups'
+import { useGroupsDialogStore } from '@/stores/groups-dialog'
 import { computed } from 'vue'
 
 const props = defineProps<{
@@ -8,14 +9,12 @@ const props = defineProps<{
   device: Device
 }>()
 
-const groupsStore = useGroupsStore()
-
 const deviceGroups = computed(() =>
-  groupsStore.groups.filter((g) => g.devices.map((d) => d.id).includes(props.device.id)),
+  useGroupsStore().getGroupsOfDevice(props.device.id)
 )
 
 function openGroupsDialog() {
-  useGroupsStore().deviceGroups(props.device.id, true)
+  useGroupsDialogStore().showDeviceGroups(props.device.id)
 }
 
 function groupsToString() {

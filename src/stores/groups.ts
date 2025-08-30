@@ -8,34 +8,22 @@ import { type DeviceId } from "@/model/devices-management/Device";
 export const useGroupsStore = defineStore('groups', () => {
   const userInfo = useUserInfoStore()
   const groups = ref<DeviceGroup[]>([])
-  const selectedGroups = ref<DeviceGroup[]>([])
-  const selectedDevice = ref<DeviceId>()
 
   async function updateGroups() {
     groups.value = await getAllDeviceGroups(userInfo.token)
   }
 
-  function deviceGroups(deviceId: DeviceId, show: boolean = false) {
-    selectedGroups.value = groups.value.filter((g) =>
+  function getGroupsOfDevice(deviceId: DeviceId) {
+    return groups.value.filter((g) =>
       g.devices.map(d => d.id).includes(deviceId)
     )
-    if (show) {
-      selectedDevice.value = deviceId
-    }
-    return selectedGroups.value
   }
 
   function findDevice(deviceId: DeviceId) {
-    return groups.value.filter((g) =>
-      g.devices.map(d => d.id).includes(deviceId)
-    )[0].devices.find(
+    return getGroupsOfDevice(deviceId)[0].devices.find(
       (d) => d.id === deviceId,
     )!
   }
 
-  function resetSelectedDevice() {
-    selectedDevice.value = undefined
-  }
-
-  return { groups, selectedGroups, selectedDevice, updateGroups, deviceGroups, findDevice, resetSelectedDevice }
+  return { groups, updateGroups, getGroupsOfDevice, findDevice }
 })

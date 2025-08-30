@@ -293,7 +293,7 @@ onMounted(() => updateInstruction())
 function updateInstruction() {
   try {
     loadingOverlay.startLoading()
-    const deviceGroups = groupsStore.deviceGroups(instruction.value.deviceId)
+    const deviceGroups = groupsStore.getGroupsOfDevice(instruction.value.deviceId)
     if (deviceGroups.length > 0) {
       device.value = groupsStore.findDevice(instruction.value.deviceId)!
     } else {
@@ -332,5 +332,4 @@ function closeDialog() {
   const dialog = document.getElementById(props.id.toString()) as HTMLDialogElement
   dialog.close()
 }
-
 </script>

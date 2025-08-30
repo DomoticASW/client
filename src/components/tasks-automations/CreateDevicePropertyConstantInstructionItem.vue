@@ -157,7 +157,7 @@ onMounted(() => updateInstruction())
 function updateInstruction() {
   try {
     loadingOverlay.startLoading()
-    const deviceGroups = groupsStore.deviceGroups(instruction.value.deviceId)
+    const deviceGroups = groupsStore.getGroupsOfDevice(instruction.value.deviceId)
     if (deviceGroups.length > 0) {
       device.value = groupsStore.findDevice(instruction.value.deviceId)!
     } else {

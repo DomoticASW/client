@@ -2,25 +2,22 @@
 import type { Device } from '@/model/devices-management/Device'
 import type { DeviceGroup } from '@/model/devices-management/DeviceGroup'
 import { useGroupsStore } from '@/stores/groups'
+import { useGroupsDialogStore } from '@/stores/groups-dialog'
 import { ref, useTemplateRef } from 'vue'
 
 const deviceGroups = ref<DeviceGroup[]>()
 const device = ref<Device>()
-const groupsStore = useGroupsStore()
+const groupDialogStore = useGroupsDialogStore()
 
 const dialog = useTemplateRef('groups_info')
 
-groupsStore.$subscribe(() => {
-  if (groupsStore.selectedDevice) {
-    device.value = groupsStore.findDevice(groupsStore.selectedDevice)
-    deviceGroups.value = groupsStore.selectedGroups
+groupDialogStore.$subscribe(() => {
+  if (groupDialogStore.selectedDevice) {
+    device.value = useGroupsStore().findDevice(groupDialogStore.selectedDevice)
+    deviceGroups.value = groupDialogStore.selectedDeviceGroups
     dialog.value?.showModal()
   }
 })
-
-function resetStore() {
-  groupsStore.resetSelectedDevice()
-}
 </script>
 
 <template>
@@ -31,7 +28,7 @@ function resetStore() {
       <p class="font-bold" v-for="group in deviceGroups" :key="group.id">- {{ group.name }}</p>
     </div>
     <form method="dialog" class="modal-backdrop">
-      <button @click="resetStore">Ok</button>
+      <button @click="groupDialogStore.closeDialog()">Ok</button>
     </form>
   </dialog>
 </template>
