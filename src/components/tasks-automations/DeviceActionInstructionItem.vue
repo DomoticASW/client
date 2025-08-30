@@ -154,7 +154,6 @@ import { Type } from '@/model/Type'
 import { getDefaultInput } from './emptyInstructions'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import DeviceNameAndGroup from '../DeviceNameAndGroup.vue'
-import { useGroupsStore } from '@/stores/groups'
 import { useDevicesStore } from '@/stores/devices'
 
 const props = defineProps<{
@@ -169,7 +168,6 @@ const loadingOverlay = useLoadingOverlayStore()
 const instruction = ref(props.instruction.instruction as DeviceActionInstruction)
 const device = ref<Device>()
 const action = ref<DeviceAction<unknown>>()
-const groupsStore = useGroupsStore()
 const devicesStore = useDevicesStore()
 
 const selectedAction = ref<DeviceAction<unknown>>()
@@ -293,12 +291,7 @@ onMounted(() => updateInstruction())
 function updateInstruction() {
   try {
     loadingOverlay.startLoading()
-    const deviceGroups = groupsStore.getGroupsOfDevice(instruction.value.deviceId)
-    if (deviceGroups.length > 0) {
-      device.value = groupsStore.findDevice(instruction.value.deviceId)!
-    } else {
-      device.value = devicesStore.getDevice(instruction.value.deviceId)
-    }
+    device.value = devicesStore.getDevice(instruction.value.deviceId)
     action.value = device.value?.actions.find((act) => act.id === instruction.value.deviceActionId)
     selectedAction.value = action.value
   } finally {

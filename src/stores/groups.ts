@@ -19,11 +19,5 @@ export const useGroupsStore = defineStore('groups', () => {
     )
   }
 
-  function findDevice(deviceId: DeviceId) {
-    return getGroupsOfDevice(deviceId)[0].devices.find(
-      (d) => d.id === deviceId,
-    )!
-  }
-
-  return { groups, updateGroups, getGroupsOfDevice, findDevice }
+  return { groups, updateGroups, getGroupsOfDevice }
 })

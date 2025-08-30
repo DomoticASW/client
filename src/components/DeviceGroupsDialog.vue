@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Device } from '@/model/devices-management/Device'
 import type { DeviceGroup } from '@/model/devices-management/DeviceGroup'
-import { useGroupsStore } from '@/stores/groups'
+import { useDevicesStore } from '@/stores/devices'
 import { useGroupsDialogStore } from '@/stores/groups-dialog'
 import { ref, useTemplateRef } from 'vue'
 
@@ -13,7 +13,7 @@ const dialog = useTemplateRef('groups_info')
 
 groupDialogStore.$subscribe(() => {
   if (groupDialogStore.selectedDevice) {
-    device.value = useGroupsStore().findDevice(groupDialogStore.selectedDevice)
+    device.value = useDevicesStore().getDevice(groupDialogStore.selectedDevice)
     deviceGroups.value = groupDialogStore.selectedDeviceGroups
     dialog.value?.showModal()
   }
