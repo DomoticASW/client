@@ -80,7 +80,7 @@ onMounted(async () => {
           In this page, you can modify the editlist (task/automation), whitelist and blacklist (only for tasks).
         </p>
         <p>
-          You are not showed in these lists since they already have every permission to modify and execute every task and automation.
+          You are not showed in these lists since you already have every permission to modify and execute every task and automation.
         </p>
         <ul class="list-disc list-inside">
           <li>
