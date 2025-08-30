@@ -35,9 +35,7 @@ import type { Instruction, SendNotificationInstruction } from '@/model/scripts/I
 import InstructionLayout from './InstructionLayout.vue'
 import { onMounted, ref, watch } from 'vue'
 import type { User } from '@/model/users-management/User'
-import { getAllUsers } from '@/api/users-management/requests/users'
-import { useUserInfoStore } from '@/stores/user-info'
-import { useLoadingOverlayStore } from '@/stores/loading-overlay'
+import { useUsersStore } from '@/stores/users'
 
 const props = defineProps<{
   instruction: Instruction
@@ -45,20 +43,14 @@ const props = defineProps<{
   edit: boolean
 }>()
 
-const userInfo = useUserInfoStore()
 const instruction = ref(props.instruction.instruction as SendNotificationInstruction)
 const users = ref<User[]>()
 const selectedUser = ref<User>()
-const loadingOverlay = useLoadingOverlayStore()
+const usersStore = useUsersStore()
 
-onMounted(async () => {
-  try {
-    loadingOverlay.startLoading()
-    users.value = await getAllUsers(userInfo.token)
-    selectedUser.value = users.value?.find((u) => u.email === instruction.value.email)
-  } finally {
-    loadingOverlay.stopLoading()
-  }
+onMounted(() => {
+  users.value = usersStore.users
+  selectedUser.value = usersStore.getUser(instruction.value.email)
 })
 
 watch(

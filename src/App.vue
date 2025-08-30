@@ -3,6 +3,7 @@ import { RouterView } from 'vue-router'
 import LoadingOverlay from './components/LoadingOverlay.vue'
 import ErrorPresenter from './components/ErrorPresenter.vue'
 import SuccessPresenter from './components/SuccessPresenter.vue'
+import DeviceGroupsDialog from './components/DeviceGroupsDialog.vue'
 </script>
 
 <template>
@@ -13,6 +14,7 @@ import SuccessPresenter from './components/SuccessPresenter.vue'
             <RouterView />
             <SuccessPresenter>
             </SuccessPresenter>
+            <DeviceGroupsDialog/>
           </div>
         </LoadingOverlay>
 

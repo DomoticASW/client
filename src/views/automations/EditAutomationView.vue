@@ -142,6 +142,6 @@ function showToastMessage(msg: string) {
     <div class="pb-4"></div>
     <InstructionItems :openDialog="openDialog" :closeDialog="closeDialog" />
     <DeviceActionPropertyDialog :selected-device="selectedDevice" :close-dialog="closeDialog" />
-    <InfoDialogs/>
+    <InfoDialogs />
   </NavbarLayout>
 </template>

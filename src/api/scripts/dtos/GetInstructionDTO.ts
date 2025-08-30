@@ -19,6 +19,7 @@ import {
 } from './GetInstructionTypeDTO'
 import { isTypeDTO, typeDeserializer, type TypeDTO } from '@/api/devices-management/dtos/devices/TypeDTO'
 import { DeviceActionId, DeviceId, DevicePropertyId } from '@/model/devices-management/Device'
+import { TaskId } from '@/model/scripts/Script'
 
 export interface GetInstructionDTO {
   type: GetInstructionTypeDTO
@@ -204,7 +205,7 @@ export const startTaskDeserializer = Deserializer<GetStartTaskInstructionDTO, St
   isGetStartTaskInstructionDTO,
   (dto) => {
     return {
-      taskId: dto.taskId,
+      taskId: TaskId(dto.taskId),
     }
   },
 )

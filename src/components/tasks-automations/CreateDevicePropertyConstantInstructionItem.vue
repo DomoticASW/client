@@ -22,8 +22,6 @@
     </div>
   </InstructionLayout>
 
-  <DeviceGroupsDialog :id="id" :device="device" />
-
   <dialog :id="id + '_info'" class="modal modal-sm">
     <div class="modal-box max-w-sm" v-if="property">
       <h3 class="card-title mb-2">{{ property.name }} type constraints info</h3>
@@ -119,8 +117,7 @@ import { useUserInfoStore } from '@/stores/user-info'
 import { useInstructionsStore } from '@/stores/instructions'
 import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import DeviceNameAndGroup from '../DeviceNameAndGroup.vue'
-import DeviceGroupsDialog from '../DeviceGroupsDialog.vue'
-import { useGroupsStore } from '@/stores/groups'
+import { useDevicesStore } from '@/stores/devices'
 
 const props = defineProps<{
   id: string
@@ -135,6 +132,7 @@ const userInfo = useUserInfoStore()
 const instruction = ref(props.instruction.instruction as CreateDevicePropertyConstantInstruction)
 const device = ref<Device>()
 const property = ref<DeviceProperty<unknown>>()
+const devicesStore = useDevicesStore()
 
 const variableForm = ref<CreateDevicePropertyConstantInstruction>({
   name: instruction.value.name,
@@ -147,23 +145,18 @@ watch(
   () => props.instruction,
   async (val) => {
     instruction.value = val.instruction as CreateDevicePropertyConstantInstruction
-    await updateInstruction()
+    updateInstruction()
   },
   { immediate: true },
 )
 
-onMounted(async () => await updateInstruction())
+onMounted(() => updateInstruction())
 
-async function updateInstruction() {
+function updateInstruction() {
   try {
     loadingOverlay.startLoading()
-    const deviceGroups = useGroupsStore().deviceGroups(instruction.value.deviceId)
-    if (deviceGroups.length > 0) {
-      device.value = useGroupsStore().getDeviceFromGroups(instruction.value.deviceId)!
-    } else {
-      device.value = await findDevice(instruction.value.deviceId, userInfo.token)
-    }
-    property.value = device.value.properties.find(
+    device.value = devicesStore.getDevice(instruction.value.deviceId)
+    property.value = device.value?.properties.find(
       (prop) => prop.id === instruction.value.devicePropertyId,
     )
   } finally {

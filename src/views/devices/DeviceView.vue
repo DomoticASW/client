@@ -16,7 +16,6 @@ import { io } from 'socket.io-client'
 import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
 import NavbarLayout from '@/components/NavbarLayout.vue'
 import DeviceGroupsButton from '@/components/DeviceGroupsButton.vue'
-import DeviceGroupsDialog from '@/components/DeviceGroupsDialog.vue'
 const props = defineProps({ id: { type: String, required: true } })
 const deviceId = DeviceId(props.id)
 const userInfo = useUserInfoStore()
@@ -149,7 +148,6 @@ onUnmounted(() => {
     <div class="flex justify-center items-center">
       <span class="mr-2">Groups:</span>
       <DeviceGroupsButton v-if="device" :id="device.id" :device="device" />
-      <DeviceGroupsDialog v-if="device" :id="device.id" :device="device" />
     </div>
     <ul v-if="device" class="list">
       <li v-for="p in device.properties" v-bind:key="p.id" class="list-row items-center">

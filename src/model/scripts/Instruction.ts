@@ -1,5 +1,6 @@
 import type { DeviceActionId, DeviceId, DevicePropertyId } from '../devices-management/Device'
 import type { Type } from '../Type'
+import type { TaskId } from './Script'
 
 export enum InstructionType {
   SendNotificationInstruction = 'SendNotificationInstruction',
@@ -55,7 +56,7 @@ export interface WaitInstruction {
 }
 
 export interface StartTaskInstruction {
-  taskId: string
+  taskId: TaskId
 }
 
 export interface DeviceActionInstruction {

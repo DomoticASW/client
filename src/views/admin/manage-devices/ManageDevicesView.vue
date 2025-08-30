@@ -10,7 +10,6 @@ import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-prese
 import AddButton from '@/components/AddButton.vue'
 import NavbarLayout from '@/components/NavbarLayout.vue'
 import DeviceGroupsButton from '@/components/DeviceGroupsButton.vue'
-import DeviceGroupsDialog from '@/components/DeviceGroupsDialog.vue'
 
 const userInfo = useUserInfoStore()
 const loadingOverlay = useLoadingOverlayStore()
@@ -86,7 +85,6 @@ onMounted(async () => {
             class="btn btn-circle btn-ghost fa-solid fa-trash"
             v-on:click="removeDevice(d.id)"
           ></button>
-          <DeviceGroupsDialog :id="d.id" :device="d" />
         </li>
       </ul>
       <DeviceListSkeleton v-else />

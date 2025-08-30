@@ -12,7 +12,6 @@ import * as devicesApi from '@/api/devices-management/requests/devices'
 import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
 import NavbarLayout from '@/components/NavbarLayout.vue'
 import DeviceGroupsButton from '@/components/DeviceGroupsButton.vue'
-import DeviceGroupsDialog from '@/components/DeviceGroupsDialog.vue'
 
 const props = defineProps({ id: { type: String, required: true } })
 const groupId = DeviceGroupId(props.id)
@@ -97,7 +96,6 @@ onMounted(async () => {
           class="btn btn-circle btn-ghost fa-solid fa-remove"
           @click="removeDeviceFromGroup(d.id)"
         ></button>
-        <DeviceGroupsDialog :id="d.id" :device="d" />
       </li>
     </ul>
     <DeviceRowSkeleton v-else />
@@ -128,7 +126,6 @@ onMounted(async () => {
           class="btn btn-circle btn-ghost fa-solid fa-add"
           @click="addDeviceToGroup(d.id)"
         ></button>
-        <DeviceGroupsDialog :id="d.id" :device="d" />
       </li>
     </ul>
     <DeviceRowSkeleton v-else :nRows="5" />
