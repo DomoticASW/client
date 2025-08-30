@@ -295,7 +295,7 @@ function updateInstruction() {
     loadingOverlay.startLoading()
     const deviceGroups = groupsStore.deviceGroups(instruction.value.deviceId)
     if (deviceGroups.length > 0) {
-      device.value = groupsStore.getDeviceFromGroups(instruction.value.deviceId)!
+      device.value = groupsStore.findDevice(instruction.value.deviceId)!
     } else {
       device.value = devicesStore.getDevice(instruction.value.deviceId)
     }

@@ -20,7 +20,7 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(router)
 
-useLoadingOverlayStore()
+const loadingOverlay = useLoadingOverlayStore()
 // Loading a session token if it exists
 const userInfo = useUserInfoStore()
 
@@ -46,16 +46,24 @@ app.config.errorHandler = (err) => {
 }
 
 userInfo.$subscribe(async () => {
-  await useGroupsStore().updateGroups()
-  await useDevicesStore().updateDevices()
-  await useUsersStore().updateUsers()
-  await useTasksStore().updateTasks()
+  await setupStores()
 })
 
-useGroupsStore().updateGroups()
-useDevicesStore().updateDevices()
-useUsersStore().updateUsers()
-useTasksStore().updateTasks()
+setupStores()
+
+async function setupStores() {
+  if (userInfo.token) {
+    try {
+      loadingOverlay.startLoading()
+      await useGroupsStore().updateGroups()
+      await useDevicesStore().updateDevices()
+      await useUsersStore().updateUsers()
+      await useTasksStore().updateTasks()
+    } finally {
+      loadingOverlay.stopLoading()
+    }
+  }
+}
 
 // During development it's possible to set a VITE_USER_INFO object to skip login:
 // VITE_USER_INFO='{"email": "a@email.com", "nickname": "Foo", "token": "blablabla", "role": "Admin" }' npm run dev

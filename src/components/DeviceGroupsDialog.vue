@@ -12,7 +12,7 @@ const dialog = useTemplateRef('groups_info')
 
 groupsStore.$subscribe(() => {
   if (groupsStore.selectedDevice) {
-    device.value = groupsStore.getDeviceFromGroups(groupsStore.selectedDevice)
+    device.value = groupsStore.findDevice(groupsStore.selectedDevice)
     deviceGroups.value = groupsStore.selectedGroups
     dialog.value?.showModal()
   }

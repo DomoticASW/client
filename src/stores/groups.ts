@@ -4,7 +4,6 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useUserInfoStore } from "./user-info";
 import { type DeviceId } from "@/model/devices-management/Device";
-import { useLoadingOverlayStore } from "./loading-overlay";
 
 export const useGroupsStore = defineStore('groups', () => {
   const userInfo = useUserInfoStore()
@@ -13,15 +12,7 @@ export const useGroupsStore = defineStore('groups', () => {
   const selectedDevice = ref<DeviceId>()
 
   async function updateGroups() {
-    const loadingOverlay = useLoadingOverlayStore()
-    if (userInfo.token) {
-      try {
-        loadingOverlay.startLoading()
-        groups.value = await getAllDeviceGroups(userInfo.token)
-      } finally {
-        loadingOverlay.stopLoading()
-      }
-    }
+    groups.value = await getAllDeviceGroups(userInfo.token)
   }
 
   function deviceGroups(deviceId: DeviceId, show: boolean = false) {
@@ -34,7 +25,7 @@ export const useGroupsStore = defineStore('groups', () => {
     return selectedGroups.value
   }
 
-  function getDeviceFromGroups(deviceId: DeviceId) {
+  function findDevice(deviceId: DeviceId) {
     return groups.value.filter((g) =>
       g.devices.map(d => d.id).includes(deviceId)
     )[0].devices.find(
@@ -46,5 +37,5 @@ export const useGroupsStore = defineStore('groups', () => {
     selectedDevice.value = undefined
   }
 
-  return { groups, selectedGroups, selectedDevice, updateGroups, deviceGroups, getDeviceFromGroups, resetSelectedDevice }
+  return { groups, selectedGroups, selectedDevice, updateGroups, deviceGroups, findDevice, resetSelectedDevice }
 })
