@@ -70,40 +70,6 @@
       </div>
     </div>
   </div>
-  <template #actions>
-    <button
-      class="fa-circle-info fa-solid fa-xl btn btn-ghost btn-circle"
-      onclick="permissions_info.showModal()"
-    ></button>
-  </template>
-  <dialog id="permissions_info" class="modal modal-sm">
-      <div class="modal-box max-w-sm">
-        <h2 class="card-title mb-2">Scripts permissions info</h2>
-        <p>
-          In this page, you can modify the editlist (task/automation), whitelist and blacklist (only for tasks).
-        </p>
-        <p>
-          You are not showed in these lists since they already have every permission to modify and execute every task and automation.
-        </p>
-        <ul class="list-disc list-inside">
-          <li>
-            <span class="font-bold">Editlist</span>: every user inside it can edit the task/automation.
-          </li>
-          <li>
-            <span class="font-bold">Whitelist</span>: a whitelisted user can execute the task
-              even if he doesn't have the permissions for user-device permissions inside it.
-          </li>
-          <li>
-            <span class="font-bold">Blacklist</span>: a blacklisted user can't execute the task
-              even if he has the permissions for user-device permissions inside it.
-          </li>
-        </ul>
-        <p> A blacklisted user can't be added in the whitelist and vice versa.</p>
-      </div>
-      <form method="dialog" class="modal-backdrop">
-        <button>Ok</button>
-      </form>
-    </dialog>
   </NavbarLayout>
 </template>
 
