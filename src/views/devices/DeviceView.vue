@@ -35,6 +35,15 @@ onMounted(async () => {
   device.value = await api.findDevice(deviceId, userInfo.token)
 })
 
+/* Showing device actions description */
+const actionDescriptionDialog = useTemplateRef('device_action_description')
+const actionDescriptionToShow = ref<DeviceAction<unknown> | undefined>()
+
+function showActionDescriptionDialog(action: DeviceAction<unknown>) {
+  actionDescriptionToShow.value = action
+  actionDescriptionDialog.value?.showModal()
+}
+
 /* Property setter actions execution */
 async function onPropertyInput(property: DeviceProperty<unknown>, value: unknown) {
   if (property.setter) {
@@ -144,7 +153,14 @@ onUnmounted(() => {
     </div>
     <ul v-if="device" class="list">
       <li v-for="p in device.properties" v-bind:key="p.id" class="list-row items-center">
-        <span class="list-col-grow"> {{ p.name }} </span>
+        <div class="list-col-grow">
+          <span> {{ p.name }} </span>
+          <button
+            v-if="p.setter?.description"
+            class="btn btn-ghost fa-circle-info fa-solid btn-circle ml-1"
+            @click="showActionDescriptionDialog(p.setter)"
+          ></button>
+        </div>
         <ValueIOControl
           :typeConstraints="p.typeConstraints"
           :isInput="p.setter !== undefined"
@@ -153,7 +169,14 @@ onUnmounted(() => {
         />
       </li>
       <li v-for="a in actionsToShow" v-bind:key="a.id" class="list-row items-center">
-        <span class="list-col-grow"> {{ a.name }} </span>
+        <div class="list-col-grow">
+          <span> {{ a.name }} </span>
+          <button
+            v-if="a.description"
+            class="btn btn-ghost fa-circle-info fa-solid btn-circle ml-1"
+            @click="showActionDescriptionDialog(a)"
+          ></button>
+        </div>
         <button
           class="btn btn-circle btn-ghost fa-solid fa-play"
           @click="onAskActionInput(a)"
@@ -212,6 +235,17 @@ onUnmounted(() => {
     </div>
     <form method="dialog" class="modal-backdrop">
       <button @click="onCancelExecuteAction">Cancel</button>
+    </form>
+  </dialog>
+
+  <!-- Dialog for device action descriptions -->
+  <dialog ref="device_action_description" class="modal modal-md">
+    <div class="modal-box max-w-md">
+      <h3 class="card-title mb-2">{{ actionDescriptionToShow?.name }}</h3>
+      {{ actionDescriptionToShow?.description }}
+    </div>
+    <form method="dialog" class="modal-backdrop">
+      <button @click="actionDescriptionToShow = undefined">Ok</button>
     </form>
   </dialog>
 </template>
