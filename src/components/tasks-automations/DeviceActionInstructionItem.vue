@@ -25,8 +25,6 @@
     </template>
   </InstructionLayout>
 
-  <DeviceGroupsDialog :id="id" :device="device" />
-
   <dialog :id="id" class="modal" v-if="device && action">
     <div class="modal-box max-w-sm">
       <h3 class="card-title mx-2 mb-2">Device action</h3>
@@ -151,15 +149,11 @@ import {
 import InstructionLayout from './InstructionLayout.vue'
 import { onMounted, ref, watch } from 'vue'
 import type { Device, DeviceAction } from '@/model/devices-management/Device'
-import { useUserInfoStore } from '@/stores/user-info'
 import { useInstructionsStore } from '@/stores/instructions'
-import { findDevice } from '@/api/devices-management/requests/devices'
 import { Type } from '@/model/Type'
 import { getDefaultInput } from './emptyInstructions'
-import { useLoadingOverlayStore } from '@/stores/loading-overlay'
-import DeviceGroupsDialog from '../DeviceGroupsDialog.vue'
 import DeviceNameAndGroup from '../DeviceNameAndGroup.vue'
-import { useGroupsStore } from '@/stores/groups'
+import { useDevicesStore } from '@/stores/devices'
 
 const props = defineProps<{
   id: string
@@ -169,11 +163,10 @@ const props = defineProps<{
 }>()
 
 const instructionsStore = useInstructionsStore()
-const loadingOverlay = useLoadingOverlayStore()
-const userInfo = useUserInfoStore()
 const instruction = ref(props.instruction.instruction as DeviceActionInstruction)
 const device = ref<Device>()
 const action = ref<DeviceAction<unknown>>()
+const devicesStore = useDevicesStore()
 
 const selectedAction = ref<DeviceAction<unknown>>()
 
@@ -187,7 +180,7 @@ watch(
   () => props.instruction,
   async (val) => {
     instruction.value = val.instruction as DeviceActionInstruction
-    await updateInstruction()
+    updateInstruction()
   },
   { immediate: true },
 )
@@ -291,22 +284,12 @@ function variableType(): TypeDTO {
   }
 }
 
-onMounted(async () => await updateInstruction())
+onMounted(() => updateInstruction())
 
-async function updateInstruction() {
-  try {
-    loadingOverlay.startLoading()
-    const deviceGroups = useGroupsStore().deviceGroups(instruction.value.deviceId)
-    if (deviceGroups.length > 0) {
-      device.value = useGroupsStore().getDeviceFromGroups(instruction.value.deviceId)!
-    } else {
-      device.value = await findDevice(instruction.value.deviceId, userInfo.token)
-    }
-    action.value = device.value.actions.find((act) => act.id === instruction.value.deviceActionId)
-    selectedAction.value = action.value
-  } finally {
-    loadingOverlay.stopLoading()
-  }
+function updateInstruction() {
+  device.value = devicesStore.getDevice(instruction.value.deviceId)
+  action.value = device.value?.actions.find((act) => act.id === instruction.value.deviceActionId)
+  selectedAction.value = action.value
 }
 
 function openDialog() {
@@ -335,5 +318,4 @@ function closeDialog() {
   const dialog = document.getElementById(props.id.toString()) as HTMLDialogElement
   dialog.close()
 }
-
 </script>

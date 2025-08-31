@@ -9,8 +9,7 @@ import {
   formatDuration,
 } from './timeUtils'
 import type { Device } from '@/model/devices-management/Device'
-import { findDevice, getAllDevices } from '@/api/devices-management/requests/devices'
-import { useUserInfoStore } from '@/stores/user-info'
+import { useDevicesStore } from '@/stores/devices'
 
 const props = defineProps<{
   trigger?: Trigger
@@ -30,9 +29,9 @@ const trigger = computed({
 
 watch(
   () => props.trigger,
-  async (val) => {
+  (val) => {
     if (isDeviceEventTrigger(val)) {
-      selectedDevice.value = await findDevice(val.deviceId, userInfo.token)
+      selectedDevice.value = useDevicesStore().getDevice(val.deviceId)
       selectedEvent.value = val.eventName
     }
   },
@@ -100,7 +99,6 @@ function addEmptyPeriodTrigger() {
   }
 }
 
-const userInfo = useUserInfoStore()
 const selectedDevice = ref<Device>()
 const selectedEvent = ref<string>('')
 const devices = ref<Device[]>()
@@ -150,8 +148,8 @@ function closeDialog() {
   dialog.close()
 }
 
-onMounted(async () => {
-  devices.value = await getAllDevices(userInfo.token)
+onMounted(() => {
+  devices.value = useDevicesStore().devices
 })
 </script>
 

@@ -11,6 +11,7 @@ import type {
   DeviceActionInstruction,
 } from '@/model/scripts/Instruction'
 import { ConditionOperatorType } from '@/model/scripts/Instruction'
+import { TaskId } from '@/model/scripts/Script'
 import { Type } from '@/model/Type'
 
 export function EmptyIfInstruction(): IfInstruction {
@@ -46,7 +47,7 @@ export function EmptyWaitInstruction(): WaitInstruction {
 
 export function EmptyStartTaskInstruction(): StartTaskInstruction {
   return {
-    taskId: '',
+    taskId: TaskId(''),
   }
 }
 
