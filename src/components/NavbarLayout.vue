@@ -1,5 +1,7 @@
 <template>
-  <div class="navbar py-0 mb-4 bg-base-200/70 shadow backdrop-blur sticky top-0 z-30 lg:rounded-xl md:mt-1">
+  <div
+    class="navbar py-0 mb-4 bg-base-200/70 shadow backdrop-blur sticky top-0 z-30 lg:rounded-xl md:mt-1"
+  >
     <div class="navbar-start w-full md:w-[50%]">
       <template v-if="showBackButton">
         <button
@@ -145,7 +147,6 @@ import { useNotificationsStore } from '@/stores/notifications'
 import type { RegistrationRequest } from '@/model/users-management/RegistrationRequest'
 import { onMounted, ref } from 'vue'
 import { getAllRegistrationRequests } from '@/api/users-management/requests/users'
-import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 
 defineProps({
   title: { type: String },
@@ -156,18 +157,12 @@ defineProps({
 })
 
 const userInfo = useUserInfoStore()
-const loadingOverlay = useLoadingOverlayStore()
 const router = useRouter()
 const goBack = () => router.back()
 
 const registrationRequests = ref<RegistrationRequest[]>([])
 
 onMounted(async () => {
-  try {
-    loadingOverlay.startLoading()
-    registrationRequests.value = await getAllRegistrationRequests(userInfo.token)
-  } finally {
-    loadingOverlay.stopLoading()
-  }
+  registrationRequests.value = await getAllRegistrationRequests(userInfo.token)
 })
 </script>
