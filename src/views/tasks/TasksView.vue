@@ -16,12 +16,7 @@ const tasks = ref<Task[]>()
 const loadingOverlay = useLoadingOverlayStore()
 
 onMounted(async () => {
-  try {
-    loadingOverlay.startLoading()
-    tasks.value = await getAllTasks(userInfo.token)
-  } finally {
-    loadingOverlay.stopLoading()
-  }
+  tasks.value = await getAllTasks(userInfo.token)
 })
 
 async function startTask(taskId: TaskId) {

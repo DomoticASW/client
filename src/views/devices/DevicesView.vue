@@ -46,20 +46,10 @@ function closeDropdown() {
 }
 
 onMounted(async () => {
-  loadingOverlay.startLoading()
-  try {
-    groups.value = await getAllDeviceGroups(userInfo.token)
-  } finally {
-    loadingOverlay.stopLoading()
-  }
+  groups.value = await getAllDeviceGroups(userInfo.token)
 })
 onMounted(async () => {
-  loadingOverlay.startLoading()
-  try {
-    devices.value = await getAllDevices(userInfo.token)
-  } finally {
-    loadingOverlay.stopLoading()
-  }
+  devices.value = await getAllDevices(userInfo.token)
 })
 </script>
 
