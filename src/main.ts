@@ -55,10 +55,13 @@ async function setupStores() {
   if (userInfo.token) {
     try {
       loadingOverlay.startLoading()
-      await useGroupsStore().updateGroups()
-      await useDevicesStore().updateDevices()
-      await useUsersStore().updateUsers()
-      await useTasksStore().updateTasks()
+      await Promise.all([
+        useGroupsStore().updateGroups(),
+        useDevicesStore().updateDevices(),
+        useDevicesStore().updateDevices(),
+        useUsersStore().updateUsers(),
+        useTasksStore().updateTasks()
+      ])
     } finally {
       loadingOverlay.stopLoading()
     }
