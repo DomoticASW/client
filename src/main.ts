@@ -58,7 +58,6 @@ async function setupStores() {
       await Promise.all([
         useGroupsStore().updateGroups(),
         useDevicesStore().updateDevices(),
-        useDevicesStore().updateDevices(),
         useUsersStore().updateUsers(),
         useTasksStore().updateTasks()
       ])
