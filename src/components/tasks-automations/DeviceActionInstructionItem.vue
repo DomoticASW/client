@@ -152,7 +152,6 @@ import type { Device, DeviceAction } from '@/model/devices-management/Device'
 import { useInstructionsStore } from '@/stores/instructions'
 import { Type } from '@/model/Type'
 import { getDefaultInput } from './emptyInstructions'
-import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import DeviceNameAndGroup from '../DeviceNameAndGroup.vue'
 import { useDevicesStore } from '@/stores/devices'
 
@@ -164,7 +163,6 @@ const props = defineProps<{
 }>()
 
 const instructionsStore = useInstructionsStore()
-const loadingOverlay = useLoadingOverlayStore()
 const instruction = ref(props.instruction.instruction as DeviceActionInstruction)
 const device = ref<Device>()
 const action = ref<DeviceAction<unknown>>()
@@ -289,14 +287,9 @@ function variableType(): TypeDTO {
 onMounted(() => updateInstruction())
 
 function updateInstruction() {
-  try {
-    loadingOverlay.startLoading()
-    device.value = devicesStore.getDevice(instruction.value.deviceId)
-    action.value = device.value?.actions.find((act) => act.id === instruction.value.deviceActionId)
-    selectedAction.value = action.value
-  } finally {
-    loadingOverlay.stopLoading()
-  }
+  device.value = devicesStore.getDevice(instruction.value.deviceId)
+  action.value = device.value?.actions.find((act) => act.id === instruction.value.deviceActionId)
+  selectedAction.value = action.value
 }
 
 function openDialog() {

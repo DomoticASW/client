@@ -112,10 +112,7 @@ import {
 import InstructionLayout from './InstructionLayout.vue'
 import { onMounted, ref, watch } from 'vue'
 import type { Device, DeviceProperty } from '@/model/devices-management/Device'
-import { findDevice } from '@/api/devices-management/requests/devices'
-import { useUserInfoStore } from '@/stores/user-info'
 import { useInstructionsStore } from '@/stores/instructions'
-import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import DeviceNameAndGroup from '../DeviceNameAndGroup.vue'
 import { useDevicesStore } from '@/stores/devices'
 
@@ -127,8 +124,6 @@ const props = defineProps<{
 }>()
 
 const instructionsStore = useInstructionsStore()
-const loadingOverlay = useLoadingOverlayStore()
-const userInfo = useUserInfoStore()
 const instruction = ref(props.instruction.instruction as CreateDevicePropertyConstantInstruction)
 const device = ref<Device>()
 const property = ref<DeviceProperty<unknown>>()
@@ -153,15 +148,10 @@ watch(
 onMounted(() => updateInstruction())
 
 function updateInstruction() {
-  try {
-    loadingOverlay.startLoading()
-    device.value = devicesStore.getDevice(instruction.value.deviceId)
-    property.value = device.value?.properties.find(
-      (prop) => prop.id === instruction.value.devicePropertyId,
-    )
-  } finally {
-    loadingOverlay.stopLoading()
-  }
+  device.value = devicesStore.getDevice(instruction.value.deviceId)
+  property.value = device.value?.properties.find(
+    (prop) => prop.id === instruction.value.devicePropertyId,
+  )
 }
 
 function openDialog() {
@@ -175,27 +165,22 @@ function openDialog() {
   }
 }
 
-async function handleConfirm() {
-  try {
-    loadingOverlay.startLoading()
-    const device = await findDevice(variableForm.value.deviceId, userInfo.token)
-    const property = device.properties.find(
-      (prop) => prop.id === variableForm.value.devicePropertyId,
-    )
-    if (property) {
-      variableForm.value.type = property.typeConstraints.type
-      instructionsStore.changeInstruction(props.instruction, {
-        type: InstructionType.CreateDevicePropertyConstantInstruction,
-        instruction: {
-          name: variableForm.value.name,
-          type: variableForm.value.type,
-          deviceId: variableForm.value.deviceId,
-          devicePropertyId: variableForm.value.devicePropertyId,
-        },
-      })
-    }
-  } finally {
-    loadingOverlay.stopLoading()
+function handleConfirm() {
+  const device = devicesStore.getDevice(variableForm.value.deviceId)
+  const property = device?.properties.find(
+    (prop) => prop.id === variableForm.value.devicePropertyId,
+  )
+  if (property) {
+    variableForm.value.type = property.typeConstraints.type
+    instructionsStore.changeInstruction(props.instruction, {
+      type: InstructionType.CreateDevicePropertyConstantInstruction,
+      instruction: {
+        name: variableForm.value.name,
+        type: variableForm.value.type,
+        deviceId: variableForm.value.deviceId,
+        devicePropertyId: variableForm.value.devicePropertyId,
+      },
+    })
   }
   closeDialog()
 }
