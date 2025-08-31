@@ -31,10 +31,10 @@
         </p>
         <p>
           By clicking on a user, you are shown a list of device permissions that you can add or remove for the selected user.
-          The device permission allows the user to use that device.
+          The device permission allows the user to execute actions of that device.
         </p>
         <p>
-          When a user has all the device permissions required by a task, he can execute it.
+          When a user has all the device permissions required by a task, he can execute that task.
         </p>
         <p>
           You are not showed in these lists since you already have every permission to execute every device.

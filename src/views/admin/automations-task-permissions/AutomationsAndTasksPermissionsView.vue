@@ -88,11 +88,10 @@ onMounted(async () => {
           </li>
           <li>
             <span class="font-bold">Whitelist</span>: a whitelisted user can execute the task
-              even if he doesn't have the permissions for user-device permissions inside it.
+              even if he doesn't have all the necessary user-device permissions.
           </li>
           <li>
-            <span class="font-bold">Blacklist</span>: a blacklisted user can't execute the task
-              even if he has the permissions for user-device permissions inside it.
+            <span class="font-bold">Blacklist</span>: A blacklisted user can't execute the task even if he has all the necessary user-device permissions.
           </li>
         </ul>
         <p> A blacklisted user can't be added in the whitelist and vice versa.</p>
