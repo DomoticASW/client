@@ -1,7 +1,7 @@
 <template>
   <dialog id="devices_info" class="modal modal-md">
     <div class="modal-box max-w-md">
-      <h3 class="card-title mb-2">Info about devices instructions</h3>
+      <p class="card-title mb-2">Info about devices instructions</p>
       <ul class="list-disc list-inside">
         <li>
           <span class="font-bold">Properties</span>
@@ -23,7 +23,7 @@
 
   <dialog id="operations_info" class="modal modal-md">
     <div class="modal-box max-w-md">
-      <h3 class="card-title mb-2">Info about operation instructions</h3>
+      <p class="card-title mb-2">Info about operation instructions</p>
       <ul class="list-disc list-inside">
         <li>
           <span class="font-bold">Create constant</span>
@@ -53,7 +53,7 @@
 
   <dialog id="flow_info" class="modal modal-md">
     <div class="modal-box max-w-md">
-      <h3 class="card-title mb-2">Info about control flow instructions</h3>
+      <p class="card-title mb-2">Info about control flow instructions</p>
       <ul class="list-inside list-disc">
         <li>
           <span class="font-bold">If</span>

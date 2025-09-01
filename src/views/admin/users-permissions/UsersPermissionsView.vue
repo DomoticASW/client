@@ -33,7 +33,7 @@
     </template>
     <dialog id="permissions_info" class="modal modal-sm">
       <div class="modal-box max-w-sm">
-        <h2 class="card-title mb-2">Users permissions info</h2>
+        <p class="card-title mb-2">Users permissions info</p>
         <p>On this page, the list of registered users is shown.</p>
         <p>
           By clicking on a user, you are shown a list of device permissions that you can add or

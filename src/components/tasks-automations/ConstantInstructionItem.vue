@@ -26,7 +26,7 @@
 
   <dialog :id="id" class="modal">
     <div class="modal-box max-w-sm">
-      <h3 class="card-title mx-2 mb-2">Set constant</h3>
+      <p class="card-title mx-2 mb-2">Set constant</p>
       <form @submit.prevent="handleConfirm">
         <label for="name" class="fieldset-legend text-sm mx-3 mt-2">Name</label>
         <input

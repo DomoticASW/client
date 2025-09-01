@@ -72,7 +72,7 @@ async function startTask(taskId: TaskId) {
 
     <dialog id="tasks_info" class="modal modal-sm">
       <div class="modal-box max-w-sm">
-        <h2 class="card-title mb-2">Tasks info</h2>
+        <p class="card-title mb-2">Tasks info</p>
         <p>
           Tasks are a sequence of instructions that, when executed, can execute actions on devices
           and read properties from them.

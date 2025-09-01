@@ -24,7 +24,7 @@
 
   <dialog :id="id + '_info'" class="modal modal-sm">
     <div class="modal-box max-w-sm" v-if="property">
-      <h3 class="card-title mb-2">{{ property.name }} type constraints info</h3>
+      <p class="card-title mb-2">{{ property.name }} type constraints info</p>
       <div v-if="property.typeConstraints.__brand === 'Enum'">
         <p>Possible values for {{ property.name }} property:</p>
         <ul class="list-inside list-disc">
@@ -61,7 +61,7 @@
 
   <dialog :id="id" class="modal" v-if="device && property">
     <div class="modal-box max-w-sm">
-      <h3 class="card-title mx-2 mb-2">Device property</h3>
+      <p class="card-title mx-2 mb-2">Device property</p>
       <form @submit.prevent="handleConfirm">
         <!-- Selection of a property -->
         <label for="properties" class="fieldset-legend text-sm mx-3"

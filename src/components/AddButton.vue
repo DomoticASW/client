@@ -19,7 +19,7 @@ function onclick() {
         class="btn btn-primary shadow !flex items-center gap-2 w-12 h-12 sm:w-auto sm:h-auto sm:gap-2 rounded-full sm:rounded-lg py-2 pointer-events-auto"
       >
         <span class="hidden sm:inline text-lg font-semibold">Add</span>
-        <i class="fa-solid fa-plus fa-lg"></i>
+        <span class="fa-solid fa-plus fa-lg"></span>
       </RouterLink>
 
       <template v-else>
@@ -29,7 +29,7 @@ function onclick() {
           class="btn btn-primary shadow !flex items-center gap-2 w-12 h-12 sm:w-auto sm:h-auto sm:gap-2 rounded-full sm:rounded-lg py-2 pointer-events-auto"
         >
           <span class="hidden sm:inline text-lg font-semibold">Add</span>
-          <i class="fa-solid fa-plus fa-lg"></i>
+          <span class="fa-solid fa-plus fa-lg"></span>
         </button>
       </template>
     </div>

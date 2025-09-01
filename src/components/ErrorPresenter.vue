@@ -58,13 +58,13 @@ state.$subscribe(async () => {
 
 <template>
   <slot></slot>
-  <dialog ref="error-presenter-dialog" class="modal modal-bottom sm:modal-middle">
-    <div class="modal-box">
-      <h3 class="text-lg font-bold">{{ errorTitle }}</h3>
+  <dialog ref="error-presenter-dialog" class="modal modal-middle">
+    <div class="modal-box max-w-sm">
+      <p class="card-title mb-2 mx-auto justify-center">{{ errorTitle }}</p>
       <p class="whitespace-pre-line">{{ errorMessage }}</p>
       <p v-if="errorCause" class="text-sm opacity-60 whitespace-pre-line">{{ errorCause }}</p>
       <div class="modal-action">
-        <button class="btn btn-primary btn-soft" @click="okPressed">Ok</button>
+        <button class="btn btn-primary" @click="okPressed">Ok</button>
       </div>
     </div>
   </dialog>

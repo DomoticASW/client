@@ -87,7 +87,7 @@ async function toggle(automation: Automation) {
 
     <dialog id="automations_info" class="modal modal-sm">
       <div class="modal-box max-w-sm">
-        <h2 class="card-title mb-2">Automations info</h2>
+        <p class="card-title mb-2">Automations info</p>
         <p>
           Automations are a sequence of instruction that, when executed, can execute actions on
           devices and read properties from them.

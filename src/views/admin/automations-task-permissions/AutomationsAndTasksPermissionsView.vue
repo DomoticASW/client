@@ -86,7 +86,7 @@ onMounted(async () => {
     </template>
     <dialog id="permissions_info" class="modal modal-sm">
       <div class="modal-box max-w-sm">
-        <h2 class="card-title mb-2">Scripts permissions info</h2>
+        <p class="card-title mb-2">Scripts permissions info</p>
         <p>
           In this page, you can modify the editlist (task/automation), whitelist and blacklist (only
           for tasks).
