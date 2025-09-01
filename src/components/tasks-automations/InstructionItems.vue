@@ -148,7 +148,13 @@ function addSendNotification() {
             onclick="devices_info.showModal()"
           ></button>
         </h3>
-        <select v-model="selectedGroup" class="select my-2 col-span-3 text-lg">
+        <label for="device_groups_filter" class="hidden">Device groups filter</label>
+        <select
+          v-model="selectedGroup"
+          class="select my-2 col-span-3 text-lg"
+          name="device_groups_filter"
+          id="device_groups_filter"
+        >
           <option selected :value="undefined">All devices</option>
           <option v-for="group in groups" :key="group.id" :value="group">{{ group.name }}</option>
         </select>
