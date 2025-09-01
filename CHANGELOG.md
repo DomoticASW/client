@@ -1,3 +1,62 @@
+## [0.4.0](https://github.com/DomoticASW/client/compare/0.3.0...0.4.0) (2025-09-01)
+
+### Features
+
+* add info button for scripts permissions page ([e142c9f](https://github.com/DomoticASW/client/commit/e142c9fbcc1fa39140ff3d5b5a5212c598226e7e))
+* add info button to users permissions ([e076f04](https://github.com/DomoticASW/client/commit/e076f045386599e81fda98185e9122a4dbde9e1a))
+
+### Bug Fixes
+
+* fix info text ([def70e1](https://github.com/DomoticASW/client/commit/def70e1cf7ebedf2ea7b531ac021096b8b2ca8d4))
+* fix info text ([f900f25](https://github.com/DomoticASW/client/commit/f900f25e5a4a9bc5c861f553b72f1b435c7f87b2))
+* fix wrong word in info text ([81f4ba5](https://github.com/DomoticASW/client/commit/81f4ba53e1c9181d0b12e59acac3cd70b0655842))
+* linting issues ([379a4d9](https://github.com/DomoticASW/client/commit/379a4d913722b57a765b8d53cf31dc7bf5973fbb))
+* put hidden class to wait instructions labels ([10e1393](https://github.com/DomoticASW/client/commit/10e139371d942522571a35f9842279f657b2b3b4))
+* task id of empty start task is now a TaskId ([5b654d6](https://github.com/DomoticASW/client/commit/5b654d6c0543186636871ea122b8724fc742b3bf))
+
+### Documentation
+
+* updated README with setup info ([331d334](https://github.com/DomoticASW/client/commit/331d334a8183d711a165877c6e3f8bd83de41adf))
+
+### Build and continuous integration
+
+* add github action to check code format ([cd1ab55](https://github.com/DomoticASW/client/commit/cd1ab55c85d2a808f5687bc2a40da5447afa37b4))
+
+### General maintenance
+
+* add git hook to check code formatting ([17d64c1](https://github.com/DomoticASW/client/commit/17d64c1963dcd2e684e79068aeab9d50a55c44e6))
+* add labels with right names and ids to inputs ([a1f50aa](https://github.com/DomoticASW/client/commit/a1f50aa923b34714193a0d97f1e87145dc42040f))
+* better accessibility for DeviceGroupsView ([1208355](https://github.com/DomoticASW/client/commit/1208355a1842b4616d9970ef9a99d66d3cd21025))
+* better accessibility for ManageDevicesView ([0748134](https://github.com/DomoticASW/client/commit/07481346828d797a87fc4c977949cdf69b08e6a8))
+* creation of devices store for better performance in scripts views ([c8e463b](https://github.com/DomoticASW/client/commit/c8e463bb2885b588d7e62dede59905d424d08255))
+* format code with default formatter ([634c59f](https://github.com/DomoticASW/client/commit/634c59f24a1a42d6b5e73be80e8d1ed516a9ba73))
+* improved accessibility for ValueIOControl ([dbf8c55](https://github.com/DomoticASW/client/commit/dbf8c55b86f1b77136dfbc1e00bdc1be550668cb))
+* nicer req requests indicator ([20d9587](https://github.com/DomoticASW/client/commit/20d95873718c4d1cf3ecda3de57bb7b160187c31))
+* parallel fetching of data to load faster ([5d1edb6](https://github.com/DomoticASW/client/commit/5d1edb633c338ee54da5309ca11617d4cb2e4a07))
+* remove duplicate call ([5b99796](https://github.com/DomoticASW/client/commit/5b997964060836ffdb4b89393416fe4691663a10))
+* remove loadingOverlay if skeletons are used ([a9310ac](https://github.com/DomoticASW/client/commit/a9310acbf5978bfa7523383e86a44990adddddc2))
+* removed loading overlay for reg.req. badge ([1326166](https://github.com/DomoticASW/client/commit/13261667dfb47689de8e3ff2822ce23077104e7a))
+* showing device actions description ([88bc1a6](https://github.com/DomoticASW/client/commit/88bc1a6a36bdb4be5cbaa825a170f8f92b170933))
+* use p instead of h in dialog titles ([e2df632](https://github.com/DomoticASW/client/commit/e2df632fd5b2891043f83081f8d002d1eac8c667))
+* use span instead of i html element ([2f018c2](https://github.com/DomoticASW/client/commit/2f018c2d57b763a8b4f1ab6e96a2347992018a6f))
+
+### Refactoring
+
+* add groups to device chosen in device event trigger dialog ([b434c91](https://github.com/DomoticASW/client/commit/b434c914248dc44fa4779da1da7e841624b22e8b))
+* add groups to device event trigger ([ca3da69](https://github.com/DomoticASW/client/commit/ca3da69c2cf7cb76b755907dcd5618793cf30c40))
+* also trigger component uses devices store ([56cefbb](https://github.com/DomoticASW/client/commit/56cefbb71ec2a3c3e96fcd811349dcf9106f0c5d))
+* decoupling logic from presentation ([176fd8f](https://github.com/DomoticASW/client/commit/176fd8fe1ae645734790a99eb3cdd8756d053ddc))
+* every asyncronous call to server to retrieve devices now uses the store ([17a443f](https://github.com/DomoticASW/client/commit/17a443fbfff253484b023949d57de85dbf81f844))
+* findDevice on groups store is not usefull anymore because devicesstore is fast enough ([b9efb23](https://github.com/DomoticASW/client/commit/b9efb23e5137c5b9f792c3fdce6d5746789a8c4c))
+* make setup of stores parallel ([ef68336](https://github.com/DomoticASW/client/commit/ef68336309e869521f7f7e0d921d4d3e396b9160))
+* move info button in the general scripts permissions page ([dd7beda](https://github.com/DomoticASW/client/commit/dd7beda3af2642289ad6c95a4d8f1c8be47594eb))
+* now device groups dialog is just one changing based on chosen device ([3688842](https://github.com/DomoticASW/client/commit/36888425dde155dc280b07c9d2c46ca65adbf000))
+* now start task instruction uses a store to retrieve tasks ([d11e7ce](https://github.com/DomoticASW/client/commit/d11e7cecc79797d8aac1e1c4d517c82ec44691f9))
+* now store for groups and store for dialogs are decoupled ([cd435c4](https://github.com/DomoticASW/client/commit/cd435c4e5ff066f796d97aeb340ad0dd1e7441a4))
+* now use a store for retrieving users for send notification instruction ([07732ad](https://github.com/DomoticASW/client/commit/07732ad202241c185d91f4888d1c9282b9a7f29e))
+* remove useless loading overlay and async signature where not usefull anymore ([1705cb1](https://github.com/DomoticASW/client/commit/1705cb120fd1f30ddcc4b5cea0a3dd1300a78dd9))
+* use of code formatter ([df95cdd](https://github.com/DomoticASW/client/commit/df95cddd94538bc8fa30a04fc61aad53a9a1bb2a))
+
 ## [0.3.0](https://github.com/DomoticASW/client/compare/0.2.0...0.3.0) (2025-08-29)
 
 ### Features
