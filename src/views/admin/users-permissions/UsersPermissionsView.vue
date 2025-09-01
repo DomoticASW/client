@@ -17,6 +17,33 @@
       </RouterLink>
     </ul>
     <ListSkeleton v-else />
+    <template #actions>
+    <button
+      class="fa-circle-info fa-solid fa-xl btn btn-ghost btn-circle"
+      onclick="permissions_info.showModal()"
+    ></button>
+  </template>
+  <dialog id="permissions_info" class="modal modal-sm">
+      <div class="modal-box max-w-sm">
+        <h2 class="card-title mb-2">Users permissions info</h2>
+        <p>
+          On this page, the list of registered users is shown.
+        </p>
+        <p>
+          By clicking on a user, you are shown a list of device permissions that you can add or remove for the selected user.
+          The device permission allows the user to execute actions of that device.
+        </p>
+        <p>
+          When a user has all the device permissions required by a task, he can execute that task.
+        </p>
+        <p>
+          You are not showed in these lists since you already have every permission to execute every device.
+        </p>
+      </div>
+      <form method="dialog" class="modal-backdrop">
+        <button>Ok</button>
+      </form>
+    </dialog>
   </NavbarLayout>
 </template>
 
