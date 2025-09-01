@@ -23,8 +23,10 @@ const unregisteredUsers = ref<RegistrationRequest[]>()
 onMounted(async () => {
   try {
     loadingOverlay.startLoading()
-    registeredUsers.value = await getAllUsers(userInfo.token)
-    unregisteredUsers.value = await getAllRegistrationRequests(userInfo.token)
+    Promise.all([
+      (registeredUsers.value = await getAllUsers(userInfo.token)),
+      (unregisteredUsers.value = await getAllRegistrationRequests(userInfo.token)),
+    ])
   } finally {
     loadingOverlay.stopLoading()
   }
@@ -81,7 +83,10 @@ function showToastMessage(msg: string) {
         <div>
           <ul class="list rounded-box">
             <li class="list-row" v-for="user in registeredUsers" :key="user.email">
-              <span v-if="user.role == Role.Admin" class="fa-solid fa-user-tie text-2xl self-center"></span>
+              <span
+                v-if="user.role == Role.Admin"
+                class="fa-solid fa-user-tie text-2xl self-center"
+              ></span>
               <span v-else class="fa-solid fa-user text-2xl self-center"></span>
               <div class="list-col-grow flex flex-col">
                 <div>{{ user.nickname }}</div>
@@ -103,7 +108,12 @@ function showToastMessage(msg: string) {
       </div>
       <div>
         <hr class="my-4 border-gray-300" />
-        <h1 class="text-2xl dark:text-white text-center" v-if="!!unregisteredUsers && unregisteredUsers?.length > 0">Registration requests</h1>
+        <h1
+          class="text-2xl dark:text-white text-center"
+          v-if="!!unregisteredUsers && unregisteredUsers?.length > 0"
+        >
+          Registration requests
+        </h1>
         <div>
           <ul class="list rounded-box">
             <li class="list-row" v-for="user in unregisteredUsers" :key="user.email">
@@ -128,7 +138,10 @@ function showToastMessage(msg: string) {
               </div>
             </li>
           </ul>
-          <div v-if="unregisteredUsers?.length === 0" class="flex text-center text-gray-500 justify-center items-center min-h-[20vh]">
+          <div
+            v-if="unregisteredUsers?.length === 0"
+            class="flex text-center text-gray-500 justify-center items-center min-h-[20vh]"
+          >
             <p class="text-2xl">No registration requests...</p>
           </div>
         </div>

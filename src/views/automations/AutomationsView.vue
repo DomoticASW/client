@@ -17,10 +17,8 @@ const loadingOverlay = useLoadingOverlayStore()
 
 onMounted(async () => {
   try {
-    loadingOverlay.startLoading()
     automations.value = await getAllAutomations(userInfo.token)
   } finally {
-    loadingOverlay.stopLoading()
   }
 })
 
@@ -96,8 +94,8 @@ async function toggle(automation: Automation) {
         </p>
         <ul class="list-disc list-inside">
           <li>
-            <span class="font-bold">Execution</span>: When enabled, an automation is executed automatically based
-            on a trigger. Can be disabled from the toggle next to it.
+            <span class="font-bold">Execution</span>: When enabled, an automation is executed
+            automatically based on a trigger. Can be disabled from the toggle next to it.
             <ul class="list-disc list-inside ml-4">
               <li>
                 <span class="font-bold">Device event trigger</span>: Execute the automation if a
