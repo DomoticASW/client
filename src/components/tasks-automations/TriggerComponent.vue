@@ -10,6 +10,7 @@ import {
 } from './timeUtils'
 import type { Device } from '@/model/devices-management/Device'
 import { useDevicesStore } from '@/stores/devices'
+import DeviceNameAndGroup from '../DeviceNameAndGroup.vue'
 
 const props = defineProps<{
   trigger?: Trigger
@@ -204,10 +205,12 @@ onMounted(() => {
       </template>
       <!-- Device Event trigger -->
       <template v-else-if="isDeviceEventTrigger(trigger) && selectedDevice">
-        <p class="col-span-full font-bold text-center">{{ selectedDevice.name }}</p>
+        <p class="col-span-full font-bold justify-self-center">
+          <DeviceNameAndGroup :id="selectedDevice.id" :device="selectedDevice" />
+        </p>
         <select
           v-model="selectedEvent"
-          class="col-span-full select h-7 w-45 select-primary justify-self-center text-center"
+          class="col-span-full select h-7 w-50 select-primary justify-self-center text-center"
           v-if="edit"
         >
           <option selected disabled>Pick an event</option>
