@@ -32,7 +32,7 @@
                     Users
                     <div
                       class="inline-grid *:[grid-area:1/1] h-full items-center mt-1"
-                      v-if="registrationRequests.length > 0"
+                      v-if="registrationRequests && registrationRequests.length > 0"
                     >
                       <div class="status status-error animate-ping"></div>
                       <div class="status status-error"></div>
@@ -81,7 +81,7 @@
                 Admin
                 <div
                   class="inline-grid *:[grid-area:1/1] h-full items-center mt-1"
-                  v-if="registrationRequests.length > 0"
+                  v-if="registrationRequests && registrationRequests.length > 0"
                 >
                   <div class="status status-error animate-ping"></div>
                   <div class="status status-error"></div>
@@ -94,7 +94,7 @@
                     Users
                     <div
                       class="inline-grid *:[grid-area:1/1] h-full items-center mt-1"
-                      v-if="registrationRequests.length > 0"
+                      v-if="registrationRequests && registrationRequests.length > 0"
                     >
                       <div class="status status-error animate-ping"></div>
                       <div class="status status-error"></div>
@@ -144,9 +144,8 @@ import { useUserInfoStore } from '@/stores/user-info'
 import { Role } from '@/model/users-management/User'
 import { useRouter } from 'vue-router'
 import { useNotificationsStore } from '@/stores/notifications'
-import type { RegistrationRequest } from '@/model/users-management/RegistrationRequest'
-import { onMounted, ref } from 'vue'
-import { getAllRegistrationRequests } from '@/api/users-management/requests/users'
+import { computed, onMounted } from 'vue'
+import { useRegistrationRequestsStore } from '@/stores/registrationRequests'
 
 defineProps({
   title: { type: String },
@@ -158,11 +157,12 @@ defineProps({
 
 const userInfo = useUserInfoStore()
 const router = useRouter()
+const registrationRequestsStore = useRegistrationRequestsStore()
 const goBack = () => router.back()
 
-const registrationRequests = ref<RegistrationRequest[]>([])
+const registrationRequests = computed(() => registrationRequestsStore.registrationRequests)
 
 onMounted(async () => {
-  registrationRequests.value = await getAllRegistrationRequests(userInfo.token)
+  await registrationRequestsStore.updateRegistrationRequests()
 })
 </script>
