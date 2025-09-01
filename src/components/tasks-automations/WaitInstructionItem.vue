@@ -3,7 +3,7 @@
     <p>Wait</p>
     <p v-if="!edit" class="font-bold truncate text-center">{{ duration }}</p>
     <div v-else class="col-span-2 place-self-end">
-      <label :for="'period_' + id">Choose a number of period</label>
+      <label :for="'period_' + id" class="hidden">Choose a number of period</label>
       <input
         type="number"
         v-model="time"
@@ -11,7 +11,7 @@
         :name="'period_' + id"
         :id="'period_' + id"
       />
-      <label :for="'time_unit_' + id">Select a time unit</label>
+      <label :for="'time_unit_' + id" class="hidden">Select a time unit</label>
       <select
         v-model="timeUnit"
         class="select h-7 w-28 select-primary text-center"
