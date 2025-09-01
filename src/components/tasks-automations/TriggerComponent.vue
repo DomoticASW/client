@@ -8,9 +8,10 @@ import {
   formatDateForDatetimeLocalInput,
   formatDuration,
 } from './timeUtils'
-import type { Device } from '@/model/devices-management/Device'
+import type { Device, DeviceId } from '@/model/devices-management/Device'
 import { useDevicesStore } from '@/stores/devices'
 import DeviceNameAndGroup from '../DeviceNameAndGroup.vue'
+import { useGroupsStore } from '@/stores/groups'
 
 const props = defineProps<{
   trigger?: Trigger
@@ -152,6 +153,18 @@ function closeDialog() {
 onMounted(() => {
   devices.value = useDevicesStore().devices
 })
+
+function groupsToString(deviceId: DeviceId) {
+  const deviceGroups = useGroupsStore().getGroupsOfDevice(deviceId)
+  return deviceGroups.length > 0
+    ? '(' +
+        deviceGroups[0].name +
+        (deviceGroups.length > 1
+          ? ', ' + deviceGroups[1].name + (deviceGroups.length > 2 ? ', ...' : '')
+          : '') +
+        ')'
+    : ''
+}
 </script>
 
 <template>
@@ -205,7 +218,7 @@ onMounted(() => {
       </template>
       <!-- Device Event trigger -->
       <template v-else-if="isDeviceEventTrigger(trigger) && selectedDevice">
-        <p class="col-span-full font-bold justify-self-center">
+        <p class="col-span-full font-bold justify-self-center w-55 text-center">
           <DeviceNameAndGroup :id="selectedDevice.id" :device="selectedDevice" />
         </p>
         <select
@@ -242,6 +255,7 @@ onMounted(() => {
         <template v-for="device in devices" :key="device.id">
           <option :value="device" v-if="device.events.length !== 0">
             {{ device.name }}
+            {{ groupsToString(device.id) }}
           </option>
         </template>
       </select>
