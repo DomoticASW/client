@@ -27,7 +27,7 @@
 
   <dialog :id="id" class="modal" v-if="device && action">
     <div class="modal-box max-w-sm">
-      <h3 class="card-title mx-2 mb-2">Device action</h3>
+      <p class="card-title mx-2 mb-2">Device action</p>
       <form @submit.prevent="handleConfirm">
         <!-- Selection of an action -->
         <label for="actions" class="fieldset-legend text-sm mx-3">{{ device.name }} actions</label>

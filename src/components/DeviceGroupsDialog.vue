@@ -23,7 +23,7 @@ groupDialogStore.$subscribe(() => {
 <template>
   <dialog ref="groups_info" class="modal modal-sm">
     <div class="modal-box max-w-sm" v-if="device">
-      <h3 class="card-title mb-2">{{ device.name }} groups</h3>
+      <p class="card-title mb-2">{{ device.name }} groups</p>
       <p>The {{ device.name }} is in these groups right now:</p>
       <p class="font-bold" v-for="group in deviceGroups" :key="group.id">- {{ group.name }}</p>
     </div>

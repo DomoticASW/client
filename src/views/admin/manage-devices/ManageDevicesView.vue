@@ -103,7 +103,7 @@ onMounted(async () => {
     <!-- Dialog for changing a device name -->
     <dialog ref="edit-device-name-modal" class="modal modal-middle">
       <div class="modal-box max-w-sm">
-        <h3 class="card-title mb-2 mx-auto justify-center">Change the device name</h3>
+        <p class="card-title mb-2 mx-auto justify-center">Change the device name</p>
         <label>
           <span class="hidden">Device name</span>
           <input

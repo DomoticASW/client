@@ -116,7 +116,7 @@ onMounted(async () => {
   <!-- Dialog for creating a new group -->
   <dialog ref="create-group-modal" class="modal modal-middle">
     <div class="modal-box max-w-sm">
-      <h3 class="card-title mb-2 mx-auto justify-center">Create a new group</h3>
+      <p class="card-title mb-2 mx-auto justify-center">Create a new group</p>
       <label>
         <span class="hidden">Group name</span>
         <input
@@ -143,7 +143,7 @@ onMounted(async () => {
   <!-- Dialog for changing a group name -->
   <dialog ref="edit-group-name-modal" class="modal modal-middle">
     <div class="modal-box max-w-sm">
-      <h3 class="card-title mb-2 mx-auto justify-center">Change the group name</h3>
+      <p class="card-title mb-2 mx-auto justify-center">Change the group name</p>
       <label>
         <span class="hidden">Group name</span>
         <input

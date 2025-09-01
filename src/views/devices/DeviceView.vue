@@ -193,7 +193,7 @@ onUnmounted(() => {
   <!-- Dialog for offline notifications subscription -->
   <dialog ref="offline-notifications-modal" class="modal modal-middle">
     <div class="modal-box max-w-sm">
-      <h3 class="card-title mb-2 mx-auto justify-center">Device offline notifications</h3>
+      <p class="card-title mb-2 mx-auto justify-center">Device offline notifications</p>
       <p>Do you want to receive a notification when this device goes offline?</p>
       <form method="dialog">
         <div class="modal-action">
@@ -214,7 +214,7 @@ onUnmounted(() => {
   <!-- Dialog for action input -->
   <dialog ref="action-input-modal" class="modal modal-middle">
     <div class="modal-box max-w-sm">
-      <h3 class="card-title mb-2 mx-auto justify-center">Action input</h3>
+      <p class="card-title mb-2 mx-auto justify-center">Action input</p>
       <ValueIOControl
         v-if="executingAction"
         :typeConstraints="executingAction!.inputTypeConstraints"
@@ -241,7 +241,7 @@ onUnmounted(() => {
   <!-- Dialog for device action descriptions -->
   <dialog ref="device_action_description" class="modal modal-md">
     <div class="modal-box max-w-md">
-      <h3 class="card-title mb-2">{{ actionDescriptionToShow?.name }}</h3>
+      <p class="card-title mb-2">{{ actionDescriptionToShow?.name }}</p>
       {{ actionDescriptionToShow?.description }}
     </div>
     <form method="dialog" class="modal-backdrop">

@@ -81,13 +81,13 @@ function addSendNotification() {
   <dialog ref="add-instruction-modal" class="modal modal-end">
     <div class="modal-box sm:w-4/12 w-7/12 max-w-screen">
       <div class="grid grid-cols-3">
-        <h3 class="text-xl col-span-3 mb-2 mt-1">
+        <p class="text-xl col-span-3 mb-2 mt-1">
           Control flow instructions
           <button
             class="fa-circle-info fa-solid fa-sm btn btn-ghost btn-xs btn-circle"
             onclick="flow_info.showModal()"
           ></button>
-        </h3>
+        </p>
         <button
           type="button"
           class="btn justify-start my-1 sm:col-span-2 col-span-3"
