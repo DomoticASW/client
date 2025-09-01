@@ -1,5 +1,7 @@
 <template>
-  <div class="navbar py-0 mb-4 bg-base-200/70 shadow backdrop-blur sticky top-0 z-30 lg:rounded-xl md:mt-1">
+  <div
+    class="navbar py-0 mb-4 bg-base-200/70 shadow backdrop-blur sticky top-0 z-30 lg:rounded-xl md:mt-1"
+  >
     <div class="navbar-start w-full md:w-[50%]">
       <template v-if="showBackButton">
         <button
@@ -30,7 +32,7 @@
                     Users
                     <div
                       class="inline-grid *:[grid-area:1/1] h-full items-center mt-1"
-                      v-if="registrationRequests.length > 0"
+                      v-if="registrationRequests && registrationRequests.length > 0"
                     >
                       <div class="status status-error animate-ping"></div>
                       <div class="status status-error"></div>
@@ -79,7 +81,7 @@
                 Admin
                 <div
                   class="inline-grid *:[grid-area:1/1] h-full items-center mt-1"
-                  v-if="registrationRequests.length > 0"
+                  v-if="registrationRequests && registrationRequests.length > 0"
                 >
                   <div class="status status-error animate-ping"></div>
                   <div class="status status-error"></div>
@@ -92,7 +94,7 @@
                     Users
                     <div
                       class="inline-grid *:[grid-area:1/1] h-full items-center mt-1"
-                      v-if="registrationRequests.length > 0"
+                      v-if="registrationRequests && registrationRequests.length > 0"
                     >
                       <div class="status status-error animate-ping"></div>
                       <div class="status status-error"></div>
@@ -142,10 +144,8 @@ import { useUserInfoStore } from '@/stores/user-info'
 import { Role } from '@/model/users-management/User'
 import { useRouter } from 'vue-router'
 import { useNotificationsStore } from '@/stores/notifications'
-import type { RegistrationRequest } from '@/model/users-management/RegistrationRequest'
-import { onMounted, ref } from 'vue'
-import { getAllRegistrationRequests } from '@/api/users-management/requests/users'
-import { useLoadingOverlayStore } from '@/stores/loading-overlay'
+import { computed, onMounted } from 'vue'
+import { useRegistrationRequestsStore } from '@/stores/registrationRequests'
 
 defineProps({
   title: { type: String },
@@ -156,18 +156,13 @@ defineProps({
 })
 
 const userInfo = useUserInfoStore()
-const loadingOverlay = useLoadingOverlayStore()
 const router = useRouter()
+const registrationRequestsStore = useRegistrationRequestsStore()
 const goBack = () => router.back()
 
-const registrationRequests = ref<RegistrationRequest[]>([])
+const registrationRequests = computed(() => registrationRequestsStore.registrationRequests)
 
 onMounted(async () => {
-  try {
-    loadingOverlay.startLoading()
-    registrationRequests.value = await getAllRegistrationRequests(userInfo.token)
-  } finally {
-    loadingOverlay.stopLoading()
-  }
+  await registrationRequestsStore.updateRegistrationRequests()
 })
 </script>

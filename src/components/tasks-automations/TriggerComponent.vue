@@ -8,9 +8,10 @@ import {
   formatDateForDatetimeLocalInput,
   formatDuration,
 } from './timeUtils'
-import type { Device } from '@/model/devices-management/Device'
-import { findDevice, getAllDevices } from '@/api/devices-management/requests/devices'
-import { useUserInfoStore } from '@/stores/user-info'
+import type { Device, DeviceId } from '@/model/devices-management/Device'
+import { useDevicesStore } from '@/stores/devices'
+import DeviceNameAndGroup from '../DeviceNameAndGroup.vue'
+import { useGroupsStore } from '@/stores/groups'
 
 const props = defineProps<{
   trigger?: Trigger
@@ -30,12 +31,12 @@ const trigger = computed({
 
 watch(
   () => props.trigger,
-  async (val) => {
+  (val) => {
     if (isDeviceEventTrigger(val)) {
-      selectedDevice.value = await findDevice(val.deviceId, userInfo.token)
+      selectedDevice.value = useDevicesStore().getDevice(val.deviceId)
       selectedEvent.value = val.eventName
     }
-  },
+  }
 )
 
 const timeUnit = computed({
@@ -100,7 +101,6 @@ function addEmptyPeriodTrigger() {
   }
 }
 
-const userInfo = useUserInfoStore()
 const selectedDevice = ref<Device>()
 const selectedEvent = ref<string>('')
 const devices = ref<Device[]>()
@@ -112,7 +112,7 @@ watch(
       trigger.value.deviceId = val.id
       trigger.value.eventName = val.events[0].name
     }
-  },
+  }
 )
 
 watch(
@@ -125,7 +125,7 @@ watch(
     ) {
       trigger.value.eventName = val
     }
-  },
+  }
 )
 
 function openDeviceDialog() {
@@ -150,9 +150,21 @@ function closeDialog() {
   dialog.close()
 }
 
-onMounted(async () => {
-  devices.value = await getAllDevices(userInfo.token)
+onMounted(() => {
+  devices.value = useDevicesStore().devices
 })
+
+function groupsToString(deviceId: DeviceId) {
+  const deviceGroups = useGroupsStore().getGroupsOfDevice(deviceId)
+  return deviceGroups.length > 0
+    ? '(' +
+        deviceGroups[0].name +
+        (deviceGroups.length > 1
+          ? ', ' + deviceGroups[1].name + (deviceGroups.length > 2 ? ', ...' : '')
+          : '') +
+        ')'
+    : ''
+}
 </script>
 
 <template>
@@ -178,10 +190,13 @@ onMounted(async () => {
           {{ formatDate(trigger.start) }}
         </p>
         <div v-if="edit" class="justify-self-center col-span-4">
+          <label for="trigger_start" class="hidden">Starting date of period trigger</label>
           <input
             type="datetime-local"
             v-model="dateTime"
             class="input h-7 input-primary text-center"
+            name="trigger_start"
+            id="trigger_start"
           />
         </div>
 
@@ -190,12 +205,21 @@ onMounted(async () => {
           {{ formatDuration(trigger.periodSeconds) }}
         </p>
         <div v-else class="justify-self-center col-span-4">
+          <label for="trigger_number" class="hidden">Number of period trigger</label>
           <input
             type="number"
             v-model="time"
             class="input h-7 max-w-15 p-2 mr-2 input-primary text-center"
+            name="trigger_number"
+            id="trigger_number"
           />
-          <select v-model="timeUnit" class="select h-7 w-25 input-primary text-center">
+          <label for="trigger_time_unit" class="hidden">Time unit of period trigger</label>
+          <select
+            v-model="timeUnit"
+            class="select h-7 w-25 input-primary text-center"
+            name="trigger_time_unit"
+            id="trigger_time_unit"
+          >
             <option selected disabled>Time unit</option>
             <option value="seconds">Seconds</option>
             <option value="minutes">Minutes</option>
@@ -206,11 +230,18 @@ onMounted(async () => {
       </template>
       <!-- Device Event trigger -->
       <template v-else-if="isDeviceEventTrigger(trigger) && selectedDevice">
-        <p class="col-span-full font-bold text-center">{{ selectedDevice.name }}</p>
+        <p class="col-span-full font-bold justify-self-center w-55 text-center">
+          <DeviceNameAndGroup :id="selectedDevice.id" :device="selectedDevice" />
+        </p>
+        <label for="trigger_selected_event" class="hidden"
+          >Select event for the device event trigger</label
+        >
         <select
           v-model="selectedEvent"
-          class="col-span-full select h-7 w-45 select-primary justify-self-center text-center"
+          class="col-span-full select h-7 w-50 select-primary justify-self-center text-center"
           v-if="edit"
+          name="trigger_selected_event"
+          id="trigger_selected_event"
         >
           <option selected disabled>Pick an event</option>
           <option
@@ -241,6 +272,7 @@ onMounted(async () => {
         <template v-for="device in devices" :key="device.id">
           <option :value="device" v-if="device.events.length !== 0">
             {{ device.name }}
+            {{ groupsToString(device.id) }}
           </option>
         </template>
       </select>

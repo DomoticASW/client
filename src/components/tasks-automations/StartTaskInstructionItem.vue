@@ -2,10 +2,13 @@
   <InstructionLayout :colors="colors" :edit="edit" :instruction="props.instruction" v-if="tasks">
     <p>Start task</p>
     <p v-if="!edit" class="font-bold truncate text-center">{{ taskName }}</p>
+    <label :for="'task_' + id" v-if="edit" class="hidden">Task to start</label>
     <select
       v-model="(instruction.instruction as StartTaskInstruction).taskId"
-      v-else
+      v-if="edit"
       class="select h-7 text-center select-primary"
+      :name="'task_' + id"
+      :id="'task_' + id"
     >
       <option selected disabled>Choose a task</option>
       <option :value="task.id" v-for="task in tasks" :key="task.id">{{ task.name }}</option>
@@ -17,13 +20,11 @@
 import type { Instruction, StartTaskInstruction } from '@/model/scripts/Instruction'
 import InstructionLayout from './InstructionLayout.vue'
 import { onMounted, ref, watch } from 'vue'
-import { useUserInfoStore } from '@/stores/user-info'
-import { useLoadingOverlayStore } from '@/stores/loading-overlay'
-import { getAllTasks } from '@/api/scripts/requests/tasks'
 import { type Task } from '@/model/scripts/Script'
-const userInfo = useUserInfoStore()
+import { useTasksStore } from '@/stores/tasks'
 
 const props = defineProps<{
+  id: string
   instruction: Instruction
   colors: string
   edit: boolean
@@ -32,26 +33,19 @@ const props = defineProps<{
 const taskName = ref<string>()
 const tasks = ref<Task[]>()
 
-const loadingOverlay = useLoadingOverlayStore()
-
-onMounted(async () => {
-  try {
-    loadingOverlay.startLoading()
-    tasks.value = await getAllTasks(userInfo.token)
-    updateTaskName(props.instruction.instruction as StartTaskInstruction)
-  } finally {
-    loadingOverlay.stopLoading()
-  }
+onMounted(() => {
+  tasks.value = useTasksStore().tasks
+  updateTaskName(props.instruction.instruction as StartTaskInstruction)
 })
 
 watch(
   () => props.instruction,
   (val) => {
     updateTaskName(val.instruction as StartTaskInstruction)
-  },
+  }
 )
 
 async function updateTaskName(instruction: StartTaskInstruction) {
-  taskName.value = tasks.value?.find((t) => t.id === instruction.taskId)?.name
+  taskName.value = useTasksStore().getTask(instruction.taskId)?.name
 }
 </script>

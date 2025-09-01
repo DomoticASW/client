@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import { getAllDeviceGroups } from '@/api/devices-management/requests/device-groups'
-import { getAllDevices } from '@/api/devices-management/requests/devices'
 import { type Device } from '@/model/devices-management/Device'
 import type { DeviceGroup } from '@/model/devices-management/DeviceGroup'
 import { InstructionType } from '@/model/scripts/Instruction'
-import { useUserInfoStore } from '@/stores/user-info'
 import { onMounted, ref, useTemplateRef } from 'vue'
 import AddButton from '../AddButton.vue'
 import {
@@ -16,8 +13,9 @@ import {
   EmptyConstantInstruction,
 } from './emptyInstructions'
 import { useInstructionsStore } from '@/stores/instructions'
+import { useGroupsStore } from '@/stores/groups'
+import { useDevicesStore } from '@/stores/devices'
 
-const userInfo = useUserInfoStore()
 const instructionsStore = useInstructionsStore()
 
 const modal = useTemplateRef('add-instruction-modal')
@@ -30,9 +28,9 @@ defineProps<{
   closeDialog: () => void
 }>()
 
-onMounted(async () => {
-  groups.value = await getAllDeviceGroups(userInfo.token)
-  devices.value = await getAllDevices(userInfo.token)
+onMounted(() => {
+  groups.value = useGroupsStore().groups
+  devices.value = useDevicesStore().devices
 })
 
 function addIfInstruction() {
@@ -83,13 +81,13 @@ function addSendNotification() {
   <dialog ref="add-instruction-modal" class="modal modal-end">
     <div class="modal-box sm:w-4/12 w-7/12 max-w-screen">
       <div class="grid grid-cols-3">
-        <h3 class="text-xl col-span-3 mb-2 mt-1">
+        <p class="text-xl col-span-3 mb-2 mt-1">
           Control flow instructions
           <button
             class="fa-circle-info fa-solid fa-sm btn btn-ghost btn-xs btn-circle"
             onclick="flow_info.showModal()"
           ></button>
-        </h3>
+        </p>
         <button
           type="button"
           class="btn justify-start my-1 sm:col-span-2 col-span-3"
@@ -150,7 +148,13 @@ function addSendNotification() {
             onclick="devices_info.showModal()"
           ></button>
         </h3>
-        <select v-model="selectedGroup" class="select my-2 col-span-3 text-lg">
+        <label for="device_groups_filter" class="hidden">Device groups filter</label>
+        <select
+          v-model="selectedGroup"
+          class="select my-2 col-span-3 text-lg"
+          name="device_groups_filter"
+          id="device_groups_filter"
+        >
           <option selected :value="undefined">All devices</option>
           <option v-for="group in groups" :key="group.id" :value="group">{{ group.name }}</option>
         </select>

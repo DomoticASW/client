@@ -22,6 +22,7 @@ const { typeConstraints, isInput } = defineProps<{
    * Tells the control if it should also register user input
    */
   isInput: boolean
+  accessibilityLabel: string
 }>()
 const emit = defineEmits<{
   /**
@@ -114,74 +115,92 @@ const rangeControlValue = computed({
 
 <template>
   <div v-if="type === Type.BooleanType">
-    <input
-      type="checkbox"
-      class="toggle toggle-primary"
-      :disabled="!isInput"
-      :checked="(value as boolean) == true"
-      @change="processInput(($event.target as HTMLInputElement).checked)"
-    />
+    <label>
+      <span class="hidden">{{ accessibilityLabel }}</span>
+      <input
+        type="checkbox"
+        class="toggle toggle-primary"
+        :disabled="!isInput"
+        :checked="(value as boolean) == true"
+        @change="processInput(($event.target as HTMLInputElement).checked)"
+    /></label>
   </div>
   <div v-if="type === Type.StringType">
     <div v-if="isInput">
       <div v-if="isEnumTypeConstraints(typeConstraints)">
-        <select
-          class="select select-primary"
-          @change="processInput(($event.target as HTMLSelectElement).selectedOptions[0].value)"
-        >
-          <option v-for="v in typeConstraints.values" :key="v" :selected="v === value">
-            {{ v }}
-          </option>
-        </select>
+        <label>
+          <span class="hidden">{{ accessibilityLabel }}</span>
+          <select
+            class="select select-primary"
+            @change="processInput(($event.target as HTMLSelectElement).selectedOptions[0].value)"
+          >
+            <option v-for="v in typeConstraints.values" :key="v" :selected="v === value">
+              {{ v }}
+            </option>
+          </select>
+        </label>
       </div>
-      <input
-        v-else
-        type="text"
-        v-model="value"
-        @change="processInput(htmlInputValue($event.target))"
-      />
+      <div v-else>
+        <label>
+          <span class="hidden">{{ accessibilityLabel }}</span>
+          <input
+            type="text"
+            v-model="value"
+            @change="processInput(htmlInputValue($event.target))"
+          />
+        </label>
+      </div>
     </div>
     <span v-else> {{ value }} </span>
   </div>
   <div v-if="type === Type.IntType || type === Type.DoubleType">
     <div v-if="isRangeTypeConstraints(typeConstraints)" class="flex flex-col max-w-xs">
       <span class="self-center">{{ rangeControlValue }}</span>
-      <input
-        type="range"
-        class="range range-primary"
-        :min="typeConstraints.min"
-        :max="typeConstraints.max"
-        :step="type == Type.IntType ? 1 : '0.01'"
-        :disabled="!isInput"
-        v-model.number="rangeControlValue"
-        @mousedown="isRangeControlDetached = true"
-        @touchstart="isRangeControlDetached = true"
-        @change="
-          (processInput(Number.parseFloat(htmlInputValue($event.target))),
-          (isRangeControlDetached = false))
-        "
-      />
+      <label>
+        <span class="hidden">{{ accessibilityLabel }}</span>
+        <input
+          type="range"
+          class="range range-primary"
+          :min="typeConstraints.min"
+          :max="typeConstraints.max"
+          :step="type == Type.IntType ? 1 : '0.01'"
+          :disabled="!isInput"
+          v-model.number="rangeControlValue"
+          @mousedown="isRangeControlDetached = true"
+          @touchstart="isRangeControlDetached = true"
+          @change="
+            (processInput(Number.parseFloat(htmlInputValue($event.target))),
+            (isRangeControlDetached = false))
+          "
+      /></label>
       <div class="flex flex-row justify-between">
         <span class="opacity-30">{{ typeConstraints.min }}</span>
         <span class="opacity-30">{{ typeConstraints.max }}</span>
       </div>
     </div>
-    <input
-      v-else-if="isInput"
-      class="input input-primary validator field-sizing-content min-w-[8rem]"
-      type="number"
-      :step="type == Type.IntType ? 1 : '0.01'"
-      v-model.number="value"
-      @change="processInput(Number.parseFloat(htmlInputValue($event.target)))"
-    />
+    <div v-else-if="isInput">
+      <label>
+        <span class="hidden">{{ accessibilityLabel }}</span>
+        <input
+          class="input input-primary validator field-sizing-content min-w-[8rem]"
+          type="number"
+          :step="type == Type.IntType ? 1 : '0.01'"
+          v-model.number="value"
+          @change="processInput(Number.parseFloat(htmlInputValue($event.target)))"
+        />
+      </label>
+    </div>
     <span v-else> {{ value }} </span>
   </div>
   <div v-if="type === Type.ColorType">
-    <input
-      type="color"
-      :disabled="!isInput"
-      :value="'#' + rgbHex((value as Color).r, (value as Color).g, (value as Color).b)"
-      @change="processInput(hexToColor(htmlInputValue($event.target)))"
-    />
+    <label>
+      <span class="hidden">{{ accessibilityLabel }}</span>
+      <input
+        type="color"
+        :disabled="!isInput"
+        :value="'#' + rgbHex((value as Color).r, (value as Color).g, (value as Color).b)"
+        @change="processInput(hexToColor(htmlInputValue($event.target)))"
+      />
+    </label>
   </div>
 </template>

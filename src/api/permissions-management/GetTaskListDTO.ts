@@ -30,5 +30,5 @@ export const taskListDeserializer = Deserializer<GetTaskListDTO, TaskList>(
       blacklist: dto.blacklist,
       whitelist: dto.whitelist,
     }
-  },
+  }
 )

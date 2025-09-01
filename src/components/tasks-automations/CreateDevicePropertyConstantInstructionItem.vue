@@ -22,11 +22,9 @@
     </div>
   </InstructionLayout>
 
-  <DeviceGroupsDialog :id="id" :device="device" />
-
   <dialog :id="id + '_info'" class="modal modal-sm">
     <div class="modal-box max-w-sm" v-if="property">
-      <h3 class="card-title mb-2">{{ property.name }} type constraints info</h3>
+      <p class="card-title mb-2">{{ property.name }} type constraints info</p>
       <div v-if="property.typeConstraints.__brand === 'Enum'">
         <p>Possible values for {{ property.name }} property:</p>
         <ul class="list-inside list-disc">
@@ -39,13 +37,13 @@
         The {{ property.name }} property has a minimum value of
         <span class="font-bold">{{
           property.typeConstraints.min.toFixed(
-            property.typeConstraints.__brand === 'DoubleRange' ? 2 : 0,
+            property.typeConstraints.__brand === 'DoubleRange' ? 2 : 0
           )
         }}</span>
         and a maximum value of
         <span class="font-bold">{{
           property.typeConstraints.max.toFixed(
-            property.typeConstraints.__brand === 'DoubleRange' ? 2 : 0,
+            property.typeConstraints.__brand === 'DoubleRange' ? 2 : 0
           )
         }}</span
         >.
@@ -63,17 +61,17 @@
 
   <dialog :id="id" class="modal" v-if="device && property">
     <div class="modal-box max-w-sm">
-      <h3 class="card-title mx-2 mb-2">Device property</h3>
+      <p class="card-title mx-2 mb-2">Device property</p>
       <form @submit.prevent="handleConfirm">
         <!-- Selection of a property -->
-        <label for="properties" class="fieldset-legend text-sm mx-3"
+        <label :for="'properties_' + id" class="fieldset-legend text-sm mx-3"
           >{{ device.name }} properties</label
         >
         <select
           v-model="variableForm.devicePropertyId"
           class="select mt-2 mx-2"
-          name="properties"
-          id="properties"
+          :name="'properties_' + id"
+          :id="'properties_' + id"
         >
           <option disabled>Pick a property</option>
           <option
@@ -86,13 +84,15 @@
           </option>
         </select>
         <!-- Change constant name -->
-        <label for="constant_name" class="fieldset-legend text-sm mx-3">Constant name</label>
+        <label :for="'constant_name_' + id" class="fieldset-legend text-sm mx-3"
+          >Constant name</label
+        >
         <input
           type="text"
           class="input mt-2 mx-2"
           v-model="variableForm.name"
-          name="constant_name"
-          id="constant_name"
+          :name="'constant_name_' + id"
+          :id="'constant_name_' + id"
         />
         <div class="modal-action w-full">
           <button type="submit" class="btn btn-primary">Confirm</button>
@@ -114,13 +114,9 @@ import {
 import InstructionLayout from './InstructionLayout.vue'
 import { onMounted, ref, watch } from 'vue'
 import type { Device, DeviceProperty } from '@/model/devices-management/Device'
-import { findDevice } from '@/api/devices-management/requests/devices'
-import { useUserInfoStore } from '@/stores/user-info'
 import { useInstructionsStore } from '@/stores/instructions'
-import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import DeviceNameAndGroup from '../DeviceNameAndGroup.vue'
-import DeviceGroupsDialog from '../DeviceGroupsDialog.vue'
-import { useGroupsStore } from '@/stores/groups'
+import { useDevicesStore } from '@/stores/devices'
 
 const props = defineProps<{
   id: string
@@ -130,11 +126,10 @@ const props = defineProps<{
 }>()
 
 const instructionsStore = useInstructionsStore()
-const loadingOverlay = useLoadingOverlayStore()
-const userInfo = useUserInfoStore()
 const instruction = ref(props.instruction.instruction as CreateDevicePropertyConstantInstruction)
 const device = ref<Device>()
 const property = ref<DeviceProperty<unknown>>()
+const devicesStore = useDevicesStore()
 
 const variableForm = ref<CreateDevicePropertyConstantInstruction>({
   name: instruction.value.name,
@@ -147,28 +142,18 @@ watch(
   () => props.instruction,
   async (val) => {
     instruction.value = val.instruction as CreateDevicePropertyConstantInstruction
-    await updateInstruction()
+    updateInstruction()
   },
-  { immediate: true },
+  { immediate: true }
 )
 
-onMounted(async () => await updateInstruction())
+onMounted(() => updateInstruction())
 
-async function updateInstruction() {
-  try {
-    loadingOverlay.startLoading()
-    const deviceGroups = useGroupsStore().deviceGroups(instruction.value.deviceId)
-    if (deviceGroups.length > 0) {
-      device.value = useGroupsStore().getDeviceFromGroups(instruction.value.deviceId)!
-    } else {
-      device.value = await findDevice(instruction.value.deviceId, userInfo.token)
-    }
-    property.value = device.value.properties.find(
-      (prop) => prop.id === instruction.value.devicePropertyId,
-    )
-  } finally {
-    loadingOverlay.stopLoading()
-  }
+function updateInstruction() {
+  device.value = devicesStore.getDevice(instruction.value.deviceId)
+  property.value = device.value?.properties.find(
+    (prop) => prop.id === instruction.value.devicePropertyId
+  )
 }
 
 function openDialog() {
@@ -182,27 +167,22 @@ function openDialog() {
   }
 }
 
-async function handleConfirm() {
-  try {
-    loadingOverlay.startLoading()
-    const device = await findDevice(variableForm.value.deviceId, userInfo.token)
-    const property = device.properties.find(
-      (prop) => prop.id === variableForm.value.devicePropertyId,
-    )
-    if (property) {
-      variableForm.value.type = property.typeConstraints.type
-      instructionsStore.changeInstruction(props.instruction, {
-        type: InstructionType.CreateDevicePropertyConstantInstruction,
-        instruction: {
-          name: variableForm.value.name,
-          type: variableForm.value.type,
-          deviceId: variableForm.value.deviceId,
-          devicePropertyId: variableForm.value.devicePropertyId,
-        },
-      })
-    }
-  } finally {
-    loadingOverlay.stopLoading()
+function handleConfirm() {
+  const device = devicesStore.getDevice(variableForm.value.deviceId)
+  const property = device?.properties.find(
+    (prop) => prop.id === variableForm.value.devicePropertyId
+  )
+  if (property) {
+    variableForm.value.type = property.typeConstraints.type
+    instructionsStore.changeInstruction(props.instruction, {
+      type: InstructionType.CreateDevicePropertyConstantInstruction,
+      instruction: {
+        name: variableForm.value.name,
+        type: variableForm.value.type,
+        deviceId: variableForm.value.deviceId,
+        devicePropertyId: variableForm.value.devicePropertyId,
+      },
+    })
   }
   closeDialog()
 }

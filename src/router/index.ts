@@ -13,8 +13,13 @@ const router = createRouter({
       path: '/devices',
       children: [
         { path: '', name: 'devices', component: () => import('../views/devices/DevicesView.vue') },
-        { path: ':id', name: 'device', component: () => import('../views/devices/DeviceView.vue'), props: true }
-      ]
+        {
+          path: ':id',
+          name: 'device',
+          component: () => import('../views/devices/DeviceView.vue'),
+          props: true,
+        },
+      ],
     },
     {
       path: '/admin',
@@ -22,7 +27,7 @@ const router = createRouter({
         const userInfo = useUserInfoStore()
         if (userInfo.role !== Role.Admin) {
           return {
-            name: "devices"
+            name: 'devices',
           }
         }
       },
@@ -65,9 +70,18 @@ const router = createRouter({
         {
           path: 'device-groups',
           children: [
-            { path: '', name: 'device-groups', component: () => import('../views/admin/device-groups/DeviceGroupsView.vue') },
-            { path: ':id', name: 'device-group', component: () => import('../views/admin/device-groups/DeviceGroupView.vue'), props: true },
-          ]
+            {
+              path: '',
+              name: 'device-groups',
+              component: () => import('../views/admin/device-groups/DeviceGroupsView.vue'),
+            },
+            {
+              path: ':id',
+              name: 'device-group',
+              component: () => import('../views/admin/device-groups/DeviceGroupView.vue'),
+              props: true,
+            },
+          ],
         },
         {
           path: 'automations-task-permissions',
@@ -182,15 +196,15 @@ const router = createRouter({
 router.beforeEach((to) => {
   const userInfo = useUserInfoStore()
   if (userInfo.token) {
-    if (to.name === "login" || to.name === "signin") {
+    if (to.name === 'login' || to.name === 'signin') {
       return {
-        name: 'devices'
+        name: 'devices',
       }
     }
   } else {
     if (to.name !== 'login' && to.name !== 'signin') {
       return {
-        name: 'login'
+        name: 'login',
       }
     }
   }

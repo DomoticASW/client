@@ -10,7 +10,6 @@ import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-prese
 import AddButton from '@/components/AddButton.vue'
 import NavbarLayout from '@/components/NavbarLayout.vue'
 import DeviceGroupsButton from '@/components/DeviceGroupsButton.vue'
-import DeviceGroupsDialog from '@/components/DeviceGroupsDialog.vue'
 
 const userInfo = useUserInfoStore()
 const loadingOverlay = useLoadingOverlayStore()
@@ -86,7 +85,6 @@ onMounted(async () => {
             class="btn btn-circle btn-ghost fa-solid fa-trash"
             v-on:click="removeDevice(d.id)"
           ></button>
-          <DeviceGroupsDialog :id="d.id" :device="d" />
         </li>
       </ul>
       <DeviceListSkeleton v-else />
@@ -105,13 +103,16 @@ onMounted(async () => {
     <!-- Dialog for changing a device name -->
     <dialog ref="edit-device-name-modal" class="modal modal-middle">
       <div class="modal-box max-w-sm">
-        <h3 class="card-title mb-2 mx-auto justify-center">Change the device name</h3>
-        <input
-          type="text"
-          placeholder="Device name"
-          class="input w-full"
-          v-model="deviceEditingName"
-        />
+        <p class="card-title mb-2 mx-auto justify-center">Change the device name</p>
+        <label>
+          <span class="hidden">Device name</span>
+          <input
+            type="text"
+            placeholder="Device name"
+            class="input w-full"
+            v-model="deviceEditingName"
+          />
+        </label>
         <div class="modal-action">
           <button class="btn btn-primary" v-on:click="saveEditingDevice()">Save</button>
         </div>

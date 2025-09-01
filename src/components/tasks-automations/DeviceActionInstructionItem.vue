@@ -25,19 +25,19 @@
     </template>
   </InstructionLayout>
 
-  <DeviceGroupsDialog :id="id" :device="device" />
-
   <dialog :id="id" class="modal" v-if="device && action">
     <div class="modal-box max-w-sm">
-      <h3 class="card-title mx-2 mb-2">Device action</h3>
+      <p class="card-title mx-2 mb-2">Device action</p>
       <form @submit.prevent="handleConfirm">
         <!-- Selection of an action -->
-        <label for="actions" class="fieldset-legend text-sm mx-3">{{ device.name }} actions</label>
+        <label :for="'actions_' + id" class="fieldset-legend text-sm mx-3"
+          >{{ device.name }} actions</label
+        >
         <select
           v-model="variableForm.deviceActionId"
           class="select mt-2 mx-2"
-          name="actions"
-          id="actions"
+          :name="'actions_' + id"
+          :id="'actions_' + id"
         >
           <option disabled>Pick an action</option>
           <option
@@ -51,7 +51,7 @@
         </select>
         <!-- Change of the action input -->
         <label
-          for="input"
+          :for="'input_' + id"
           class="fieldset-legend text-sm mx-3"
           v-if="variableType().type !== 'null'"
           >Input</label
@@ -67,8 +67,8 @@
             :min="variableType().constraints.min"
             :max="variableType().constraints.max"
             v-model.number="variableForm.input"
-            name="input"
-            id="input"
+            :name="'input_' + id"
+            :id="'input_' + id"
           />
           <div class="flex justify-between px-2.5 mt-2 text-xs">
             <span>{{ variableType().constraints.min }}</span>
@@ -84,16 +84,16 @@
           :min="variableType().constraints.min"
           :max="variableType().constraints.max"
           :step="selectedAction?.inputTypeConstraints.type === Type.DoubleType ? 'any' : '1'"
-          name="input"
-          id="input"
+          :name="'input_' + id"
+          :id="'input_' + id"
         />
 
         <select
           v-else-if="variableType().type === 'select'"
           :class="['mt-2 mx-2', variableType().class]"
           v-model="variableForm.input"
-          name="input"
-          id="input"
+          :name="'input_' + id"
+          :id="'input_' + id"
         >
           <option
             v-for="value in variableType().constraints.values"
@@ -110,8 +110,8 @@
           :class="['mt-2 mx-2', variableType().class]"
           :type="variableType().type"
           v-model="variableForm.input"
-          name="input"
-          id="input"
+          :name="'input_' + id"
+          :id="'input_' + id"
         />
 
         <input
@@ -119,8 +119,8 @@
           :class="['mt-2 mx-2', variableType().class]"
           :type="variableType().type"
           v-model="variableForm.input"
-          name="input"
-          id="input"
+          :name="'input_' + id"
+          :id="'input_' + id"
         />
 
         <input
@@ -128,8 +128,8 @@
           :class="['mt-2 mx-2', variableType().class]"
           :type="variableType().type"
           v-model="variableForm.input"
-          name="input"
-          id="input"
+          :name="'input_' + id"
+          :id="'input_' + id"
         />
         <div class="modal-action w-full">
           <button type="submit" class="btn btn-primary">Confirm</button>
@@ -151,15 +151,11 @@ import {
 import InstructionLayout from './InstructionLayout.vue'
 import { onMounted, ref, watch } from 'vue'
 import type { Device, DeviceAction } from '@/model/devices-management/Device'
-import { useUserInfoStore } from '@/stores/user-info'
 import { useInstructionsStore } from '@/stores/instructions'
-import { findDevice } from '@/api/devices-management/requests/devices'
 import { Type } from '@/model/Type'
 import { getDefaultInput } from './emptyInstructions'
-import { useLoadingOverlayStore } from '@/stores/loading-overlay'
-import DeviceGroupsDialog from '../DeviceGroupsDialog.vue'
 import DeviceNameAndGroup from '../DeviceNameAndGroup.vue'
-import { useGroupsStore } from '@/stores/groups'
+import { useDevicesStore } from '@/stores/devices'
 
 const props = defineProps<{
   id: string
@@ -169,11 +165,10 @@ const props = defineProps<{
 }>()
 
 const instructionsStore = useInstructionsStore()
-const loadingOverlay = useLoadingOverlayStore()
-const userInfo = useUserInfoStore()
 const instruction = ref(props.instruction.instruction as DeviceActionInstruction)
 const device = ref<Device>()
 const action = ref<DeviceAction<unknown>>()
+const devicesStore = useDevicesStore()
 
 const selectedAction = ref<DeviceAction<unknown>>()
 
@@ -187,9 +182,9 @@ watch(
   () => props.instruction,
   async (val) => {
     instruction.value = val.instruction as DeviceActionInstruction
-    await updateInstruction()
+    updateInstruction()
   },
-  { immediate: true },
+  { immediate: true }
 )
 
 watch(
@@ -201,7 +196,7 @@ watch(
         variableForm.value.input = getDefaultInput(selectedAction.value.inputTypeConstraints)
       }
     }
-  },
+  }
 )
 
 type TypeDTO = {
@@ -291,22 +286,12 @@ function variableType(): TypeDTO {
   }
 }
 
-onMounted(async () => await updateInstruction())
+onMounted(() => updateInstruction())
 
-async function updateInstruction() {
-  try {
-    loadingOverlay.startLoading()
-    const deviceGroups = useGroupsStore().deviceGroups(instruction.value.deviceId)
-    if (deviceGroups.length > 0) {
-      device.value = useGroupsStore().getDeviceFromGroups(instruction.value.deviceId)!
-    } else {
-      device.value = await findDevice(instruction.value.deviceId, userInfo.token)
-    }
-    action.value = device.value.actions.find((act) => act.id === instruction.value.deviceActionId)
-    selectedAction.value = action.value
-  } finally {
-    loadingOverlay.stopLoading()
-  }
+function updateInstruction() {
+  device.value = devicesStore.getDevice(instruction.value.deviceId)
+  action.value = device.value?.actions.find((act) => act.id === instruction.value.deviceActionId)
+  selectedAction.value = action.value
 }
 
 function openDialog() {
@@ -335,5 +320,4 @@ function closeDialog() {
   const dialog = document.getElementById(props.id.toString()) as HTMLDialogElement
   dialog.close()
 }
-
 </script>

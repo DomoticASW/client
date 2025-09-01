@@ -18,7 +18,6 @@
               :aria-label="'Remove permission on: ' + device.name"
               @click="removeUserDevicePermission(device.id)"
             ></button>
-            <DeviceGroupsDialog :id="device.id" :device="device" />
           </li>
         </ul>
         <DeviceListSkeleton v-else />
@@ -41,7 +40,6 @@
               :aria-label="'Add permission of: ' + device"
               @click="addUserDevicePermission(device.id)"
             ></button>
-            <DeviceGroupsDialog :id="device.id" :device="device" />
           </li>
         </ul>
         <DeviceListSkeleton v-else />
@@ -62,7 +60,6 @@ import { useRoute } from 'vue-router'
 import NavbarLayout from '@/components/NavbarLayout.vue'
 import DeviceListSkeleton from '@/components/admin/manage-devices/DeviceListSkeleton.vue'
 import DeviceGroupsButton from '@/components/DeviceGroupsButton.vue'
-import DeviceGroupsDialog from '@/components/DeviceGroupsDialog.vue'
 
 const loadingOverlay = useLoadingOverlayStore()
 const devicesWithPermissions = ref<Device[] | undefined>(undefined)
@@ -82,10 +79,10 @@ const loadDevices = async () => {
   const permittedDeviceIds = userDevicePermissions.map((permission) => permission.deviceId)
   const allDevices = await devicesApi.getAllDevices(adminToken)
   devicesWithPermissions.value = allDevices.filter((device: Device) =>
-    permittedDeviceIds.includes(device.id),
+    permittedDeviceIds.includes(device.id)
   )
   devicesWithoutPermissions.value = allDevices.filter(
-    (device: Device) => !permittedDeviceIds.includes(device.id),
+    (device: Device) => !permittedDeviceIds.includes(device.id)
   )
 }
 
@@ -95,7 +92,7 @@ const addUserDevicePermission = async (deviceId: DeviceId) => {
     await api.setUserDevicePermission(user.email, deviceId, adminToken)
     if (devicesWithoutPermissions.value && devicesWithPermissions.value) {
       const deviceIndex = devicesWithoutPermissions.value.findIndex(
-        (device) => device.id === deviceId,
+        (device) => device.id === deviceId
       )
       if (deviceIndex !== -1) {
         const [movedDevice] = devicesWithoutPermissions.value.splice(deviceIndex, 1)

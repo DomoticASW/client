@@ -54,7 +54,7 @@ async function changeTask() {
           name: taskName.value,
           instructions: instructionsStore.instructions,
         },
-        userInfo.token,
+        userInfo.token
       )
       showToastMessage('The changes of the ' + taskName.value + ' task have been saved')
     } else {
@@ -64,7 +64,7 @@ async function changeTask() {
           name: taskName.value,
           instructions: instructionsStore.instructions,
         },
-        userInfo.token,
+        userInfo.token
       )
       showToastMessage('The ' + taskName.value + ' task has been created')
       Route.back()
@@ -96,10 +96,18 @@ function showToastMessage(msg: string) {
       <button type="button" class="btn btn-ghost text-base" @click="changeTask()">Save</button>
     </template>
     <div class="mx-6">
-      <input type="text" placeholder="Task name" class="input w-full" v-model="taskName" />
+      <label for="name" class="hidden">Task name</label>
+      <input
+        type="text"
+        placeholder="Task name"
+        class="input w-full"
+        v-model="taskName"
+        name="name"
+        id="name"
+      />
     </div>
     <hr class="m-4" />
-    <h1 class="text-xl">Instructions</h1>
+    <h2 class="text-xl">Instructions</h2>
     <div
       v-if="instructionsStore.instructions.length === 0"
       class="flex text-center text-gray-500 justify-center items-center min-h-[50vh]"

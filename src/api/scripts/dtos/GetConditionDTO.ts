@@ -58,5 +58,5 @@ export const conditionDeserializer = Deserializer<GetConditionDTO, Condition>(
       negate: dto.negate,
       conditionOperatorType: conditionOperatorTypeDeserializer(dto.conditionOperatorType),
     }
-  },
+  }
 )

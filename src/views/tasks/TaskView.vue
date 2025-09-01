@@ -42,7 +42,7 @@ async function removeTask() {
     loadingOverlay.startLoading()
     await deleteTask(taskId.value!, userInfo.token)
     useSuccessPresenterStore().showSuccess(
-      presentSuccess('The ' + taskName.value + ' task has been deleted', '', 3000),
+      presentSuccess('The ' + taskName.value + ' task has been deleted', '', 3000)
     )
     Route.back()
   } finally {
@@ -61,7 +61,7 @@ async function removeTask() {
       >
       <button class="btn btn-ghost text-error text-base" @click="removeTask()">Delete</button>
     </template>
-    <h1 class="text-xl">Instructions</h1>
+    <h2 class="text-xl">Instructions</h2>
     <div
       v-if="instructionsStore.instructions.length === 0"
       class="flex text-center text-gray-500 justify-center items-center min-h-[50vh]"

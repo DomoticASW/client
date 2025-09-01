@@ -1,21 +1,21 @@
-import type { Notification } from "@/model/notifications-management/Notification";
-import { openSocketIOForNotifications } from "@/api/notifications-management/requests";
-import { defineStore } from "pinia";
-import { useUserInfoStore } from "./user-info";
-import { ref } from "vue";
-import { Socket } from "socket.io-client";
+import type { Notification } from '@/model/notifications-management/Notification'
+import { openSocketIOForNotifications } from '@/api/notifications-management/requests'
+import { defineStore } from 'pinia'
+import { useUserInfoStore } from './user-info'
+import { ref } from 'vue'
+import { Socket } from 'socket.io-client'
 
 export const useNotificationsStore = defineStore('notifications', () => {
-  const notifications = ref(new Array<Notification & { read: boolean, date: string, id: number }>())
+  const notifications = ref(new Array<Notification & { read: boolean; date: string; id: number }>())
   let id = 0
   const stored = localStorage.getItem('notifications')
   if (stored) {
     try {
-      const parsed = JSON.parse(stored);
-      notifications.value = parsed;
-      id = notifications.value.reduce((maxId, n) => n.id > maxId ? n.id : maxId, 0)
+      const parsed = JSON.parse(stored)
+      notifications.value = parsed
+      id = notifications.value.reduce((maxId, n) => (n.id > maxId ? n.id : maxId), 0)
     } catch (e) {
-      console.error("Failed to parse stored notifications", e);
+      console.error('Failed to parse stored notifications', e)
     }
   }
   const socket = ref<Socket | undefined>()
@@ -33,11 +33,18 @@ export const useNotificationsStore = defineStore('notifications', () => {
   })
   window.addEventListener('beforeunload', closeSocket)
   function openSocket(email: string) {
-    if (socket.value) { socket.value.close() }
+    if (socket.value) {
+      socket.value.close()
+    }
     socket.value = openSocketIOForNotifications(email, (notification) => {
       id = id + 1
-      notifications.value.unshift({ ...notification, read: false, date: (new Date()).toUTCString(), id: id })
-      localStorage.setItem('notifications', JSON.stringify(notifications.value));
+      notifications.value.unshift({
+        ...notification,
+        read: false,
+        date: new Date().toUTCString(),
+        id: id,
+      })
+      localStorage.setItem('notifications', JSON.stringify(notifications.value))
     })
   }
   function closeSocket() {
@@ -51,14 +58,14 @@ export const useNotificationsStore = defineStore('notifications', () => {
   }
   function setNotificationRead(index: number, read: boolean) {
     notifications.value[index].read = read
-    localStorage.setItem('notifications', JSON.stringify(notifications.value));
+    localStorage.setItem('notifications', JSON.stringify(notifications.value))
   }
   function deleteNotification(index: number) {
     notifications.value.splice(index, 1)
-    localStorage.setItem('notifications', JSON.stringify(notifications.value));
+    localStorage.setItem('notifications', JSON.stringify(notifications.value))
   }
   function unreadNotifications() {
-    return notifications.value.filter(n => !n.read).length
+    return notifications.value.filter((n) => !n.read).length
   }
   return { notifications, socket, setNotificationRead, deleteNotification, unreadNotifications }
 })

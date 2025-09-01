@@ -16,12 +16,7 @@ const tasks = ref<Task[]>()
 const loadingOverlay = useLoadingOverlayStore()
 
 onMounted(async () => {
-  try {
-    loadingOverlay.startLoading()
-    tasks.value = await getAllTasks(userInfo.token)
-  } finally {
-    loadingOverlay.stopLoading()
-  }
+  tasks.value = await getAllTasks(userInfo.token)
 })
 
 async function startTask(taskId: TaskId) {
@@ -30,7 +25,7 @@ async function startTask(taskId: TaskId) {
     await executeTask(taskId, userInfo.token)
     const task = await findTask(taskId, userInfo.token)
     useSuccessPresenterStore().showSuccess(
-      presentSuccess('The ' + task.name + ' task started', '', 3000),
+      presentSuccess('The ' + task.name + ' task started', '', 3000)
     )
   } finally {
     loadingOverlay.stopLoading()
@@ -77,7 +72,7 @@ async function startTask(taskId: TaskId) {
 
     <dialog id="tasks_info" class="modal modal-sm">
       <div class="modal-box max-w-sm">
-        <h2 class="card-title mb-2">Tasks info</h2>
+        <p class="card-title mb-2">Tasks info</p>
         <p>
           Tasks are a sequence of instructions that, when executed, can execute actions on devices
           and read properties from them.

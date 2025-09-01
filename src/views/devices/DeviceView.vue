@@ -16,7 +16,6 @@ import { io } from 'socket.io-client'
 import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
 import NavbarLayout from '@/components/NavbarLayout.vue'
 import DeviceGroupsButton from '@/components/DeviceGroupsButton.vue'
-import DeviceGroupsDialog from '@/components/DeviceGroupsDialog.vue'
 const props = defineProps({ id: { type: String, required: true } })
 const deviceId = DeviceId(props.id)
 const userInfo = useUserInfoStore()
@@ -34,6 +33,15 @@ const actionsToShow = computed<DeviceAction<unknown>[] | undefined>(() => {
 onMounted(async () => {
   device.value = await api.findDevice(deviceId, userInfo.token)
 })
+
+/* Showing device actions description */
+const actionDescriptionDialog = useTemplateRef('device_action_description')
+const actionDescriptionToShow = ref<DeviceAction<unknown> | undefined>()
+
+function showActionDescriptionDialog(action: DeviceAction<unknown>) {
+  actionDescriptionToShow.value = action
+  actionDescriptionDialog.value?.showModal()
+}
 
 /* Property setter actions execution */
 async function onPropertyInput(property: DeviceProperty<unknown>, value: unknown) {
@@ -97,8 +105,8 @@ async function subscribeForOfflineNotifications(activate: boolean) {
     isSubscribedForOfflineNotifications.value = activate
     successPresenter.showSuccess(
       presentSuccess(
-        `You've ${activate ? 'subscribed' : 'unsubscribed'} for offline notifications from ${device.value?.name ?? 'this device'}!`,
-      ),
+        `You've ${activate ? 'subscribed' : 'unsubscribed'} for offline notifications from ${device.value?.name ?? 'this device'}!`
+      )
     )
   } finally {
     loadingOverlay.stopLoading()
@@ -140,20 +148,34 @@ onUnmounted(() => {
     <div class="flex justify-center items-center">
       <span class="mr-2">Groups:</span>
       <DeviceGroupsButton v-if="device" :id="device.id" :device="device" />
-      <DeviceGroupsDialog v-if="device" :id="device.id" :device="device" />
     </div>
     <ul v-if="device" class="list">
       <li v-for="p in device.properties" v-bind:key="p.id" class="list-row items-center">
-        <span class="list-col-grow"> {{ p.name }} </span>
+        <div class="list-col-grow">
+          <span> {{ p.name }} </span>
+          <button
+            v-if="p.setter?.description"
+            class="btn btn-ghost fa-circle-info fa-solid btn-circle ml-1"
+            @click="showActionDescriptionDialog(p.setter)"
+          ></button>
+        </div>
         <ValueIOControl
           :typeConstraints="p.typeConstraints"
           :isInput="p.setter !== undefined"
+          :accessibility-label="p.name"
           v-model="p.value"
           @input="(input) => onPropertyInput(p, input)"
         />
       </li>
       <li v-for="a in actionsToShow" v-bind:key="a.id" class="list-row items-center">
-        <span class="list-col-grow"> {{ a.name }} </span>
+        <div class="list-col-grow">
+          <span> {{ a.name }} </span>
+          <button
+            v-if="a.description"
+            class="btn btn-ghost fa-circle-info fa-solid btn-circle ml-1"
+            @click="showActionDescriptionDialog(a)"
+          ></button>
+        </div>
         <button
           class="btn btn-circle btn-ghost fa-solid fa-play"
           @click="onAskActionInput(a)"
@@ -171,7 +193,7 @@ onUnmounted(() => {
   <!-- Dialog for offline notifications subscription -->
   <dialog ref="offline-notifications-modal" class="modal modal-middle">
     <div class="modal-box max-w-sm">
-      <h3 class="card-title mb-2 mx-auto justify-center">Device offline notifications</h3>
+      <p class="card-title mb-2 mx-auto justify-center">Device offline notifications</p>
       <p>Do you want to receive a notification when this device goes offline?</p>
       <form method="dialog">
         <div class="modal-action">
@@ -192,11 +214,12 @@ onUnmounted(() => {
   <!-- Dialog for action input -->
   <dialog ref="action-input-modal" class="modal modal-middle">
     <div class="modal-box max-w-sm">
-      <h3 class="card-title mb-2 mx-auto justify-center">Action input</h3>
+      <p class="card-title mb-2 mx-auto justify-center">Action input</p>
       <ValueIOControl
         v-if="executingAction"
         :typeConstraints="executingAction!.inputTypeConstraints"
         :isInput="true"
+        :accessibility-label="executingAction!.name"
         v-model="executingActionInput"
         v-model:isInputValid="isExecutingActionInputValid"
       />
@@ -212,6 +235,17 @@ onUnmounted(() => {
     </div>
     <form method="dialog" class="modal-backdrop">
       <button @click="onCancelExecuteAction">Cancel</button>
+    </form>
+  </dialog>
+
+  <!-- Dialog for device action descriptions -->
+  <dialog ref="device_action_description" class="modal modal-md">
+    <div class="modal-box max-w-md">
+      <p class="card-title mb-2">{{ actionDescriptionToShow?.name }}</p>
+      {{ actionDescriptionToShow?.description }}
+    </div>
+    <form method="dialog" class="modal-backdrop">
+      <button @click="actionDescriptionToShow = undefined">Ok</button>
     </form>
   </dialog>
 </template>

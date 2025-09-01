@@ -2,10 +2,13 @@
   <InstructionLayout :colors="colors" :edit="edit" :instruction="props.instruction">
     <p class="truncate">Send notification to</p>
     <p v-if="!edit" class="font-bold text-center truncate">{{ selectedUser?.nickname }}</p>
+    <label :for="'email_' + id" class="hidden" v-if="edit">User</label>
     <select
       v-model="instruction.email"
-      v-else
+      v-if="edit"
       class="select text-center truncate h-7 select-primary"
+      :name="'email_' + id"
+      :id="'email_' + id"
     >
       <!-- Show all the users -->
       <option
@@ -18,13 +21,17 @@
       </option>
     </select>
 
-    <label class="label mb-2 text-secondary-content col-span-2">Message sent</label>
+    <label class="label mb-2 text-secondary-content col-span-2" :for="'message_' + id"
+      >Message sent</label
+    >
     <div class="row-start-3 col-span-full">
       <textarea
         placeholder="Message sent"
         class="w-full textarea textarea-primary border-primary!"
         :disabled="!edit"
         v-model="instruction.message"
+        :name="'message_' + id"
+        :id="'message_' + id"
       />
     </div>
   </InstructionLayout>
@@ -35,30 +42,23 @@ import type { Instruction, SendNotificationInstruction } from '@/model/scripts/I
 import InstructionLayout from './InstructionLayout.vue'
 import { onMounted, ref, watch } from 'vue'
 import type { User } from '@/model/users-management/User'
-import { getAllUsers } from '@/api/users-management/requests/users'
-import { useUserInfoStore } from '@/stores/user-info'
-import { useLoadingOverlayStore } from '@/stores/loading-overlay'
+import { useUsersStore } from '@/stores/users'
 
 const props = defineProps<{
+  id: string
   instruction: Instruction
   colors: string
   edit: boolean
 }>()
 
-const userInfo = useUserInfoStore()
 const instruction = ref(props.instruction.instruction as SendNotificationInstruction)
 const users = ref<User[]>()
 const selectedUser = ref<User>()
-const loadingOverlay = useLoadingOverlayStore()
+const usersStore = useUsersStore()
 
-onMounted(async () => {
-  try {
-    loadingOverlay.startLoading()
-    users.value = await getAllUsers(userInfo.token)
-    selectedUser.value = users.value?.find((u) => u.email === instruction.value.email)
-  } finally {
-    loadingOverlay.stopLoading()
-  }
+onMounted(() => {
+  users.value = usersStore.users
+  selectedUser.value = usersStore.getUser(instruction.value.email)
 })
 
 watch(
@@ -67,6 +67,6 @@ watch(
     instruction.value = val.instruction as SendNotificationInstruction
     selectedUser.value = users.value?.find((u) => u.email === instruction.value.email)
   },
-  { immediate: true },
+  { immediate: true }
 )
 </script>

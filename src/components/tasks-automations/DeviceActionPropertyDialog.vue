@@ -45,7 +45,7 @@ function handleConfirm() {
 <template>
   <dialog id="device_action_property" class="modal modal-middle">
     <div class="modal-box max-w-sm" v-if="selectedDevice">
-      <h3 class="card-title mb-2 mx-auto justify-center">{{ selectedDevice.name }}</h3>
+      <p class="card-title mb-2 mx-auto justify-center">{{ selectedDevice.name }}</p>
       <p>{{ selectedDevice.name }} has been selected.</p>
       <p v-if="selectedDevice.actions.length != 0 && selectedDevice.properties.length != 0">
         Do you want to create a <span class="font-bold">constant</span> linked to a property or an

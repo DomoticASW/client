@@ -43,7 +43,7 @@ async function removeAutomation() {
     loadingOverlay.startLoading()
     await deleteAutomation(automationId.value!, userInfo.token)
     useSuccessPresenterStore().showSuccess(
-      presentSuccess('The ' + automationName.value + ' automation has been deleted', '', 3000),
+      presentSuccess('The ' + automationName.value + ' automation has been deleted', '', 3000)
     )
     Route.back()
   } finally {
@@ -62,10 +62,10 @@ async function removeAutomation() {
       >
       <button class="btn btn-ghost text-error text-base" @click="removeAutomation()">Delete</button>
     </template>
-    <h1 class="text-xl">Trigger</h1>
+    <h2 class="text-xl">Trigger</h2>
     <Trigger :trigger="trigger" :edit="false" />
     <hr class="m-4" />
-    <h1 class="text-xl">Instructions</h1>
+    <h2 class="text-xl">Instructions</h2>
     <div
       v-if="instructionsStore.instructions.length === 0"
       class="flex text-center text-gray-500 justify-center items-center min-h-[50vh]"

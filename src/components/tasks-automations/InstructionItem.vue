@@ -33,18 +33,21 @@
   />
   <SendNotificationInstructionItem
     v-else-if="instruction.type === InstructionType.SendNotificationInstruction"
+    :id="id"
     :instruction="instruction"
     :colors="colors"
     :edit="edit"
   />
   <WaitInstructionItem
     v-else-if="instruction.type === InstructionType.WaitInstruction"
+    :id="id"
     :instruction="instruction"
     :colors="colors"
     :edit="edit"
   />
   <StartTaskInstructionItem
     v-else-if="instruction.type === InstructionType.StartTaskInstruction"
+    :id="id"
     :instruction="instruction"
     :colors="colors"
     :edit="edit"
@@ -71,5 +74,4 @@ defineProps<{
 }>()
 
 const colors = 'bg-base-300 text-base-content border border-neutral shadow-lg'
-
 </script>

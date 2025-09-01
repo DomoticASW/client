@@ -7,14 +7,11 @@ import { DeviceGroupId, type DeviceGroup } from '@/model/devices-management/Devi
 import type { Device } from '@/model/devices-management/Device'
 import { getAllDeviceGroups } from '@/api/devices-management/requests/device-groups'
 import { getAllDevices } from '@/api/devices-management/requests/devices'
-import { useLoadingOverlayStore } from '@/stores/loading-overlay'
 import NavbarLayout from '@/components/NavbarLayout.vue'
 import router from '@/router'
 import DeviceGroupsButton from '@/components/DeviceGroupsButton.vue'
-import DeviceGroupsDialog from '@/components/DeviceGroupsDialog.vue'
 
 const userInfo = useUserInfoStore()
-const loadingOverlay = useLoadingOverlayStore()
 const groups = ref<DeviceGroup[] | undefined>(undefined)
 const selectedGroupId = ref<DeviceGroupId | undefined>(getGroupQueryParam())
 const devices = ref<Device[] | undefined>(undefined)
@@ -47,20 +44,10 @@ function closeDropdown() {
 }
 
 onMounted(async () => {
-  loadingOverlay.startLoading()
-  try {
-    groups.value = await getAllDeviceGroups(userInfo.token)
-  } finally {
-    loadingOverlay.stopLoading()
-  }
+  groups.value = await getAllDeviceGroups(userInfo.token)
 })
 onMounted(async () => {
-  loadingOverlay.startLoading()
-  try {
-    devices.value = await getAllDevices(userInfo.token)
-  } finally {
-    loadingOverlay.stopLoading()
-  }
+  devices.value = await getAllDevices(userInfo.token)
 })
 </script>
 
@@ -102,7 +89,6 @@ onMounted(async () => {
             <span class="fa-solid fa-chevron-right opacity-30 self-center"></span>
           </li>
         </RouterLink>
-        <DeviceGroupsDialog :id="d.id" :device="d" />
       </div>
     </ul>
     <DeviceListSkeleton v-else />

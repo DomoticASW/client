@@ -9,6 +9,7 @@
     <p class="truncate font-bold col-span-4 text-center" v-if="!edit">
       {{ instruction.condition.rightConstantName }}
     </p>
+    <label v-if="edit" :for="'left_constant_' + id" class="hidden">Left constant</label>
     <input
       v-if="edit"
       type="text"
@@ -16,41 +17,47 @@
       placeholder="Constant name"
       :class="depth > 1 ? 'w-full col-span-3' : 'w-17 md:w-25 col-span-3'"
       v-model="instruction.condition.leftConstantName"
+      :name="'left_constant_' + id"
+      :id="'left_constant_' + id"
     />
     <label
       v-if="edit"
-      for="negate"
+      :for="'negate_' + id"
       class="label text-sm md:text-base text-base-content place-self-center"
       :class="depth > 1 ? 'row-start-2 col-start-2 mr-3' : 'col-span-2'"
     >
       Not
       <input
-        name="negate"
-        id="negate"
+        :name="'negate_' + id"
+        :id="'negate_' + id"
         type="checkbox"
         class="checkbox checkbox-primary checkbox-sm md:checkbox-md"
         v-model="instruction.condition.negate"
       />
     </label>
+    <label v-if="edit" :for="'operator' + id" class="hidden">Condition operator</label>
     <select
       v-if="edit"
       v-model="instruction.condition.conditionOperatorType"
       class="select select-primary w-17 md:w-20 place-self-center h-7"
       :class="depth > 1 ? 'row-start-2 col-start-3 ml-1' : 'col-span-3'"
+      :name="'operator' + id"
+      :id="'operator' + id"
     >
       <option v-for="operator in ConditionOperatorType" :key="operator" :value="operator">
         {{ getOperator(operator) }}
       </option>
     </select>
+    <label v-if="edit" :for="'right_constant_' + id" class="hidden">Right constant</label>
     <input
       v-if="edit"
       type="text"
       class="input input-primary place-self-center h-7 text-center"
-      :class="
-        depth > 1 ? 'row-start-3 col-start-2 col-span-3 w-full' : 'col-span-3 w-17 md:w-25'
-      "
+      :class="depth > 1 ? 'row-start-3 col-start-2 col-span-3 w-full' : 'col-span-3 w-17 md:w-25'"
       placeholder="Constant name"
       v-model="instruction.condition.rightConstantName"
+      :name="'right_constant_' + id"
+      :id="'right_constant_' + id"
     />
   </InstructionLayout>
 
@@ -122,7 +129,7 @@ watch(
   (val) => {
     instruction.value = val.instruction as IfInstruction | IfElseInstruction
   },
-  { immediate: true },
+  { immediate: true }
 )
 
 const operatorSymbol = getOperatorWithNegate(instruction.value.condition)

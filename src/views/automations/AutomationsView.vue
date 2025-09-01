@@ -17,10 +17,8 @@ const loadingOverlay = useLoadingOverlayStore()
 
 onMounted(async () => {
   try {
-    loadingOverlay.startLoading()
     automations.value = await getAllAutomations(userInfo.token)
   } finally {
-    loadingOverlay.stopLoading()
   }
 })
 
@@ -35,8 +33,8 @@ async function toggle(automation: Automation) {
           ' automation has been ' +
           (automation.enabled ? 'enabled' : 'disabled'),
         '',
-        3000,
-      ),
+        3000
+      )
     )
   } finally {
     loadingOverlay.stopLoading()
@@ -89,15 +87,15 @@ async function toggle(automation: Automation) {
 
     <dialog id="automations_info" class="modal modal-sm">
       <div class="modal-box max-w-sm">
-        <h2 class="card-title mb-2">Automations info</h2>
+        <p class="card-title mb-2">Automations info</p>
         <p>
           Automations are a sequence of instruction that, when executed, can execute actions on
           devices and read properties from them.
         </p>
         <ul class="list-disc list-inside">
           <li>
-            <span class="font-bold">Execution</span>: When enabled, an automation is executed automatically based
-            on a trigger. Can be disabled from the toggle next to it.
+            <span class="font-bold">Execution</span>: When enabled, an automation is executed
+            automatically based on a trigger. Can be disabled from the toggle next to it.
             <ul class="list-disc list-inside ml-4">
               <li>
                 <span class="font-bold">Device event trigger</span>: Execute the automation if a
