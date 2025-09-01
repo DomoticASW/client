@@ -1,6 +1,6 @@
 # client
 
-This template should help get you started developing with Vue 3 in Vite.
+This is the client SPA for DomoticASW, it is deployed as a submodule inside DomoticASW's server.
 
 ## Recommended IDE Setup
 
@@ -14,9 +14,10 @@ TypeScript cannot handle type information for `.vue` imports by default, so we r
 
 See [Vite Configuration Reference](https://vite.dev/config/).
 
-## Project Setup
+## Setup
 
 ```sh
+./setup.sh
 npm install
 ```
 
