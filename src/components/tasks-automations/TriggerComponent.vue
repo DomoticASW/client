@@ -190,10 +190,13 @@ function groupsToString(deviceId: DeviceId) {
           {{ formatDate(trigger.start) }}
         </p>
         <div v-if="edit" class="justify-self-center col-span-4">
+          <label for="trigger_start" class="hidden">Starting date of period trigger</label>
           <input
             type="datetime-local"
             v-model="dateTime"
             class="input h-7 input-primary text-center"
+            name="trigger_start"
+            id="trigger_start"
           />
         </div>
 
@@ -202,12 +205,21 @@ function groupsToString(deviceId: DeviceId) {
           {{ formatDuration(trigger.periodSeconds) }}
         </p>
         <div v-else class="justify-self-center col-span-4">
+          <label for="trigger_number" class="hidden">Number of period trigger</label>
           <input
             type="number"
             v-model="time"
             class="input h-7 max-w-15 p-2 mr-2 input-primary text-center"
+            name="trigger_number"
+            id="trigger_number"
           />
-          <select v-model="timeUnit" class="select h-7 w-25 input-primary text-center">
+          <label for="trigger_time_unit" class="hidden">Time unit of period trigger</label>
+          <select
+            v-model="timeUnit"
+            class="select h-7 w-25 input-primary text-center"
+            name="trigger_time_unit"
+            id="trigger_time_unit"
+          >
             <option selected disabled>Time unit</option>
             <option value="seconds">Seconds</option>
             <option value="minutes">Minutes</option>
@@ -221,10 +233,15 @@ function groupsToString(deviceId: DeviceId) {
         <p class="col-span-full font-bold justify-self-center w-55 text-center">
           <DeviceNameAndGroup :id="selectedDevice.id" :device="selectedDevice" />
         </p>
+        <label for="trigger_selected_event" class="hidden"
+          >Select event for the device event trigger</label
+        >
         <select
           v-model="selectedEvent"
           class="col-span-full select h-7 w-50 select-primary justify-self-center text-center"
           v-if="edit"
+          name="trigger_selected_event"
+          id="trigger_selected_event"
         >
           <option selected disabled>Pick an event</option>
           <option

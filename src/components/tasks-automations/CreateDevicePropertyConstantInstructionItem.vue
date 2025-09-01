@@ -64,14 +64,14 @@
       <p class="card-title mx-2 mb-2">Device property</p>
       <form @submit.prevent="handleConfirm">
         <!-- Selection of a property -->
-        <label for="properties" class="fieldset-legend text-sm mx-3"
+        <label :for="'properties_' + id" class="fieldset-legend text-sm mx-3"
           >{{ device.name }} properties</label
         >
         <select
           v-model="variableForm.devicePropertyId"
           class="select mt-2 mx-2"
-          name="properties"
-          id="properties"
+          :name="'properties_' + id"
+          :id="'properties_' + id"
         >
           <option disabled>Pick a property</option>
           <option
@@ -84,13 +84,15 @@
           </option>
         </select>
         <!-- Change constant name -->
-        <label for="constant_name" class="fieldset-legend text-sm mx-3">Constant name</label>
+        <label :for="'constant_name_' + id" class="fieldset-legend text-sm mx-3"
+          >Constant name</label
+        >
         <input
           type="text"
           class="input mt-2 mx-2"
           v-model="variableForm.name"
-          name="constant_name"
-          id="constant_name"
+          :name="'constant_name_' + id"
+          :id="'constant_name_' + id"
         />
         <div class="modal-action w-full">
           <button type="submit" class="btn btn-primary">Confirm</button>

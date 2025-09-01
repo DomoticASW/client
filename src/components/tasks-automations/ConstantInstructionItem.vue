@@ -28,18 +28,23 @@
     <div class="modal-box max-w-sm">
       <p class="card-title mx-2 mb-2">Set constant</p>
       <form @submit.prevent="handleConfirm">
-        <label for="name" class="fieldset-legend text-sm mx-3 mt-2">Name</label>
+        <label :for="'name_' + id" class="fieldset-legend text-sm mx-3 mt-2">Name</label>
         <input
-          name="name"
-          id="name"
+          :name="'name_' + id"
+          :id="'name_' + id"
           type="text"
           class="input mt-2 mx-2"
           placeholder="Name"
           v-model="variableForm.name"
         />
 
-        <label for="type" class="fieldset-legend text-sm mx-3">Types</label>
-        <select name="type" id="type" v-model="variableForm.type" class="select mt-2 mx-2">
+        <label :for="'type_' + id" class="fieldset-legend text-sm mx-3">Types</label>
+        <select
+          :name="'type_' + id"
+          :id="'type_' + id"
+          v-model="variableForm.type"
+          class="select mt-2 mx-2"
+        >
           <option selected disabled>Pick a Type</option>
           <option
             v-for="type in Object.values(Type).filter((type) => type !== Type.VoidType)"
@@ -50,39 +55,39 @@
           </option>
         </select>
 
-        <label for="value" class="fieldset-legend text-sm mx-3">Value</label>
+        <label :for="'value_' + id" class="fieldset-legend text-sm mx-3">Value</label>
         <input
           v-if="variableType().type === 'number'"
           :type="variableType().type"
           :class="['mt-2 mx-2', variableType().class]"
           :step="variableForm.type === Type.DoubleType ? 'any' : '1'"
           v-model.number="variableForm.value"
-          name="value"
-          id="value"
+          :name="'value_' + id"
+          :id="'value_' + id"
         />
         <input
           v-else-if="variableType().type === 'color'"
           :type="variableType().type"
           :class="['mt-2 mx-2', variableType().class]"
           v-model="variableForm.value"
-          name="value"
-          id="value"
+          :name="'value_' + id"
+          :id="'value_' + id"
         />
         <input
           v-else-if="variableType().type === 'text'"
           :type="variableType().type"
           :class="['mt-2 mx-2', variableType().class]"
           v-model="variableForm.value"
-          name="value"
-          id="value"
+          :name="'value_' + id"
+          :id="'value_' + id"
         />
         <input
           v-else-if="variableType().type === 'checkbox'"
           :type="variableType().type"
           :class="['mt-2 mx-2', variableType().class]"
           v-model="variableForm.value"
-          name="value"
-          id="value"
+          :name="'value_' + id"
+          :id="'value_' + id"
         />
         <div class="modal-action w-full">
           <button type="submit" class="btn col-start-3 btn-primary">Confirm</button>

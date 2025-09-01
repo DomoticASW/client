@@ -114,18 +114,21 @@ function showToastMessage(msg: string) {
       </button>
     </template>
     <div class="mx-6">
+      <label for="name" class="hidden">Automation name</label>
       <input
         type="text"
         placeholder="Automation name"
         class="input w-full"
         v-model="automationName"
+        name="name"
+        id="name"
       />
     </div>
     <hr class="m-4" />
-    <h1 class="text-xl">Trigger</h1>
+    <h2 class="text-xl">Trigger</h2>
     <Trigger :trigger="trigger" @trigger="updateTrigger" :edit="true" />
     <hr class="m-4" />
-    <h1 class="text-xl">Instructions</h1>
+    <h2 class="text-xl">Instructions</h2>
     <div
       v-if="instructionsStore.instructions.length === 0"
       class="flex text-center text-gray-500 justify-center items-center min-h-[50vh]"
