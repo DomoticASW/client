@@ -13,8 +13,8 @@ export type Deserializer<T> = (json: unknown) => T
 export function Deserializer<From, To>(
   checkDeserializable: (obj: unknown) => obj is From,
   deserialize: (obj: From) => To,
-  deserializationError?: (obj: unknown) => string): Deserializer<To> {
-
+  deserializationError?: (obj: unknown) => string
+): Deserializer<To> {
   return (json) => {
     if (checkDeserializable(json)) {
       return deserialize(json)
@@ -29,19 +29,18 @@ export function arrayDeserializer<T>(itemDeserializer: Deserializer<T>): Deseria
     if (!Array.isArray(obj)) {
       throw DeserializeError(`Expecting an array but ${typeof obj} was found`)
     }
-    return obj.map(item => itemDeserializer(item))
+    return obj.map((item) => itemDeserializer(item))
   }
 }
 
 function isBoolean(o: unknown): o is boolean {
-  return o != undefined && typeof o == "boolean"
+  return o != undefined && typeof o == 'boolean'
 }
-export const booleanDeserializer: Deserializer<boolean> =
-  Deserializer(
-    isBoolean,
-    (obj) => obj,
-    (obj) => `Expecting a boolean but ${typeof obj} was found`
-  )
+export const booleanDeserializer: Deserializer<boolean> = Deserializer(
+  isBoolean,
+  (obj) => obj,
+  (obj) => `Expecting a boolean but ${typeof obj} was found`
+)
 
 export interface DeserializeError {
   message: string
@@ -50,7 +49,7 @@ export interface DeserializeError {
 
 export function DeserializeError(cause?: string): DeserializeError {
   return {
-    message: "There was an error while deserializing a response from the server.",
-    cause
+    message: 'There was an error while deserializing a response from the server.',
+    cause,
   }
 }

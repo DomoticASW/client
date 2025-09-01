@@ -116,7 +116,7 @@ const props = defineProps<{
 const instructionsStore = useInstructionsStore()
 
 const instruction = ref<CreateConstantInstruction>(
-  props.instruction.instruction as CreateConstantInstruction,
+  props.instruction.instruction as CreateConstantInstruction
 )
 
 watch(
@@ -124,7 +124,7 @@ watch(
   (val) => {
     instruction.value = val.instruction as CreateConstantInstruction
   },
-  { immediate: true },
+  { immediate: true }
 )
 
 function trimAfterSecondUppercase(str: string) {
@@ -151,7 +151,7 @@ watch(
       variableForm.value.value = ''
     }
   },
-  { immediate: true },
+  { immediate: true }
 )
 
 function variableType() {

@@ -27,7 +27,7 @@ const group = computed(() => groupsStore.groups.find((g) => g.id === groupId))
 const devicesNotInGroup = computed(() => {
   if (group.value && devices.value)
     return devices.value.filter(
-      (d) => group.value!.devices.find((d2) => d.id == d2.id) == undefined,
+      (d) => group.value!.devices.find((d2) => d.id == d2.id) == undefined
     )
   else return undefined
 })

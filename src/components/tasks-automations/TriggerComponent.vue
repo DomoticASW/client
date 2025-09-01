@@ -34,7 +34,7 @@ watch(
       selectedDevice.value = useDevicesStore().getDevice(val.deviceId)
       selectedEvent.value = val.eventName
     }
-  },
+  }
 )
 
 const timeUnit = computed({
@@ -110,7 +110,7 @@ watch(
       trigger.value.deviceId = val.id
       trigger.value.eventName = val.events[0].name
     }
-  },
+  }
 )
 
 watch(
@@ -123,7 +123,7 @@ watch(
     ) {
       trigger.value.eventName = val
     }
-  },
+  }
 )
 
 function openDeviceDialog() {

@@ -1,13 +1,17 @@
-import { DeserializeError, type Deserializer } from "./Deserializer"
-import { toServerErrorDeserializer } from "./ServerError"
+import { DeserializeError, type Deserializer } from './Deserializer'
+import { toServerErrorDeserializer } from './ServerError'
 
 /**
  * Does the same as `request` plus setting the Authorization header to token if it is not already set.
  */
-export async function authorizedRequest(url: RequestInfo | URL, token: string, init?: RequestInit): Promise<Response> {
+export async function authorizedRequest(
+  url: RequestInfo | URL,
+  token: string,
+  init?: RequestInit
+): Promise<Response> {
   const headers = new Headers(init?.headers) // Ensuring that the type of init.headers is Headers
-  if (!headers.has("Authorization")) {
-    headers.append("Authorization", token)
+  if (!headers.has('Authorization')) {
+    headers.append('Authorization', token)
   }
   return await request(url, { ...init, headers })
 }
@@ -21,8 +25,8 @@ export async function authorizedRequest(url: RequestInfo | URL, token: string, i
  */
 export async function request(url: RequestInfo | URL, init?: RequestInit): Promise<Response> {
   const headers = new Headers(init?.headers) // Ensuring that the type of init.headers is Headers
-  if (!headers.has("Content-Type")) {
-    headers.append("Content-Type", "application/json")
+  if (!headers.has('Content-Type')) {
+    headers.append('Content-Type', 'application/json')
   }
   const response = await fetch(url, { ...init, headers })
   if (!response.ok) {
@@ -41,14 +45,14 @@ export async function deserializeBody<T>(res: Response, deserializer: Deserializ
   // Passing through a text representation as res.json() uses JSON.parse and will fail in case of empty body
   const bodyAsText = await res.text()
   if (bodyAsText.trim().length == 0) {
-    throw DeserializeError("Response body was empty")
+    throw DeserializeError('Response body was empty')
   }
 
   let body: object
   try {
     body = JSON.parse(bodyAsText)
   } catch (e) {
-    throw DeserializeError("Unable to parse json from response body.\n" + (e as Error).message)
+    throw DeserializeError('Unable to parse json from response body.\n' + (e as Error).message)
   }
 
   if (!res.ok) {

@@ -1,12 +1,20 @@
 <template>
   <NavbarLayout title="Manage users permissions">
-    <div v-if="users?.length === 0" class="flex text-center text-gray-500 justify-center items-center min-h-[50vh]">
+    <div
+      v-if="users?.length === 0"
+      class="flex text-center text-gray-500 justify-center items-center min-h-[50vh]"
+    >
       <p class="text-2xl">No users yet...</p>
     </div>
     <ul class="list rounded-box" v-if="users">
       <RouterLink
-        v-for="user in users" :key="user.email"
-        :to="{ name: 'user-permissions', params: { id: user.email }, state: { nickname: user.nickname } }"
+        v-for="user in users"
+        :key="user.email"
+        :to="{
+          name: 'user-permissions',
+          params: { id: user.email },
+          state: { nickname: user.nickname },
+        }"
         :aria-label="'Get permissions of: ' + user.nickname"
       >
         <li class="list-row hover:bg-primary/20">
@@ -18,26 +26,26 @@
     </ul>
     <ListSkeleton v-else />
     <template #actions>
-    <button
-      class="fa-circle-info fa-solid fa-xl btn btn-ghost btn-circle"
-      onclick="permissions_info.showModal()"
-    ></button>
-  </template>
-  <dialog id="permissions_info" class="modal modal-sm">
+      <button
+        class="fa-circle-info fa-solid fa-xl btn btn-ghost btn-circle"
+        onclick="permissions_info.showModal()"
+      ></button>
+    </template>
+    <dialog id="permissions_info" class="modal modal-sm">
       <div class="modal-box max-w-sm">
         <h2 class="card-title mb-2">Users permissions info</h2>
+        <p>On this page, the list of registered users is shown.</p>
         <p>
-          On this page, the list of registered users is shown.
-        </p>
-        <p>
-          By clicking on a user, you are shown a list of device permissions that you can add or remove for the selected user.
-          The device permission allows the user to execute actions of that device.
+          By clicking on a user, you are shown a list of device permissions that you can add or
+          remove for the selected user. The device permission allows the user to execute actions of
+          that device.
         </p>
         <p>
           When a user has all the device permissions required by a task, he can execute that task.
         </p>
         <p>
-          You are not showed in these lists since you already have every permission to execute every device.
+          You are not showed in these lists since you already have every permission to execute every
+          device.
         </p>
       </div>
       <form method="dialog" class="modal-backdrop">
@@ -48,24 +56,24 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { useUserInfoStore } from '@/stores/user-info';
-import { Role, type User } from '@/model/users-management/User';
-import * as api from '@/api/users-management/requests/users';
-import NavbarLayout from '@/components/NavbarLayout.vue';
+import { ref, onMounted } from 'vue'
+import { useUserInfoStore } from '@/stores/user-info'
+import { Role, type User } from '@/model/users-management/User'
+import * as api from '@/api/users-management/requests/users'
+import NavbarLayout from '@/components/NavbarLayout.vue'
 import ListSkeleton from '@/components/ListSkeleton.vue'
 
-const users = ref<User[] | undefined>(undefined);
+const users = ref<User[] | undefined>(undefined)
 
 const loadUsers = async () => {
-  const userInfoStore = useUserInfoStore();
-  const adminToken = userInfoStore.token;
+  const userInfoStore = useUserInfoStore()
+  const adminToken = userInfoStore.token
 
-  const usersList = await api.getAllUsers(adminToken);
-  users.value = usersList.filter(user => user.role !== Role.Admin);
-};
+  const usersList = await api.getAllUsers(adminToken)
+  users.value = usersList.filter((user) => user.role !== Role.Admin)
+}
 
 onMounted(() => {
-  loadUsers();
-});
+  loadUsers()
+})
 </script>

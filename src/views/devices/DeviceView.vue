@@ -105,8 +105,8 @@ async function subscribeForOfflineNotifications(activate: boolean) {
     isSubscribedForOfflineNotifications.value = activate
     successPresenter.showSuccess(
       presentSuccess(
-        `You've ${activate ? 'subscribed' : 'unsubscribed'} for offline notifications from ${device.value?.name ?? 'this device'}!`,
-      ),
+        `You've ${activate ? 'subscribed' : 'unsubscribed'} for offline notifications from ${device.value?.name ?? 'this device'}!`
+      )
     )
   } finally {
     loadingOverlay.stopLoading()

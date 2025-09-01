@@ -24,14 +24,22 @@ export const instructionTypeDeserializer = Deserializer<GetInstructionTypeDTO, I
   isGetInstructionTypeDTO,
   (dto) => {
     switch (dto) {
-      case GetInstructionTypeDTO.CreateConstantInstruction: return InstructionType.CreateConstantInstruction
-      case GetInstructionTypeDTO.CreateDevicePropertyConstantInstruction: return InstructionType.CreateDevicePropertyConstantInstruction
-      case GetInstructionTypeDTO.DeviceActionInstruction: return InstructionType.DeviceActionInstruction
-      case GetInstructionTypeDTO.IfInstruction: return InstructionType.IfInstruction
-      case GetInstructionTypeDTO.IfElseInstruction: return InstructionType.IfElseInstruction
-      case GetInstructionTypeDTO.SendNotificationInstruction: return InstructionType.SendNotificationInstruction
-      case GetInstructionTypeDTO.StartTaskInstruction: return InstructionType.StartTaskInstruction
-      case GetInstructionTypeDTO.WaitInstruction: return InstructionType.WaitInstruction
+      case GetInstructionTypeDTO.CreateConstantInstruction:
+        return InstructionType.CreateConstantInstruction
+      case GetInstructionTypeDTO.CreateDevicePropertyConstantInstruction:
+        return InstructionType.CreateDevicePropertyConstantInstruction
+      case GetInstructionTypeDTO.DeviceActionInstruction:
+        return InstructionType.DeviceActionInstruction
+      case GetInstructionTypeDTO.IfInstruction:
+        return InstructionType.IfInstruction
+      case GetInstructionTypeDTO.IfElseInstruction:
+        return InstructionType.IfElseInstruction
+      case GetInstructionTypeDTO.SendNotificationInstruction:
+        return InstructionType.SendNotificationInstruction
+      case GetInstructionTypeDTO.StartTaskInstruction:
+        return InstructionType.StartTaskInstruction
+      case GetInstructionTypeDTO.WaitInstruction:
+        return InstructionType.WaitInstruction
     }
-  },
+  }
 )

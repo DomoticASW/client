@@ -1,12 +1,12 @@
-import { authorizedRequest, deserializeBody } from "@/api/api"
-import { arrayDeserializer } from "@/api/Deserializer"
-import { DeviceGroupId, type DeviceGroup } from "@/model/devices-management/DeviceGroup"
-import { deviceGroupDeserializer } from "../dtos/device-groups/DeviceGroupDTO"
-import { idDeserializer } from "../../IdDTO"
-import type { DeviceId } from "@/model/devices-management/Device"
-import type { RenameDeviceGroupDTO } from "../dtos/device-groups/RenameDeviceGroupDTO"
-import type { CreateDeviceGroupDTO } from "../dtos/device-groups/CreateDeviceGroupDTO"
-import type { AddDeviceToDeviceGroupDTO } from "../dtos/device-groups/AddDeviceToDeviceGroupDTO"
+import { authorizedRequest, deserializeBody } from '@/api/api'
+import { arrayDeserializer } from '@/api/Deserializer'
+import { DeviceGroupId, type DeviceGroup } from '@/model/devices-management/DeviceGroup'
+import { deviceGroupDeserializer } from '../dtos/device-groups/DeviceGroupDTO'
+import { idDeserializer } from '../../IdDTO'
+import type { DeviceId } from '@/model/devices-management/Device'
+import type { RenameDeviceGroupDTO } from '../dtos/device-groups/RenameDeviceGroupDTO'
+import type { CreateDeviceGroupDTO } from '../dtos/device-groups/CreateDeviceGroupDTO'
+import type { AddDeviceToDeviceGroupDTO } from '../dtos/device-groups/AddDeviceToDeviceGroupDTO'
 
 export async function createDeviceGroup(name: string, token: string): Promise<DeviceGroupId> {
   const body: CreateDeviceGroupDTO = { name }
@@ -18,7 +18,11 @@ export async function createDeviceGroup(name: string, token: string): Promise<De
   return DeviceGroupId(idDTO)
 }
 
-export async function renameDeviceGroup(id: DeviceGroupId, newName: string, token: string): Promise<void> {
+export async function renameDeviceGroup(
+  id: DeviceGroupId,
+  newName: string,
+  token: string
+): Promise<void> {
   const body: RenameDeviceGroupDTO = { name: newName }
   await authorizedRequest(`/api/deviceGroups/${id}`, token, {
     method: 'POST',
@@ -30,7 +34,11 @@ export async function deleteDeviceGroup(id: DeviceGroupId, token: string): Promi
   await authorizedRequest(`/api/deviceGroups/${id}`, token, { method: 'DELETE' })
 }
 
-export async function addDeviceToDeviceGroup(groupId: DeviceGroupId, deviceId: DeviceId, token: string): Promise<void> {
+export async function addDeviceToDeviceGroup(
+  groupId: DeviceGroupId,
+  deviceId: DeviceId,
+  token: string
+): Promise<void> {
   const body: AddDeviceToDeviceGroupDTO = { deviceId }
   await authorizedRequest(`/api/deviceGroups/${groupId}/device`, token, {
     method: 'POST',
@@ -38,7 +46,11 @@ export async function addDeviceToDeviceGroup(groupId: DeviceGroupId, deviceId: D
   })
 }
 
-export async function removeDeviceFromDeviceGroup(groupId: DeviceGroupId, deviceId: DeviceId, token: string): Promise<void> {
+export async function removeDeviceFromDeviceGroup(
+  groupId: DeviceGroupId,
+  deviceId: DeviceId,
+  token: string
+): Promise<void> {
   await authorizedRequest(`/api/deviceGroups/${groupId}/device/${deviceId}`, token, {
     method: 'DELETE',
   })

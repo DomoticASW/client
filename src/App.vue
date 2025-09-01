@@ -9,15 +9,13 @@ import DeviceGroupsDialog from './components/DeviceGroupsDialog.vue'
 <template>
   <div class="flex justify-center">
     <ErrorPresenter>
-        <LoadingOverlay>
-          <div class="h-full w-full max-w-5xl">
-            <RouterView />
-            <SuccessPresenter>
-            </SuccessPresenter>
-            <DeviceGroupsDialog/>
-          </div>
-        </LoadingOverlay>
-
+      <LoadingOverlay>
+        <div class="h-full w-full max-w-5xl">
+          <RouterView />
+          <SuccessPresenter> </SuccessPresenter>
+          <DeviceGroupsDialog />
+        </div>
+      </LoadingOverlay>
     </ErrorPresenter>
   </div>
 </template>

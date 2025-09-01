@@ -28,7 +28,7 @@ const observer = new IntersectionObserver(
   },
   {
     threshold: 0.75, //75% of the element must be visible to be intersecting the viewport
-  },
+  }
 )
 
 function addToRefs(idx: number, el: Element) {
@@ -60,7 +60,7 @@ onUnmounted(() => {
     </div>
     <ul class="list rounded-box">
       <li
-        class="indicator grid   list-row w-full"
+        class="indicator grid list-row w-full"
         v-for="(notification, idx) in notifications"
         :key="notification.id"
         :data-index="idx"
@@ -78,7 +78,9 @@ onUnmounted(() => {
           @click="deleteNotification(idx)"
           :aria-label="'Delete notification number ' + idx"
         ></button>
-        <span class="indicator-item badge badge-primary right-23 top-2" v-if="!notification.read">New</span>
+        <span class="indicator-item badge badge-primary right-23 top-2" v-if="!notification.read"
+          >New</span
+        >
       </li>
     </ul>
   </NavbarLayout>

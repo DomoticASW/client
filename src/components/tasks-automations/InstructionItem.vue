@@ -71,5 +71,4 @@ defineProps<{
 }>()
 
 const colors = 'bg-base-300 text-base-content border border-neutral shadow-lg'
-
 </script>

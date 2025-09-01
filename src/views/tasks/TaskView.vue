@@ -42,7 +42,7 @@ async function removeTask() {
     loadingOverlay.startLoading()
     await deleteTask(taskId.value!, userInfo.token)
     useSuccessPresenterStore().showSuccess(
-      presentSuccess('The ' + taskName.value + ' task has been deleted', '', 3000),
+      presentSuccess('The ' + taskName.value + ' task has been deleted', '', 3000)
     )
     Route.back()
   } finally {

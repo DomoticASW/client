@@ -6,7 +6,7 @@ import type { Instruction } from '@/model/scripts/Instruction'
 export async function editTask(
   id: TaskId,
   task: { name: string; instructions: Instruction[] },
-  token: string,
+  token: string
 ): Promise<void> {
   await authorizedRequest('/api/tasks/' + id, token, {
     method: 'PATCH',
@@ -19,7 +19,7 @@ export async function editTask(
 
 export async function createTask(
   task: { name: string; instructions: Instruction[] },
-  token: string,
+  token: string
 ): Promise<void> {
   await authorizedRequest('/api/tasks/', token, {
     method: 'POST',

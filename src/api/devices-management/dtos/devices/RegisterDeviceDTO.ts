@@ -1,6 +1,6 @@
 export interface RegisterDeviceDTO {
   deviceAddress: {
-    host: string,
+    host: string
     port: number
   }
 }

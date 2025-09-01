@@ -66,7 +66,9 @@ export function EmptySendNotification(): SendNotificationInstruction {
   }
 }
 
-export function defaultDevicePropertyConstantInstruction(device: Device): CreateDevicePropertyConstantInstruction {
+export function defaultDevicePropertyConstantInstruction(
+  device: Device
+): CreateDevicePropertyConstantInstruction {
   return {
     deviceId: device.id,
     devicePropertyId: device.properties[0].id,

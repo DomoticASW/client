@@ -37,13 +37,13 @@
         The {{ property.name }} property has a minimum value of
         <span class="font-bold">{{
           property.typeConstraints.min.toFixed(
-            property.typeConstraints.__brand === 'DoubleRange' ? 2 : 0,
+            property.typeConstraints.__brand === 'DoubleRange' ? 2 : 0
           )
         }}</span>
         and a maximum value of
         <span class="font-bold">{{
           property.typeConstraints.max.toFixed(
-            property.typeConstraints.__brand === 'DoubleRange' ? 2 : 0,
+            property.typeConstraints.__brand === 'DoubleRange' ? 2 : 0
           )
         }}</span
         >.
@@ -142,7 +142,7 @@ watch(
     instruction.value = val.instruction as CreateDevicePropertyConstantInstruction
     updateInstruction()
   },
-  { immediate: true },
+  { immediate: true }
 )
 
 onMounted(() => updateInstruction())
@@ -150,7 +150,7 @@ onMounted(() => updateInstruction())
 function updateInstruction() {
   device.value = devicesStore.getDevice(instruction.value.deviceId)
   property.value = device.value?.properties.find(
-    (prop) => prop.id === instruction.value.devicePropertyId,
+    (prop) => prop.id === instruction.value.devicePropertyId
   )
 }
 
@@ -168,7 +168,7 @@ function openDialog() {
 function handleConfirm() {
   const device = devicesStore.getDevice(variableForm.value.deviceId)
   const property = device?.properties.find(
-    (prop) => prop.id === variableForm.value.devicePropertyId,
+    (prop) => prop.id === variableForm.value.devicePropertyId
   )
   if (property) {
     variableForm.value.type = property.typeConstraints.type

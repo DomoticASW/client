@@ -9,9 +9,7 @@ const props = defineProps<{
   device: Device
 }>()
 
-const deviceGroups = computed(() =>
-  useGroupsStore().getGroupsOfDevice(props.device.id)
-)
+const deviceGroups = computed(() => useGroupsStore().getGroupsOfDevice(props.device.id))
 
 function openGroupsDialog() {
   useGroupsDialogStore().showDeviceGroups(props.device.id)

@@ -25,7 +25,7 @@ async function startTask(taskId: TaskId) {
     await executeTask(taskId, userInfo.token)
     const task = await findTask(taskId, userInfo.token)
     useSuccessPresenterStore().showSuccess(
-      presentSuccess('The ' + task.name + ' task started', '', 3000),
+      presentSuccess('The ' + task.name + ' task started', '', 3000)
     )
   } finally {
     loadingOverlay.stopLoading()

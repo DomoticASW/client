@@ -59,6 +59,6 @@ watch(
     instruction.value = val.instruction as SendNotificationInstruction
     selectedUser.value = users.value?.find((u) => u.email === instruction.value.email)
   },
-  { immediate: true },
+  { immediate: true }
 )
 </script>

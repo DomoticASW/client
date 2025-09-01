@@ -25,5 +25,5 @@ export const editListDeserializer = Deserializer<GetEditListDTO, EditList>(
       id: dto.id,
       users: dto.users,
     }
-  },
+  }
 )
