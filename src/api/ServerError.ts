@@ -1,4 +1,4 @@
-import { Deserializer } from "./Deserializer"
+import { Deserializer } from './Deserializer'
 
 export interface ServerError {
   __brand: string
@@ -7,9 +7,14 @@ export interface ServerError {
 }
 
 export function isServerError(o: unknown): o is ServerError {
-  return o != undefined && typeof o == "object" &&
-    "__brand" in o && typeof o.__brand == "string" &&
-    "message" in o && typeof o.message == "string"
+  return (
+    o != undefined &&
+    typeof o == 'object' &&
+    '__brand' in o &&
+    typeof o.__brand == 'string' &&
+    'message' in o &&
+    typeof o.message == 'string'
+  )
 }
 
 export const toServerErrorDeserializer: Deserializer<ServerError> = Deserializer(

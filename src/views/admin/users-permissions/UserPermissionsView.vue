@@ -79,10 +79,10 @@ const loadDevices = async () => {
   const permittedDeviceIds = userDevicePermissions.map((permission) => permission.deviceId)
   const allDevices = await devicesApi.getAllDevices(adminToken)
   devicesWithPermissions.value = allDevices.filter((device: Device) =>
-    permittedDeviceIds.includes(device.id),
+    permittedDeviceIds.includes(device.id)
   )
   devicesWithoutPermissions.value = allDevices.filter(
-    (device: Device) => !permittedDeviceIds.includes(device.id),
+    (device: Device) => !permittedDeviceIds.includes(device.id)
   )
 }
 
@@ -92,7 +92,7 @@ const addUserDevicePermission = async (deviceId: DeviceId) => {
     await api.setUserDevicePermission(user.email, deviceId, adminToken)
     if (devicesWithoutPermissions.value && devicesWithPermissions.value) {
       const deviceIndex = devicesWithoutPermissions.value.findIndex(
-        (device) => device.id === deviceId,
+        (device) => device.id === deviceId
       )
       if (deviceIndex !== -1) {
         const [movedDevice] = devicesWithoutPermissions.value.splice(deviceIndex, 1)

@@ -43,7 +43,7 @@ async function removeAutomation() {
     loadingOverlay.startLoading()
     await deleteAutomation(automationId.value!, userInfo.token)
     useSuccessPresenterStore().showSuccess(
-      presentSuccess('The ' + automationName.value + ' automation has been deleted', '', 3000),
+      presentSuccess('The ' + automationName.value + ' automation has been deleted', '', 3000)
     )
     Route.back()
   } finally {

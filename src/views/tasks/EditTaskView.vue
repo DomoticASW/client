@@ -54,7 +54,7 @@ async function changeTask() {
           name: taskName.value,
           instructions: instructionsStore.instructions,
         },
-        userInfo.token,
+        userInfo.token
       )
       showToastMessage('The changes of the ' + taskName.value + ' task have been saved')
     } else {
@@ -64,7 +64,7 @@ async function changeTask() {
           name: taskName.value,
           instructions: instructionsStore.instructions,
         },
-        userInfo.token,
+        userInfo.token
       )
       showToastMessage('The ' + taskName.value + ' task has been created')
       Route.back()

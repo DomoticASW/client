@@ -9,14 +9,14 @@ import {
 
 function isIfInstruction(
   instruction: RealInstruction,
-  type: InstructionType,
+  type: InstructionType
 ): instruction is IfInstruction {
   return type === InstructionType.IfInstruction || isIfElseInstruction(instruction, type)
 }
 
 function isIfElseInstruction(
   instruction: RealInstruction,
-  type: InstructionType,
+  type: InstructionType
 ): instruction is IfElseInstruction {
   return type === InstructionType.IfElseInstruction
 }
@@ -24,7 +24,7 @@ function isIfElseInstruction(
 function traverseAndModify(
   instructions: Instruction[],
   target: Instruction,
-  onMatch: (instructions: Instruction[], index: number) => void,
+  onMatch: (instructions: Instruction[], index: number) => void
 ): boolean {
   const idx = instructions.indexOf(target)
 
@@ -69,7 +69,7 @@ export const useInstructionsStore = defineStore('instructions-store', {
     moveInstruction(target: Instruction, dir: 'up' | 'down') {
       function recursiveMove(
         instructions: Instruction[],
-        branch: 'root' | 'then' | 'else',
+        branch: 'root' | 'then' | 'else'
       ): Instruction | undefined {
         const idx = instructions.indexOf(target)
 
@@ -118,7 +118,7 @@ export const useInstructionsStore = defineStore('instructions-store', {
       function handleSwapOrNest(
         instructions: Instruction[],
         idx: number,
-        newIdx: number,
+        newIdx: number
       ): undefined {
         const temp = instructions[idx]
         const newInstr = instructions[newIdx]
@@ -148,7 +148,7 @@ export const useInstructionsStore = defineStore('instructions-store', {
       function handleBoundary(
         instructions: Instruction[],
         dir: 'up' | 'down',
-        branch: 'root' | 'then' | 'else',
+        branch: 'root' | 'then' | 'else'
       ): Instruction | undefined {
         if (branch === 'then' || branch === 'else') {
           // return the first or last elem of the branch based on movement, removing it from the current block
@@ -161,7 +161,7 @@ export const useInstructionsStore = defineStore('instructions-store', {
         instructions: Instruction[],
         container: Instruction,
         i: number,
-        target: Instruction,
+        target: Instruction
       ) {
         if (dir === 'up') {
           instructions.splice(i, 0, target) // insert before

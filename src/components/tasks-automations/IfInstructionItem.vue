@@ -46,9 +46,7 @@
       v-if="edit"
       type="text"
       class="input input-primary place-self-center h-7 text-center"
-      :class="
-        depth > 1 ? 'row-start-3 col-start-2 col-span-3 w-full' : 'col-span-3 w-17 md:w-25'
-      "
+      :class="depth > 1 ? 'row-start-3 col-start-2 col-span-3 w-full' : 'col-span-3 w-17 md:w-25'"
       placeholder="Constant name"
       v-model="instruction.condition.rightConstantName"
     />
@@ -122,7 +120,7 @@ watch(
   (val) => {
     instruction.value = val.instruction as IfInstruction | IfElseInstruction
   },
-  { immediate: true },
+  { immediate: true }
 )
 
 const operatorSymbol = getOperatorWithNegate(instruction.value.condition)

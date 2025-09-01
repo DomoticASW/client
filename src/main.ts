@@ -29,16 +29,19 @@ useNotificationsStore()
 
 const errorPresenterStore = useErrorPresenterStore()
 app.config.errorHandler = (err) => {
-  if (typeof err == "object" && err != undefined) {
+  if (typeof err == 'object' && err != undefined) {
     if ('__brand' in err && err.__brand === 'InvalidTokenError') {
       // If the token expires or is not valid, take the user to login page
-      errorPresenterStore.showError({
-        message: 'The session has expired, please login again to continue',
-        __brand: 'SessionExpired'
-      }, () => {
-        useUserInfoStore().clearUserInfo()
-        router.push("/login")
-      })
+      errorPresenterStore.showError(
+        {
+          message: 'The session has expired, please login again to continue',
+          __brand: 'SessionExpired',
+        },
+        () => {
+          useUserInfoStore().clearUserInfo()
+          router.push('/login')
+        }
+      )
     } else {
       errorPresenterStore.showError(err)
     }
@@ -59,7 +62,7 @@ async function setupStores() {
         useGroupsStore().updateGroups(),
         useDevicesStore().updateDevices(),
         useUsersStore().updateUsers(),
-        useTasksStore().updateTasks()
+        useTasksStore().updateTasks(),
       ])
     } finally {
       loadingOverlay.stopLoading()
@@ -80,7 +83,7 @@ if (import.meta.env.DEV && userInfoStr) {
       userInfoStore.userInfo = userInfo
     }
   } catch (e) {
-    throw new Error("Value of VITE_USER_INFO is not valid.\n" + (e as Error).message)
+    throw new Error('Value of VITE_USER_INFO is not valid.\n' + (e as Error).message)
   }
 }
 

@@ -62,7 +62,7 @@ async function changeAutomation() {
           trigger: trigger.value!,
           instructions: instructionsStore.instructions,
         },
-        userInfo.token,
+        userInfo.token
       )
       showToastMessage('The changes of the ' + automationName.value + ' automation have been saved')
     } else {
@@ -73,7 +73,7 @@ async function changeAutomation() {
           trigger: trigger.value!,
           instructions: instructionsStore.instructions,
         },
-        userInfo.token,
+        userInfo.token
       )
       showToastMessage('The ' + automationName.value + ' automation has been created')
       Route.back()

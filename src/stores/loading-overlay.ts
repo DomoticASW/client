@@ -1,11 +1,11 @@
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia'
 
 export const useLoadingOverlayStore = defineStore('loading-overlay', {
   state: () => ({
-    tasksLoading: 0
+    tasksLoading: 0,
   }),
   getters: {
-    isLoading: (state) => state.tasksLoading > 0
+    isLoading: (state) => state.tasksLoading > 0,
   },
   actions: {
     startLoading() {

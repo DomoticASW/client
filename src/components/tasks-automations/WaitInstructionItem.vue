@@ -1,9 +1,5 @@
 <template>
-  <InstructionLayout
-    :colors="colors"
-    :edit="edit"
-    :instruction="props.instruction"
-  >
+  <InstructionLayout :colors="colors" :edit="edit" :instruction="props.instruction">
     <p>Wait</p>
     <p v-if="!edit" class="font-bold truncate text-center">{{ duration }}</p>
     <div v-else class="col-span-2 place-self-end">
@@ -45,7 +41,7 @@ watch(
   (val) => updateSeconds(val, timeUnit.value),
   {
     immediate: true,
-  },
+  }
 )
 
 watch(
@@ -53,7 +49,7 @@ watch(
   (val) => updateSeconds(time.value, val),
   {
     immediate: true,
-  },
+  }
 )
 
 function updateSeconds(first: number, second: 'seconds' | 'minutes' | 'hours' | 'days') {
@@ -65,6 +61,6 @@ watch(
   (val) => {
     instruction.value = val.instruction as WaitInstruction
   },
-  { immediate: true },
+  { immediate: true }
 )
 </script>

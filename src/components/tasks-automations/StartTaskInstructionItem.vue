@@ -29,17 +29,16 @@ const props = defineProps<{
 const taskName = ref<string>()
 const tasks = ref<Task[]>()
 
-
 onMounted(() => {
-    tasks.value = useTasksStore().tasks
-    updateTaskName(props.instruction.instruction as StartTaskInstruction)
+  tasks.value = useTasksStore().tasks
+  updateTaskName(props.instruction.instruction as StartTaskInstruction)
 })
 
 watch(
   () => props.instruction,
   (val) => {
     updateTaskName(val.instruction as StartTaskInstruction)
-  },
+  }
 )
 
 async function updateTaskName(instruction: StartTaskInstruction) {

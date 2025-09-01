@@ -182,7 +182,7 @@ watch(
     instruction.value = val.instruction as DeviceActionInstruction
     updateInstruction()
   },
-  { immediate: true },
+  { immediate: true }
 )
 
 watch(
@@ -194,7 +194,7 @@ watch(
         variableForm.value.input = getDefaultInput(selectedAction.value.inputTypeConstraints)
       }
     }
-  },
+  }
 )
 
 type TypeDTO = {

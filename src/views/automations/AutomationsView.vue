@@ -33,8 +33,8 @@ async function toggle(automation: Automation) {
           ' automation has been ' +
           (automation.enabled ? 'enabled' : 'disabled'),
         '',
-        3000,
-      ),
+        3000
+      )
     )
   } finally {
     loadingOverlay.stopLoading()
