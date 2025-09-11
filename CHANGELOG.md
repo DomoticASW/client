@@ -1,3 +1,9 @@
+## [1.0.2](https://github.com/DomoticASW/client/compare/1.0.1...1.0.2) (2025-09-11)
+
+### Bug Fixes
+
+* revert npm audit fix ([2ab6b2d](https://github.com/DomoticASW/client/commit/2ab6b2d5349d4e9785e9d6010b505c1fa447fc89))
+
 ## [1.0.1](https://github.com/DomoticASW/client/compare/1.0.0...1.0.1) (2025-09-11)
 
 ### Bug Fixes
