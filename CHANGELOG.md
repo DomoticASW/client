@@ -1,3 +1,13 @@
+## [1.0.0](https://github.com/DomoticASW/client/compare/0.5.0...1.0.0) (2025-09-11)
+
+### ⚠ BREAKING CHANGES
+
+* first stable release
+
+### General maintenance
+
+* first stable release ([7b2c907](https://github.com/DomoticASW/client/commit/7b2c9073130903d2223cc38016fcf2011c92b5c8))
+
 ## [0.5.0](https://github.com/DomoticASW/client/compare/0.4.0...0.5.0) (2025-09-11)
 
 ### Features
