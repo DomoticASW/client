@@ -1,3 +1,13 @@
+## [1.0.1](https://github.com/DomoticASW/client/compare/1.0.0...1.0.1) (2025-09-11)
+
+### Bug Fixes
+
+* commitlint ignores automated commits ([9c61bc6](https://github.com/DomoticASW/client/commit/9c61bc6bc493324757cd75e5f3ea16062bd1fbb0))
+
+### General maintenance
+
+* npm audit fix ([d7e35d1](https://github.com/DomoticASW/client/commit/d7e35d1b03654496f1695e7b6c9baee7df518977))
+
 ## [1.0.0](https://github.com/DomoticASW/client/compare/0.5.0...1.0.0) (2025-09-11)
 
 ### ⚠ BREAKING CHANGES
