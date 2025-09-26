@@ -36,7 +36,7 @@ export function openSocketIOForNotifications(
   email: string,
   onReceivedNotification: (notification: Notification) => void
 ): Socket {
-  const socket = io()
+  const socket = io(window.location.origin)
     .on('connect', () => socket.emit('login', { email: email }))
     .on('notification', (data: NotificationDTO) => {
       onReceivedNotification(notificationDeserializer(data))
