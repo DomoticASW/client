@@ -12,7 +12,7 @@ import * as api from '@/api/devices-management/requests/devices'
 import * as notificationsApi from '@/api/notifications-management/requests'
 import { Type } from '@/model/Type'
 import ValueIOControl from '@/components/devices/ValueIOControl.vue'
-import { io } from 'socket.io-client'
+import { io, Socket } from 'socket.io-client'
 import { presentSuccess, useSuccessPresenterStore } from '@/stores/success-presenter'
 import NavbarLayout from '@/components/NavbarLayout.vue'
 import DeviceGroupsButton from '@/components/DeviceGroupsButton.vue'
@@ -88,9 +88,25 @@ async function executeAction(action: DeviceAction<unknown>, input?: unknown) {
 /* Managing the device offline notifications subscription */
 const offlineNotificationsModal = useTemplateRef('offline-notifications-modal')
 const isSubscribedForOfflineNotifications = ref<boolean | undefined>(undefined)
+let socket: Socket
 onMounted(async () => {
   isSubscribedForOfflineNotifications.value =
     await notificationsApi.isSubscribedForDeviceOfflineNotifications(deviceId, userInfo.token)
+
+  const baseURL = window.location.origin
+
+  /* SocketIO subscription for real time property updates */
+  type PropertyUpdateDTO = { deviceId: string; propertyId: string; value: unknown }
+  socket = io(baseURL + '/api/devices/property-updates')
+    .on('connect', () => socket.emit('subscribe', { deviceId: deviceId }))
+    .on('device-property-update', (data: PropertyUpdateDTO) => {
+      if (data.deviceId == deviceId) {
+        const property = device.value?.properties.find((p) => p.id == data.propertyId)
+        if (property) {
+          property.value = data.value
+        }
+      }
+    })
 })
 async function subscribeForOfflineNotifications(activate: boolean) {
   if (activate === isSubscribedForOfflineNotifications.value) return
@@ -113,20 +129,6 @@ async function subscribeForOfflineNotifications(activate: boolean) {
   }
 }
 
-const baseURL = window.location.origin
-
-/* SocketIO subscription for real time property updates */
-type PropertyUpdateDTO = { deviceId: string; propertyId: string; value: unknown }
-const socket = io(baseURL + '/api/devices/property-updates')
-  .on('connect', () => socket.emit('subscribe', { deviceId: deviceId }))
-  .on('device-property-update', (data: PropertyUpdateDTO) => {
-    if (data.deviceId == deviceId) {
-      const property = device.value?.properties.find((p) => p.id == data.propertyId)
-      if (property) {
-        property.value = data.value
-      }
-    }
-  })
 onUnmounted(() => {
   socket.close()
 })
