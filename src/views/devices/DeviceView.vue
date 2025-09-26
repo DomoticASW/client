@@ -113,9 +113,11 @@ async function subscribeForOfflineNotifications(activate: boolean) {
   }
 }
 
+const baseURL = window.location.origin;
+
 /* SocketIO subscription for real time property updates */
 type PropertyUpdateDTO = { deviceId: string; propertyId: string; value: unknown }
-const socket = io('/api/devices/property-updates')
+const socket = io(baseURL + '/api/devices/property-updates')
   .on('connect', () => socket.emit('subscribe', { deviceId: deviceId }))
   .on('device-property-update', (data: PropertyUpdateDTO) => {
     if (data.deviceId == deviceId) {
