@@ -2,10 +2,13 @@
   <InstructionLayout :colors="colors" :edit="edit" :instruction="props.instruction" v-if="tasks">
     <p>Start task</p>
     <p v-if="!edit" class="font-bold truncate text-center">{{ taskName }}</p>
+    <label :for="'task_' + id" v-if="edit" class="hidden">Task to start</label>
     <select
       v-model="(instruction.instruction as StartTaskInstruction).taskId"
-      v-else
+      v-if="edit"
       class="select h-7 text-center select-primary"
+      :name="'task_' + id"
+      :id="'task_' + id"
     >
       <option selected disabled>Choose a task</option>
       <option :value="task.id" v-for="task in tasks" :key="task.id">{{ task.name }}</option>
@@ -21,6 +24,7 @@ import { type Task } from '@/model/scripts/Script'
 import { useTasksStore } from '@/stores/tasks'
 
 const props = defineProps<{
+  id: string
   instruction: Instruction
   colors: string
   edit: boolean

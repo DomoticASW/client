@@ -30,12 +30,14 @@
       <p class="card-title mx-2 mb-2">Device action</p>
       <form @submit.prevent="handleConfirm">
         <!-- Selection of an action -->
-        <label for="actions" class="fieldset-legend text-sm mx-3">{{ device.name }} actions</label>
+        <label :for="'actions_' + id" class="fieldset-legend text-sm mx-3"
+          >{{ device.name }} actions</label
+        >
         <select
           v-model="variableForm.deviceActionId"
           class="select mt-2 mx-2"
-          name="actions"
-          id="actions"
+          :name="'actions_' + id"
+          :id="'actions_' + id"
         >
           <option disabled>Pick an action</option>
           <option
@@ -49,7 +51,7 @@
         </select>
         <!-- Change of the action input -->
         <label
-          for="input"
+          :for="'input_' + id"
           class="fieldset-legend text-sm mx-3"
           v-if="variableType().type !== 'null'"
           >Input</label
@@ -65,8 +67,8 @@
             :min="variableType().constraints.min"
             :max="variableType().constraints.max"
             v-model.number="variableForm.input"
-            name="input"
-            id="input"
+            :name="'input_' + id"
+            :id="'input_' + id"
           />
           <div class="flex justify-between px-2.5 mt-2 text-xs">
             <span>{{ variableType().constraints.min }}</span>
@@ -82,16 +84,16 @@
           :min="variableType().constraints.min"
           :max="variableType().constraints.max"
           :step="selectedAction?.inputTypeConstraints.type === Type.DoubleType ? 'any' : '1'"
-          name="input"
-          id="input"
+          :name="'input_' + id"
+          :id="'input_' + id"
         />
 
         <select
           v-else-if="variableType().type === 'select'"
           :class="['mt-2 mx-2', variableType().class]"
           v-model="variableForm.input"
-          name="input"
-          id="input"
+          :name="'input_' + id"
+          :id="'input_' + id"
         >
           <option
             v-for="value in variableType().constraints.values"
@@ -108,8 +110,8 @@
           :class="['mt-2 mx-2', variableType().class]"
           :type="variableType().type"
           v-model="variableForm.input"
-          name="input"
-          id="input"
+          :name="'input_' + id"
+          :id="'input_' + id"
         />
 
         <input
@@ -117,8 +119,8 @@
           :class="['mt-2 mx-2', variableType().class]"
           :type="variableType().type"
           v-model="variableForm.input"
-          name="input"
-          id="input"
+          :name="'input_' + id"
+          :id="'input_' + id"
         />
 
         <input
@@ -126,8 +128,8 @@
           :class="['mt-2 mx-2', variableType().class]"
           :type="variableType().type"
           v-model="variableForm.input"
-          name="input"
-          id="input"
+          :name="'input_' + id"
+          :id="'input_' + id"
         />
         <div class="modal-action w-full">
           <button type="submit" class="btn btn-primary">Confirm</button>
