@@ -1,3 +1,9 @@
+## [1.0.4](https://github.com/DomoticASW/client/compare/1.0.3...1.0.4) (2025-09-26)
+
+### Bug Fixes
+
+* add explicit origin to notifications socket-io and put setup of devices socket-io on mounted ([82e12dd](https://github.com/DomoticASW/client/commit/82e12ddb1c631ce7c5748bea97b82cfbddf8dabc))
+
 ## [1.0.3](https://github.com/DomoticASW/client/compare/1.0.2...1.0.3) (2025-09-26)
 
 ### Bug Fixes
