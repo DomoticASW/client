@@ -1,3 +1,13 @@
+## [1.0.3](https://github.com/DomoticASW/client/compare/1.0.2...1.0.3) (2025-09-26)
+
+### Bug Fixes
+
+* now websocket uses host and port of base url ([5de6786](https://github.com/DomoticASW/client/commit/5de6786e5fcc9992ea1645155c3f9d963c15aae3))
+
+### General maintenance
+
+* format of deviceView ([2ab7a44](https://github.com/DomoticASW/client/commit/2ab7a44a7e53b0070ad660406de53fc5e4171d36))
+
 ## [1.0.2](https://github.com/DomoticASW/client/compare/1.0.1...1.0.2) (2025-09-11)
 
 ### Bug Fixes
