@@ -113,7 +113,7 @@ async function subscribeForOfflineNotifications(activate: boolean) {
   }
 }
 
-const baseURL = window.location.origin;
+const baseURL = window.location.origin
 
 /* SocketIO subscription for real time property updates */
 type PropertyUpdateDTO = { deviceId: string; propertyId: string; value: unknown }
